@@ -266,6 +266,10 @@ library('cem')
 # see (https://towardsdatascience.com/causal-inference-using-synthetic-control-the-ultimate-guide-a622ad5cf827) 
 # for tutorial
 
+# Generalized Synthetic Control Method  for endogeneity control
+# see (https://yiqingxu.org/software/gsynth/gsynth_examples.html)
+# for library and tutorial
+
 
 # Heckit Approach for endogeneity control
 # see (https://cran.r-project.org/web/packages/sampleSelection/sampleSelection.pdf)
