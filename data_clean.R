@@ -269,4 +269,8 @@ library('cem')
 # see (https://www.rdocumentation.org/packages/micEcon/versions/0.1-3/topics/heckit)
 # for library
 
-
+# Measurement Error Bias Correction
+# see (https://cran.r-project.org/web/packages/errors/index.html)
+# for library
+# see (https://cran.r-project.org/web/packages/errors/vignettes/rjournal.pdf)
+# for paper and tuutorial
