@@ -272,6 +272,11 @@ library('cem')
 # see (https://www.rdocumentation.org/packages/micEcon/versions/0.1-3/topics/heckit)
 # for library
 
+# PSM & Look Ahead PSM for endogeneity control
+# see (https://cran.r-project.org/web/packages/Matching/index.html)
+# for PSM library
+# see (LA-PSM) paper for LA-PSM method
+
 # Measurement Error Bias Correction
 
 # see (https://cran.r-project.org/web/packages/errors/index.html)
