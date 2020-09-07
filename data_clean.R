@@ -262,7 +262,10 @@ library('cem')
 # Synthetic Control for endogeneity control
 # see (https://cran.r-project.org/web/packages/Synth/Synth.pdf)
 # see (https://cran.r-project.org/web/packages/microsynth/index.html)
-# see (https://towardsdatascience.com/causal-inference-using-synthetic-control-the-ultimate-guide-a622ad5cf827) for tutorial
+# for library
+# see (https://towardsdatascience.com/causal-inference-using-synthetic-control-the-ultimate-guide-a622ad5cf827) 
+# for tutorial
+
 
 # Heckit Approach for endogeneity control
 # see (https://cran.r-project.org/web/packages/sampleSelection/sampleSelection.pdf)
@@ -270,7 +273,11 @@ library('cem')
 # for library
 
 # Measurement Error Bias Correction
+
 # see (https://cran.r-project.org/web/packages/errors/index.html)
 # for library
 # see (https://cran.r-project.org/web/packages/errors/vignettes/rjournal.pdf)
 # for paper and tuutorial
+
+# see (https://cran.r-project.org/web/packages/simex/index.html)
+# for SIMEX- And MCSIMEX-Algorithm for Measurement Error Models
