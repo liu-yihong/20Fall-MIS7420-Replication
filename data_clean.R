@@ -1,8 +1,12 @@
 # load library
+library('dplyr')
 library('haven')
 library('sqldf')
 library('zoo')
 library('plm')
+library('stargazer')
+# see (https://cran.r-project.org/web/packages/stargazer/vignettes/stargazer.pdf)
+# for how to make table for latex
 
 # all data path
 bb_zipcode_path <- 'data/bestbuyzipcodes_sample.sas7bdat'
@@ -31,6 +35,11 @@ sales_cc_5miles <- sales_cc_5miles[sales_cc_5miles$tran_flg == 1,]
 groupby_ref_domain_result <- aggregate(machine_id ~ ref_domain_name, rbind(sales_allother_zipcode, sales_cc_0mile, sales_cc_5miles), FUN = "length")
 groupby_ref_domain_result <- groupby_ref_domain_result[order(-groupby_ref_domain_result$machine_id), ]
 # we identify some search engines
+search_engine_to_consider1 <- c("GOOGLE.COM", "YAHOO.COM", "google.com", "yahoo.com",
+                             "MSN.COM", "msn.com", "aol.com", "AOL.COM", "LIVE.COM", "live.com",
+                             "MYWEBSEARCH.COM", "ASK.COM", "MYWAY.COM", "mywebsearch.com",
+                             "ask.com", "YAHOO.NET", "BIZRATE.COM", "bizrate.com")
+
 ref_domain_to_consider1 <- c("", "GOOGLE.COM", "YAHOO.COM", "google.com", "yahoo.com",
                              "MSN.COM", "msn.com", "aol.com", "AOL.COM", "LIVE.COM", "live.com",
                              "MYWEBSEARCH.COM", "ASK.COM", "MYWAY.COM", "mywebsearch.com",
@@ -48,16 +57,13 @@ groupby_target_domain_result <- aggregate(machine_id ~ domain_name, rbind(sales_
 groupby_target_domain_result <- groupby_target_domain_result[order(-groupby_target_domain_result$machine_id), ]
 
 # Here's the top 5 online retail vendors
-# Questions: what should we use? Table 1 or here? 
-# amazon.com	12392
-# staples.com	6857
-# officedepot.com	3771
-# quillcorp.com	3123
-# columbiahouse.com	2401
+# 1                   dell.com             1473  428412.50
+# 2                 amazon.com             9973  316678.40
+# 3                staples.com             5663  225993.15
+# 4                walmart.com             1838  147445.34
+# 5                bestbuy.com             1159  142993.72
 five_target_domain_to_consider <- c("amazon.com", "staples.com", "dell.com", "walmart.com", "bestbuy.com")
 two_target_domain_to_consider <- c("amazon.com","bestbuy.com")
-five_alter_target_domain_to_consider <- c("amazon.com", "staples.com", "officedepot.com", "quillcorp.com", "columbiahouse.com")
-
 
 # we can choose what filter to apply
 sales_allother_zipcode <- sales_allother_zipcode[sales_allother_zipcode$domain_name %in% five_target_domain_to_consider,]
@@ -138,7 +144,20 @@ data_5m_t9_ReferringDomainIsSearchEngine <- sqldf("SELECT Zip_Code, MonthYear, d
 
 # Table 1
 
+table1 <- sqldf("SELECT domain_name as DomainName, count(*) as TotalTransaction, SUM(prod_totprice) AS TotalSales, SUM(pages_viewed) AS TotalPagesViewed, SUM(pages_viewed)/SUM(prod_totprice) AS PagesPerDollar, SUM(duration) AS TotalDuration, SUM(duration)/SUM(prod_totprice) AS MinsPerDollar FROM concat_data1 GROUP BY domain_name ORDER BY TotalSales DESC")
+stargazer(table1[1:5,], align=TRUE, summary = FALSE, rownames = FALSE, title="Summary Statistics of Top Five Vendors by Sales Volume")
+
 # Table 2
+
+table2_raw <-  rbind(read_sas(sales_allother_zipcode_path), read_sas(sales_cc_0mile_path))
+table2_raw$direct_to_website <- ifelse(table2_raw$ref_domain_name == '', 1, 0)
+table2_raw$referred_by_search <- ifelse(table2_raw$ref_domain_name %in% search_engine_to_consider1, 1, 0)
+table2_raw$referred_by_other <- ifelse(!(table2_raw$ref_domain_name %in% ref_domain_to_consider1), 1, 0)
+table2_raw$domain_name[!(table2_raw$domain_name %in% c('amazon.com', 'bestbuy.com'))] <- "All Others"
+
+table2 <- sqldf("SELECT domain_name as DomainName, count(*) as TotalTransaction, SUM(referred_by_search) AS ReferredbySearchEngine, SUM(direct_to_website) AS DirecttoWebsite, SUM(referred_by_other) AS ReferredbyOthers FROM table2_raw GROUP BY domain_name")
+stargazer(table2, align=TRUE, summary = FALSE, rownames = FALSE, title="Summary Statistics of Referring Domain Categories")
+rm("table2_raw")
 
 # Table 3
 
@@ -149,15 +168,16 @@ summary(ama.t4.0mile)
 summary(fixef(ama.t4.0mile, effect = "time"))
 summary(fixef(ama.t4.0mile, effect = "individual"))
 
-ama.t4.5mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t4.5mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t4.5mile)
 
-bb.t4.0mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t4.0mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t4.0mile)
 
 bb.t4.5mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t4.5mile)
 
+stargazer(ama.t4.0mile, ama.t4.5mile, bb.t4.0mile, bb.t4.5mile, title="Results", align=TRUE, covariate.labels=c("$beta_1$", "$beta_2$"), no.space=TRUE)
 
 # check multi-collinearity
 library(corrplot)
