@@ -160,8 +160,12 @@ stargazer(table2, align=TRUE, summary = FALSE, rownames = FALSE, title="Summary 
 rm("table2_raw")
 
 # Table 3
+table3_raw <- rbind(sales_allother_zipcode, sales_cc_0mile)
+summary(table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice)
+summary(table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice)
 
-
+summary(table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice)
+summary(table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice)
 
 # Table 4
 
