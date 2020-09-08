@@ -161,6 +161,8 @@ rm("table2_raw")
 
 # Table 3
 
+
+
 # Table 4
 
 ama.t4.0mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
