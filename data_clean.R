@@ -160,9 +160,30 @@ stargazer(table2, align=TRUE, summary = FALSE, rownames = FALSE, title="Summary 
 rm("table2_raw")
 
 # Table 3
+# see (https://www.stats4stem.org/r-difference-of-means)
+# see (https://stats.stackexchange.com/questions/302445/standard-error-of-difference)
+# see (https://stats.stackexchange.com/questions/43586/how-to-test-whether-the-difference-in-difference-between-means-is-significantly)
+# see (https://stats.stackexchange.com/questions/160359/difference-in-difference-method-how-to-test-for-assumption-of-common-trend-betw)
+# for tutorial
 table3_raw <- rbind(sales_allother_zipcode, sales_cc_0mile)
-summary(table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice)
-summary(table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice)
+
+amazonsales_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
+amazonsales_control_after <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
+
+amazonsales_control_before_mean <- mean(amazonsales_control_before)
+amazonsales_control_after_mean <- mean(amazonsales_control_after)
+
+amazonsales_control_before_length <- length(amazonsales_control_before)
+amazonsales_control_after_length <- length(amazonsales_control_after)
+
+amazonsales_control_before_var <- var(amazonsales_control_before)
+amazonsales_control_after_var <- var(amazonsales_control_after)
+#
+amazonsales_control_mean_diff <- amazonsales_control_after_mean - amazonsales_control_before_mean
+amazonsales_control_mean_diff_se <- sqrt( (amazonsales_control_before_var / amazonsales_control_before_length) + (amazonsales_control_after_var/amazonsales_control_after_length) )
+amazonsales_control_mean_diff_test <- amazonsales_control_mean_diff / amazonsales_control_mean_diff_se
+# formal test
+# t.test(amazonsales_control_before, amazonsales_control_after, alternative = "less")
 
 summary(table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice)
 summary(table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice)
@@ -274,6 +295,9 @@ library('cem')
 # Table D1-D4
 
 # Table E1-E2
+
+# Figure F1
+# see (https://dhicks.github.io/2018-10-10-did/)
 
 # Table G1-G3
 
