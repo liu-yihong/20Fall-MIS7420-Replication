@@ -74,6 +74,8 @@ sales_cc_5miles <- sales_cc_5miles[sales_cc_5miles$domain_name %in% five_target_
 # 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40
 sort(unique(rbind(sales_allother_zipcode, sales_cc_0mile, sales_cc_5miles)$prod_category_id))
 category_to_consider <- c(22, 23, 24, 25, 26, 27, 29, 31, 32, 33, 34, 35, 36, 37, 38)
+experience_product <- c(24, 25, 26, 27, 28, 31, 32, 33, 34, 36, 37)
+search_product <- c(22, 23, 24, 29, 30, 35)
 
 sales_allother_zipcode <- sales_allother_zipcode[sales_allother_zipcode$prod_category_id %in% category_to_consider,]
 sales_cc_0mile <- sales_cc_0mile[sales_cc_0mile$prod_category_id %in% category_to_consider,]
