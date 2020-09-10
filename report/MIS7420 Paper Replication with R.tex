@@ -187,8 +187,83 @@ Table \ref{tab:table1} shows the summary statistics of top five vendors by sales
 \subsection{Table 3}
 
 \subsection{Table 4}
-
+\begin{table}[!htbp] \centering 
+	\caption{Results of the Sales Effect (All Product Categories)} 
+	\label{} 
+	\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+		\cline{2-5} 
+		\\[-1.8ex] & \multicolumn{4}{c}{log(TotalMonthlySales)} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.202 & -0.256 & -0.057 & -1.235 \\ 
+		& (0.597) & (0.238) & (1.257) & (0.980) \\ 
+		$\beta_2$ & 0.226 & 0.122 &  & 1.017 \\ 
+		& (0.791) & (0.291) &  & (1.336) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{4,941} & \multicolumn{1}{c}{5,565} & \multicolumn{1}{c}{677} & \multicolumn{1}{c}{775} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0004} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.00002} & \multicolumn{1}{c}{0.016} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.321} & \multicolumn{1}{c}{-1.236} & \multicolumn{1}{c}{-7.244} & \multicolumn{1}{c}{-6.931} \\ 
+		F Statistic & \multicolumn{1}{c}{0.385 (df = 2; 2128)} & \multicolumn{1}{c}{0.760 (df = 2; 2487)} & \multicolumn{1}{c}{0.002 (df = 1; 82)} & \multicolumn{1}{c}{0.797 (df = 2; 96)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table} 
 \subsection{Table 5}
+\begin{table}[!htbp] \centering 
+	\caption{Results of the Search Effect (Pages Per Dollar, All Product Categories)} 
+	\label{} 
+	\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+		\cline{2-5} 
+		\\[-1.8ex] & \multicolumn{4}{c}{log(PagesPerDollar)} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.004 & 0.158 & 0.573 & 1.180 \\ 
+		& (0.649) & (0.256) & (1.514) & (1.151) \\ 
+		$\beta_2$ & -0.481 & -0.140 &  & -0.065 \\ 
+		& (0.860) & (0.313) &  & (1.569) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{4,941} & \multicolumn{1}{c}{5,565} & \multicolumn{1}{c}{677} & \multicolumn{1}{c}{775} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0003} & \multicolumn{1}{c}{0.0002} & \multicolumn{1}{c}{0.002} & \multicolumn{1}{c}{0.018} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.321} & \multicolumn{1}{c}{-1.237} & \multicolumn{1}{c}{-7.230} & \multicolumn{1}{c}{-6.921} \\ 
+		F Statistic & \multicolumn{1}{c}{0.348 (df = 2; 2128)} & \multicolumn{1}{c}{0.192 (df = 2; 2487)} & \multicolumn{1}{c}{0.143 (df = 1; 82)} & \multicolumn{1}{c}{0.859 (df = 2; 96)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table} 
+
+\begin{table}[!htbp] \centering 
+	\caption{Results of the Search Effect (Minutes Per Dollar, All Product Categories)} 
+	\label{} 
+	\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+		\cline{2-5} 
+		\\[-1.8ex] & \multicolumn{4}{c}{log(MinsPerDollar)} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.248 & 0.049 & 0.165 & 1.821 \\ 
+		& (0.700) & (0.275) & (1.570) & (1.211) \\ 
+		$\beta_2$ & -0.744 & -0.089 &  & -0.459 \\ 
+		& (0.928) & (0.336) &  & (1.650) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{4,941} & \multicolumn{1}{c}{5,565} & \multicolumn{1}{c}{677} & \multicolumn{1}{c}{775} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0004} & \multicolumn{1}{c}{0.00003} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.031} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.321} & \multicolumn{1}{c}{-1.237} & \multicolumn{1}{c}{-7.243} & \multicolumn{1}{c}{-6.811} \\ 
+		F Statistic & \multicolumn{1}{c}{0.389 (df = 2; 2128)} & \multicolumn{1}{c}{0.035 (df = 2; 2487)} & \multicolumn{1}{c}{0.011 (df = 1; 82)} & \multicolumn{1}{c}{1.548 (df = 2; 96)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table} 
 
 \subsection{Table 6}
 

@@ -137,7 +137,6 @@ data_5m_t4 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice)
 data_0m_t5 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
 data_5m_t5 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name")
 
-
 data_0m_t9_NoReferringDomain <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(NoReferringDomain) AS NoReferringDomain, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
 data_5m_t9_NoReferringDomain <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(NoReferringDomain) AS NoReferringDomain, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
 data_0m_t9_ReferringDomainIsSearchEngine <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(ReferringDomainIsSearchEngine) AS ReferringDomainIsSearchEngine, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
@@ -169,7 +168,10 @@ rm("table2_raw")
 # see (https://stats.stackexchange.com/questions/160359/difference-in-difference-method-how-to-test-for-assumption-of-common-trend-betw)
 # for tutorial
 table3_raw <- rbind(sales_allother_zipcode, sales_cc_0mile)
+#table3_raw <- data_0m_t4
 
+# Amazon Sales
+# for control
 amazonsales_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
 amazonsales_control_after <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
 
@@ -181,37 +183,132 @@ amazonsales_control_after_length <- length(amazonsales_control_after)
 
 amazonsales_control_before_var <- var(amazonsales_control_before)
 amazonsales_control_after_var <- var(amazonsales_control_after)
-#
+# se
 amazonsales_control_mean_diff <- amazonsales_control_after_mean - amazonsales_control_before_mean
 amazonsales_control_mean_diff_se <- sqrt( (amazonsales_control_before_var / amazonsales_control_before_length) + (amazonsales_control_after_var/amazonsales_control_after_length) )
 amazonsales_control_mean_diff_test <- amazonsales_control_mean_diff / amazonsales_control_mean_diff_se
 # formal test
 # t.test(amazonsales_control_before, amazonsales_control_after, alternative = "less")
 
-summary(table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice)
-summary(table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice)
+# Amazon Sales
+# for treatment
+amazonsales_treatment_before <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
+amazonsales_treatment_after <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
+
+amazonsales_treatment_before_mean <- mean(amazonsales_treatment_before)
+amazonsales_treatment_after_mean <- mean(amazonsales_treatment_after)
+
+amazonsales_treatment_before_length <- length(amazonsales_treatment_before)
+amazonsales_treatment_after_length <- length(amazonsales_treatment_after)
+
+amazonsales_treatment_before_var <- var(amazonsales_treatment_before)
+amazonsales_treatment_after_var <- var(amazonsales_treatment_after)
+# se
+amazonsales_treatment_mean_diff <- amazonsales_treatment_after_mean - amazonsales_treatment_before_mean
+amazonsales_treatment_mean_diff_se <- sqrt( (amazonsales_treatment_before_var / amazonsales_treatment_before_length) + (amazonsales_treatment_after_var/amazonsales_treatment_after_length) )
+
+# Amazon Sales DID
+amazonsales_did <- amazonsales_treatment_mean_diff - amazonsales_control_mean_diff
+
+# Amazon PagesPerDollar
+# for control
+amazonppd_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$pages_viewed / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
+amazonppd_control_after <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$pages_viewed / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
+
+amazonppd_control_before_mean <- mean(amazonppd_control_before)
+amazonppd_control_after_mean <- mean(amazonppd_control_after)
+
+amazonppd_control_before_length <- length(amazonppd_control_before)
+amazonppd_control_after_length <- length(amazonppd_control_after)
+
+amazonppd_control_before_var <- var(amazonppd_control_before)
+amazonppd_control_after_var <- var(amazonppd_control_after)
+# se
+amazonppd_control_mean_diff <- amazonppd_control_after_mean - amazonppd_control_before_mean
+amazonppd_control_mean_diff_se <- sqrt( (amazonppd_control_before_var / amazonppd_control_before_length) + (amazonppd_control_after_var/amazonppd_control_after_length) )
+amazonppd_control_mean_diff_test <- amazonppd_control_mean_diff / amazonppd_control_mean_diff_se
+
+# Amazon PagesPerDollar
+# for treatment
+amazonppd_treatment_before <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$pages_viewed / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
+amazonppd_treatment_after <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$pages_viewed / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
+
+amazonppd_treatment_before_mean <- mean(amazonppd_treatment_before)
+amazonppd_treatment_after_mean <- mean(amazonppd_treatment_after)
+
+amazonppd_treatment_before_length <- length(amazonppd_treatment_before)
+amazonppd_treatment_after_length <- length(amazonppd_treatment_after)
+
+amazonppd_treatment_before_var <- var(amazonppd_treatment_before)
+amazonppd_treatment_after_var <- var(amazonppd_treatment_after)
+# se
+amazonppd_treatment_mean_diff <- amazonppd_treatment_after_mean - amazonppd_treatment_before_mean
+amazonppd_treatment_mean_diff_se <- sqrt( (amazonppd_treatment_before_var / amazonppd_treatment_before_length) + (amazonppd_treatment_after_var/amazonppd_treatment_after_length) )
+amazonppd_treatment_mean_diff_test <- amazonppd_treatment_mean_diff / amazonppd_treatment_mean_diff_se
+
+# Amazon PagesPerDollar DID
+amazonppd_did <- amazonppd_treatment_mean_diff - amazonppd_control_mean_diff
+
+# Amazon MinsPerDollar
+# for control
+amazonmpd_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$duration / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
+amazonmpd_control_after <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$duration / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
+
+amazonmpd_control_before_mean <- mean(amazonmpd_control_before)
+amazonmpd_control_after_mean <- mean(amazonmpd_control_after)
+
+amazonmpd_control_before_length <- length(amazonmpd_control_before)
+amazonmpd_control_after_length <- length(amazonmpd_control_after)
+
+amazonmpd_control_before_var <- var(amazonmpd_control_before)
+amazonmpd_control_after_var <- var(amazonmpd_control_after)
+# se
+amazonmpd_control_mean_diff <- amazonmpd_control_after_mean - amazonmpd_control_before_mean
+amazonmpd_control_mean_diff_se <- sqrt( (amazonmpd_control_before_var / amazonmpd_control_before_length) + (amazonmpd_control_after_var/amazonmpd_control_after_length) )
+amazonmpd_control_mean_diff_test <- amazonmpd_control_mean_diff / amazonmpd_control_mean_diff_se
+
+# Amazon MinsPerDollar
+# for treatment
+amazonmpd_treatment_before <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$duration / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
+amazonmpd_treatment_after <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$duration / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
+
+amazonmpd_treatment_before_mean <- mean(amazonmpd_treatment_before)
+amazonmpd_treatment_after_mean <- mean(amazonmpd_treatment_after)
+
+amazonmpd_treatment_before_length <- length(amazonmpd_treatment_before)
+amazonmpd_treatment_after_length <- length(amazonmpd_treatment_after)
+
+amazonmpd_treatment_before_var <- var(amazonmpd_treatment_before)
+amazonmpd_treatment_after_var <- var(amazonmpd_treatment_after)
+# se
+amazonmpd_treatment_mean_diff <- amazonmpd_treatment_after_mean - amazonmpd_treatment_before_mean
+amazonmpd_treatment_mean_diff_se <- sqrt( (amazonmpd_treatment_before_var / amazonmpd_treatment_before_length) + (amazonmpd_treatment_after_var/amazonmpd_treatment_after_length) )
+amazonmpd_treatment_mean_diff_test <- amazonmpd_treatment_mean_diff / amazonmpd_treatment_mean_diff_se
+
+# Amazon MinsPerDollar DID
+amazonmpd_did <- amazonmpd_treatment_mean_diff - amazonmpd_control_mean_diff
 
 # Table 4
 
-ama.t4.0mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t4.0mile <- plm(log(TotalMonthlySales) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t4.0mile)
 summary(fixef(ama.t4.0mile, effect = "time"))
 summary(fixef(ama.t4.0mile, effect = "individual"))
 
-ama.t4.5mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t4.5mile <- plm(log(TotalMonthlySales) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t4.5mile)
 
-bb.t4.0mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t4.0mile <- plm(log(TotalMonthlySales) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t4.0mile)
 
-bb.t4.5mile <- plm(log(TotalMonthlySales) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t4.5mile <- plm(log(TotalMonthlySales) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t4.5mile)
 
-stargazer(ama.t4.0mile, ama.t4.5mile, bb.t4.0mile, bb.t4.5mile, title="Results", align=TRUE, covariate.labels=c("$beta_1$", "$beta_2$"), no.space=TRUE)
+stargazer(ama.t4.0mile, ama.t4.5mile, bb.t4.0mile, bb.t4.5mile, title="Results of the Sales Effect (All Product Categories)", align=TRUE, covariate.labels=c("$beta_1$", "$beta_2$"), no.space=TRUE)
 
 # check multi-collinearity
 library(corrplot)
-X <- temp2[temp2$domain_name == "bestbuy.com",c('TotalMonthlySales', 'CCStorePresent','AfterStoreClosing','BBStorePresent')]
+X <- data_5m_t4[data_5m_t4$domain_name == "bestbuy.com",c('TotalMonthlySales', 'CCStorePresent','AfterStoreClosing','BBStorePresent')]
 cor1 = cor(X)
 corrplot.mixed(cor1, lower.col = "black", number.cex = .7)
 
@@ -229,6 +326,8 @@ summary(bb.t5.pagesperdollar.0mile)
 bb.t5.pagesperdollar.5mile <- plm(log(PagesPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t5.pagesperdollar.5mile)
 
+stargazer(ama.t5.pagesperdollar.0mile, ama.t5.pagesperdollar.5mile, bb.t5.pagesperdollar.0mile, bb.t5.pagesperdollar.5mile, title="Results of the Search Effect (Pages Per Dollar, All Product Categories)", align=TRUE, covariate.labels=c("$\beta_1$", "$\beta_2$"), no.space=TRUE)
+
 # For MinsPerDollar
 ama.t5.minsperdollar.0mile <- plm(log(MinsPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t5.minsperdollar.0mile)
@@ -241,6 +340,8 @@ summary(bb.t5.minsperdollar.0mile)
 
 bb.t5.minsperdollar.5mile <- plm(log(MinsPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t5.minsperdollar.5mile)
+
+stargazer(ama.t5.minsperdollar.0mile, ama.t5.minsperdollar.5mile, bb.t5.minsperdollar.0mile, bb.t5.minsperdollar.5mile, title="Results of the Search Effect (Minutes Per Dollar, All Product Categories)", align=TRUE, covariate.labels=c("$\beta_1$", "$\beta_2$"), no.space=TRUE)
 
 # Table 6
 # Question: find corresponding product categories for experience and search product
