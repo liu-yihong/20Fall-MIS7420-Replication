@@ -72,9 +72,10 @@ sales_cc_5miles <- sales_cc_5miles[sales_cc_5miles$domain_name %in% five_target_
 
 # Product Categories
 # 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40
+# remove 28, 30, 39, 40
 sort(unique(rbind(sales_allother_zipcode, sales_cc_0mile, sales_cc_5miles)$prod_category_id))
 category_to_consider <- c(22, 23, 24, 25, 26, 27, 29, 31, 32, 33, 34, 35, 36, 37, 38)
-experience_product <- c(24, 25, 26, 27, 28, 31, 32, 33, 34, 36, 37)
+experience_product <- c(24, 25, 26, 27, 31, 32, 33, 34, 36, 37)
 search_product <- c(22, 23, 24, 29, 30, 35)
 
 sales_allother_zipcode <- sales_allother_zipcode[sales_allother_zipcode$prod_category_id %in% category_to_consider,]
@@ -109,9 +110,9 @@ sales_allother_zipcode <- merge(sales_allother_zipcode, bb_zipcode, by.x ="Zip_C
 sales_cc_0mile <- merge(sales_cc_0mile, bb_zipcode, by.x ="Zip_Code", by.y = "Zip_Code", all.x = TRUE)
 sales_cc_5miles <- merge(sales_cc_5miles, bb_zipcode, by.x ="Zip_Code", by.y = "Zip_Code", all.x = TRUE)
 
-sales_allother_zipcode$BB_Store_Status <- na.fill(sales_allother_zipcode$BB_Store_Status, 0)
-sales_cc_0mile$BB_Store_Status <- na.fill(sales_cc_0mile$BB_Store_Status, 0)
-sales_cc_5miles$BB_Store_Status <- na.fill(sales_cc_5miles$BB_Store_Status, 0)
+sales_allother_zipcode$BBStorePresent <- na.fill(sales_allother_zipcode$BB_Store_Status, 0)
+sales_cc_0mile$BBStorePresent <- na.fill(sales_cc_0mile$BB_Store_Status, 0)
+sales_cc_5miles$BBStorePresent <- na.fill(sales_cc_5miles$BB_Store_Status, 0)
 
 # Mark Referring Domain
 # QUestion: How to group data?
@@ -119,9 +120,9 @@ sales_allother_zipcode$NoReferringDomain <- ifelse(sales_allother_zipcode$ref_do
 sales_cc_0mile$NoReferringDomain <- ifelse(sales_cc_0mile$ref_domain_name == '', 1, 0)
 sales_cc_5miles$NoReferringDomain <- ifelse(sales_cc_5miles$ref_domain_name == '', 1, 0)
 
-sales_allother_zipcode$ReferringDomainIsSearchEngine <- ifelse(sales_allother_zipcode$ref_domain_name == '', 0, 1)
-sales_cc_0mile$ReferringDomainIsSearchEngine <- ifelse(sales_cc_0mile$ref_domain_name == '', 0, 1)
-sales_cc_5miles$ReferringDomainIsSearchEngine <- ifelse(sales_cc_5miles$ref_domain_name == '', 0, 1)
+sales_allother_zipcode$ReferringDomainIsSearchEngine <- ifelse(sales_allother_zipcode$ref_domain_name %in% search_engine_to_consider1, 1, 0)
+sales_cc_0mile$ReferringDomainIsSearchEngine <- ifelse(sales_cc_0mile$ref_domain_name %in% search_engine_to_consider1, 1, 0)
+sales_cc_5miles$ReferringDomainIsSearchEngine <- ifelse(sales_cc_5miles$ref_domain_name %in% search_engine_to_consider1, 1, 0)
 
 # Aggregate Data
 
@@ -130,23 +131,23 @@ sales_cc_5miles$ReferringDomainIsSearchEngine <- ifelse(sales_cc_5miles$ref_doma
 concat_data1 <- rbind(sales_allother_zipcode, sales_cc_0mile)
 concat_data2 <- rbind(sales_allother_zipcode, sales_cc_5miles)
 
-data_0m_t4 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BB_Store_Status) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
-data_5m_t4 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BB_Store_Status) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name")
+data_0m_t4 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+data_5m_t4 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name")
 
-data_0m_t5 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BB_Store_Status) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
-data_5m_t5 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BB_Store_Status) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name")
+data_0m_t5 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+data_5m_t5 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name")
 
 
-data_0m_t9_NoReferringDomain <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(NoReferringDomain) AS NoReferringDomain, AVG(CCStorePresent) AS CCStorePresent, AVG(BB_Store_Status) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
-data_5m_t9_NoReferringDomain <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(NoReferringDomain) AS NoReferringDomain, AVG(CCStorePresent) AS CCStorePresent, AVG(BB_Store_Status) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
-data_0m_t9_ReferringDomainIsSearchEngine <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(ReferringDomainIsSearchEngine) AS ReferringDomainIsSearchEngine, AVG(CCStorePresent) AS CCStorePresent, AVG(BB_Store_Status) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
-data_5m_t9_ReferringDomainIsSearchEngine <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(ReferringDomainIsSearchEngine) AS ReferringDomainIsSearchEngine, AVG(CCStorePresent) AS CCStorePresent, AVG(BB_Store_Status) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
+data_0m_t9_NoReferringDomain <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(NoReferringDomain) AS NoReferringDomain, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
+data_5m_t9_NoReferringDomain <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(NoReferringDomain) AS NoReferringDomain, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
+data_0m_t9_ReferringDomainIsSearchEngine <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(ReferringDomainIsSearchEngine) AS ReferringDomainIsSearchEngine, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
+data_5m_t9_ReferringDomainIsSearchEngine <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(ReferringDomainIsSearchEngine) AS ReferringDomainIsSearchEngine, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
 
-# sqldf("SELECT Zip_Code, MonthYear, domain_name, count(*) as TotalTransaction, SUM(prod_totprice) AS TotalMonthlySales, SUM(pages_viewed) AS TotalPagesViewed, SUM(duration) AS TotalDuration, AVG(CCStorePresent) AS CCStorePresent, AVG(BB_Store_Status) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+# sqldf("SELECT Zip_Code, MonthYear, domain_name, count(*) as TotalTransaction, SUM(prod_totprice) AS TotalMonthlySales, SUM(pages_viewed) AS TotalPagesViewed, SUM(duration) AS TotalDuration, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
 
 # Table 1
-
-table1 <- sqldf("SELECT domain_name as DomainName, count(*) as TotalTransaction, SUM(prod_totprice) AS TotalSales, SUM(pages_viewed) AS TotalPagesViewed, SUM(pages_viewed)/SUM(prod_totprice) AS PagesPerDollar, SUM(duration) AS TotalDuration, SUM(duration)/SUM(prod_totprice) AS MinsPerDollar FROM concat_data1 GROUP BY domain_name ORDER BY TotalSales DESC")
+table1_raw <-  rbind(read_sas(sales_allother_zipcode_path), read_sas(sales_cc_0mile_path))
+table1 <- sqldf("SELECT domain_name as DomainName, count(*) as TotalTransaction, SUM(prod_totprice) AS TotalSales, SUM(pages_viewed) AS TotalPagesViewed, SUM(pages_viewed)/SUM(prod_totprice) AS PagesPerDollar, SUM(duration) AS TotalDuration, SUM(duration)/SUM(prod_totprice) AS MinsPerDollar FROM table1_raw GROUP BY domain_name ORDER BY TotalSales DESC")
 stargazer(table1[1:5,], align=TRUE, summary = FALSE, rownames = FALSE, title="Summary Statistics of Top Five Vendors by Sales Volume")
 
 # Table 2
