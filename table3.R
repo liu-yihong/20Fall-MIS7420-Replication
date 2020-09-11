@@ -1,3 +1,5 @@
+library('stargazer')
+
 # all data path
 bb_zipcode_path <- 'data/bestbuyzipcodes_sample.sas7bdat'
 sales_allother_zipcode_path <- 'data/sales_allotherzipcode_sample.sas7bdat'
@@ -51,120 +53,120 @@ table3_5m_raw$BBStorePresent <- na.fill(table3_5m_raw$BB_Store_Status, 0)
 table3_0m_aggregate <- sqldf("SELECT Zip_Code, MonthYear, domain_name, count(*) AS TotalTransactions, SUM(pages_viewed) as TotalPages, SUM(prod_totprice) as TotalMonthlySales, SUM(duration) as TotalMins, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM table3_0m_raw GROUP BY Zip_Code, MonthYear, domain_name")
 table3_5m_aggregate <- sqldf("SELECT Zip_Code, MonthYear, domain_name, count(*) AS TotalTransactions, SUM(pages_viewed) as TotalPages, SUM(prod_totprice) as TotalMonthlySales, SUM(duration) as TotalMins, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM table3_5m_raw GROUP BY Zip_Code, MonthYear, domain_name")
 
-# Amazon Sales
-# for control
-amazonsales_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
-amazonsales_control_after <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
+# Table 3 Gen Func
+table3_gen <- function(table3_raw, domain_name_used, print_name){
+  # Amazon Sales
+  # for control
+  amazonsales_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalMonthlySales
+  amazonsales_control_after <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalMonthlySales
+  
+  amazonsales_control_before <- log(amazonsales_control_before + 1)
+  amazonsales_control_after <- log(amazonsales_control_after + 1)
+  # t test
+  t_test.amazonsales_control <- t.test(amazonsales_control_after, amazonsales_control_before)
+  t_test.amazonsales_control$stderr
+  t_test.amazonsales_control$p.value
+  t_test.amazonsales_control$estimate[["mean of x"]]
+  t_test.amazonsales_control$estimate[["mean of y"]]
+  amazonsales_control_mean_diff <- t_test.amazonsales_control$estimate[["mean of x"]] - t_test.amazonsales_control$estimate[["mean of y"]]
+  
+  # Amazon Sales
+  # for treatment
+  amazonsales_treatment_before <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalMonthlySales
+  amazonsales_treatment_after <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalMonthlySales
+  
+  amazonsales_treatment_before <- log(amazonsales_treatment_before + 1)
+  amazonsales_treatment_after  <- log(amazonsales_treatment_after + 1)
+  # t test
+  t_test.amazonsales_treatment <- t.test(amazonsales_treatment_after, amazonsales_treatment_before)
+  t_test.amazonsales_treatment$stderr
+  t_test.amazonsales_treatment$p.value
+  t_test.amazonsales_treatment$estimate[["mean of x"]]
+  t_test.amazonsales_treatment$estimate[["mean of y"]]
+  amazonsales_treatment_mean_diff <- t_test.amazonsales_treatment$estimate[["mean of x"]] - t_test.amazonsales_treatment$estimate[["mean of y"]]
+  
+  # Amazon Sales DID
+  amazonsales_did <- amazonsales_treatment_mean_diff - amazonsales_control_mean_diff
+  
+  # Amazon PagesPerDollar
+  # for control
+  amazonppd_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalPages / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalMonthlySales
+  amazonppd_control_after <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalPages / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalMonthlySales
+  
+  amazonppd_control_before <- log(amazonppd_control_before + 1)
+  amazonppd_control_after  <- log(amazonppd_control_after + 1)
+  # t test
+  t_test.amazonppd_control <- t.test(amazonppd_control_after, amazonppd_control_before)
+  t_test.amazonppd_control$stderr
+  t_test.amazonppd_control$p.value
+  t_test.amazonppd_control$estimate[["mean of x"]]
+  t_test.amazonppd_control$estimate[["mean of y"]]
+  amazonppd_control_mean_diff <- t_test.amazonppd_control$estimate[["mean of x"]] - t_test.amazonppd_control$estimate[["mean of y"]]
+  
+  # Amazon PagesPerDollar
+  # for treatment
+  amazonppd_treatment_before <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalPages / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalMonthlySales
+  amazonppd_treatment_after  <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalPages / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalMonthlySales
+  
+  amazonppd_treatment_before <- log(amazonppd_treatment_before + 1)
+  amazonppd_treatment_after  <- log(amazonppd_treatment_after + 1)
+  # t test
+  t_test.amazonppd_treatment <- t.test(amazonppd_treatment_after, amazonppd_treatment_before)
+  t_test.amazonppd_treatment$stderr
+  t_test.amazonppd_treatment$p.value
+  t_test.amazonppd_treatment$estimate[["mean of x"]]
+  t_test.amazonppd_treatment$estimate[["mean of y"]]
+  amazonppd_treatment_mean_diff <- t_test.amazonppd_treatment$estimate[["mean of x"]] - t_test.amazonppd_treatment$estimate[["mean of y"]]
+  
+  # Amazon PagesPerDollar DID
+  amazonppd_did <- amazonppd_treatment_mean_diff - amazonppd_control_mean_diff
+  
+  # Amazon MinsPerDollar
+  # for control
+  amazonmpd_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalMins / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalMonthlySales
+  amazonmpd_control_after  <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalMins / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalMonthlySales
+  
+  amazonmpd_control_before <- log(amazonmpd_control_before + 1)
+  amazonmpd_control_after  <- log(amazonmpd_control_after + 1)
+  # t test
+  t_test.amazonmpd_control <- t.test(amazonmpd_control_after, amazonmpd_control_before)
+  t_test.amazonmpd_control$stderr
+  t_test.amazonmpd_control$p.value
+  t_test.amazonmpd_control$estimate[["mean of x"]]
+  t_test.amazonmpd_control$estimate[["mean of y"]]
+  amazonmpd_control_mean_diff <- t_test.amazonmpd_control$estimate[["mean of x"]] - t_test.amazonmpd_control$estimate[["mean of y"]]
+  
+  # Amazon MinsPerDollar
+  # for treatment
+  amazonmpd_treatment_before <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalMins / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 0),]$TotalMonthlySales
+  amazonmpd_treatment_after  <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalMins / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == domain_name_used) & (table3_raw$AfterStoreClosing == 1),]$TotalMonthlySales
+  
+  amazonmpd_treatment_before <- log(amazonmpd_treatment_before + 1)
+  amazonmpd_treatment_after  <- log(amazonmpd_treatment_after + 1)
+  # t test
+  t_test.amazonmpd_treatment <- t.test(amazonmpd_treatment_after, amazonmpd_treatment_before)
+  t_test.amazonmpd_treatment$stderr
+  t_test.amazonmpd_treatment$p.value
+  t_test.amazonmpd_treatment$estimate[["mean of x"]]
+  t_test.amazonmpd_treatment$estimate[["mean of y"]]
+  amazonmpd_treatment_mean_diff <- t_test.amazonmpd_treatment$estimate[["mean of x"]] - t_test.amazonmpd_treatment$estimate[["mean of y"]]
+  
+  # Amazon MinsPerDollar DID
+  amazonmpd_did <- amazonmpd_treatment_mean_diff - amazonmpd_control_mean_diff
+  
+  # construct table
+  return(rbind(c(paste(print_name,"Sales"),"Control", amazonsales_control_after_mean, amazonsales_control_before_mean, amazonsales_control_mean_diff, amazonsales_control_mean_diff_se, amazonsales_did),
+               c(paste(print_name,"Sales"),"Treatment", amazonsales_treatment_after_mean, amazonsales_treatment_before_mean, amazonsales_treatment_mean_diff, amazonsales_treatment_mean_diff_se, amazonsales_did),
+               c(paste(print_name,"PagesPerDollar"),"Control", amazonppd_control_after_mean, amazonppd_control_before_mean, amazonppd_control_mean_diff, amazonppd_control_mean_diff_se, amazonppd_did),
+               c(paste(print_name,"PagesPerDollar"),"Treatment", amazonppd_treatment_after_mean, amazonppd_treatment_before_mean, amazonppd_treatment_mean_diff, amazonppd_treatment_mean_diff_se, amazonppd_did),
+               c(paste(print_name,"MinsPerDollar"),"Control", amazonmpd_control_after_mean, amazonmpd_control_before_mean, amazonmpd_control_mean_diff, amazonmpd_control_mean_diff_se, amazonmpd_did),
+               c(paste(print_name,"MinsPerDollar"),"Treatment", amazonmpd_treatment_after_mean, amazonmpd_treatment_before_mean, amazonmpd_treatment_mean_diff, amazonmpd_treatment_mean_diff_se, amazonmpd_did))
+  )
+}
 
-amazonsales_control_before_mean <- mean(amazonsales_control_before)
-amazonsales_control_after_mean <- mean(amazonsales_control_after)
+# generate table
+amazon_table3 <- table3_gen(table3_0m_aggregate, "amazon.com", "Amazon")
+bestbuy_table3 <- table3_gen(table3_0m_aggregate, "bestbuy.com", "bestbuy.com")
 
-amazonsales_control_before_length <- length(amazonsales_control_before)
-amazonsales_control_after_length <- length(amazonsales_control_after)
-
-amazonsales_control_before_var <- var(amazonsales_control_before)
-amazonsales_control_after_var <- var(amazonsales_control_after)
-# se
-amazonsales_control_mean_diff <- amazonsales_control_after_mean - amazonsales_control_before_mean
-amazonsales_control_mean_diff_se <- sqrt( (amazonsales_control_before_var / amazonsales_control_before_length) + (amazonsales_control_after_var/amazonsales_control_after_length) )
-amazonsales_control_mean_diff_test <- amazonsales_control_mean_diff / amazonsales_control_mean_diff_se
-# formal test
-# t.test(amazonsales_control_before, amazonsales_control_after, alternative = "less")
-
-# Amazon Sales
-# for treatment
-amazonsales_treatment_before <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
-amazonsales_treatment_after <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
-
-amazonsales_treatment_before_mean <- mean(amazonsales_treatment_before)
-amazonsales_treatment_after_mean <- mean(amazonsales_treatment_after)
-
-amazonsales_treatment_before_length <- length(amazonsales_treatment_before)
-amazonsales_treatment_after_length <- length(amazonsales_treatment_after)
-
-amazonsales_treatment_before_var <- var(amazonsales_treatment_before)
-amazonsales_treatment_after_var <- var(amazonsales_treatment_after)
-# se
-amazonsales_treatment_mean_diff <- amazonsales_treatment_after_mean - amazonsales_treatment_before_mean
-amazonsales_treatment_mean_diff_se <- sqrt( (amazonsales_treatment_before_var / amazonsales_treatment_before_length) + (amazonsales_treatment_after_var/amazonsales_treatment_after_length) )
-
-# Amazon Sales DID
-amazonsales_did <- amazonsales_treatment_mean_diff - amazonsales_control_mean_diff
-
-# Amazon PagesPerDollar
-# for control
-amazonppd_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$pages_viewed / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
-amazonppd_control_after <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$pages_viewed / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
-
-amazonppd_control_before_mean <- mean(amazonppd_control_before)
-amazonppd_control_after_mean <- mean(amazonppd_control_after)
-
-amazonppd_control_before_length <- length(amazonppd_control_before)
-amazonppd_control_after_length <- length(amazonppd_control_after)
-
-amazonppd_control_before_var <- var(amazonppd_control_before)
-amazonppd_control_after_var <- var(amazonppd_control_after)
-# se
-amazonppd_control_mean_diff <- amazonppd_control_after_mean - amazonppd_control_before_mean
-amazonppd_control_mean_diff_se <- sqrt( (amazonppd_control_before_var / amazonppd_control_before_length) + (amazonppd_control_after_var/amazonppd_control_after_length) )
-amazonppd_control_mean_diff_test <- amazonppd_control_mean_diff / amazonppd_control_mean_diff_se
-
-# Amazon PagesPerDollar
-# for treatment
-amazonppd_treatment_before <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$pages_viewed / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
-amazonppd_treatment_after <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$pages_viewed / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
-
-amazonppd_treatment_before_mean <- mean(amazonppd_treatment_before)
-amazonppd_treatment_after_mean <- mean(amazonppd_treatment_after)
-
-amazonppd_treatment_before_length <- length(amazonppd_treatment_before)
-amazonppd_treatment_after_length <- length(amazonppd_treatment_after)
-
-amazonppd_treatment_before_var <- var(amazonppd_treatment_before)
-amazonppd_treatment_after_var <- var(amazonppd_treatment_after)
-# se
-amazonppd_treatment_mean_diff <- amazonppd_treatment_after_mean - amazonppd_treatment_before_mean
-amazonppd_treatment_mean_diff_se <- sqrt( (amazonppd_treatment_before_var / amazonppd_treatment_before_length) + (amazonppd_treatment_after_var/amazonppd_treatment_after_length) )
-amazonppd_treatment_mean_diff_test <- amazonppd_treatment_mean_diff / amazonppd_treatment_mean_diff_se
-
-# Amazon PagesPerDollar DID
-amazonppd_did <- amazonppd_treatment_mean_diff - amazonppd_control_mean_diff
-
-# Amazon MinsPerDollar
-# for control
-amazonmpd_control_before <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$duration / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
-amazonmpd_control_after <- table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$duration / table3_raw[(table3_raw$CCStorePresent == 0) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
-
-amazonmpd_control_before_mean <- mean(amazonmpd_control_before)
-amazonmpd_control_after_mean <- mean(amazonmpd_control_after)
-
-amazonmpd_control_before_length <- length(amazonmpd_control_before)
-amazonmpd_control_after_length <- length(amazonmpd_control_after)
-
-amazonmpd_control_before_var <- var(amazonmpd_control_before)
-amazonmpd_control_after_var <- var(amazonmpd_control_after)
-# se
-amazonmpd_control_mean_diff <- amazonmpd_control_after_mean - amazonmpd_control_before_mean
-amazonmpd_control_mean_diff_se <- sqrt( (amazonmpd_control_before_var / amazonmpd_control_before_length) + (amazonmpd_control_after_var/amazonmpd_control_after_length) )
-amazonmpd_control_mean_diff_test <- amazonmpd_control_mean_diff / amazonmpd_control_mean_diff_se
-
-# Amazon MinsPerDollar
-# for treatment
-amazonmpd_treatment_before <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$duration / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 0),]$prod_totprice
-amazonmpd_treatment_after <- table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$duration / table3_raw[(table3_raw$CCStorePresent == 1) & (table3_raw$domain_name == "amazon.com") & (table3_raw$AfterStoreClosing == 1),]$prod_totprice
-
-amazonmpd_treatment_before_mean <- mean(amazonmpd_treatment_before)
-amazonmpd_treatment_after_mean <- mean(amazonmpd_treatment_after)
-
-amazonmpd_treatment_before_length <- length(amazonmpd_treatment_before)
-amazonmpd_treatment_after_length <- length(amazonmpd_treatment_after)
-
-amazonmpd_treatment_before_var <- var(amazonmpd_treatment_before)
-amazonmpd_treatment_after_var <- var(amazonmpd_treatment_after)
-# se
-amazonmpd_treatment_mean_diff <- amazonmpd_treatment_after_mean - amazonmpd_treatment_before_mean
-amazonmpd_treatment_mean_diff_se <- sqrt( (amazonmpd_treatment_before_var / amazonmpd_treatment_before_length) + (amazonmpd_treatment_after_var/amazonmpd_treatment_after_length) )
-amazonmpd_treatment_mean_diff_test <- amazonmpd_treatment_mean_diff / amazonmpd_treatment_mean_diff_se
-
-# Amazon MinsPerDollar DID
-amazonmpd_did <- amazonmpd_treatment_mean_diff - amazonmpd_control_mean_diff
+# 
+stargazer(rbind(amazon_table3, bestbuy_table3), align=TRUE, summary = FALSE, rownames = FALSE, title="Summary Statistics of Top Five Vendors by Sales Volume")

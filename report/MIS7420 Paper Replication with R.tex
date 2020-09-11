@@ -14,6 +14,7 @@
 \usepackage{amssymb}
 \usepackage{mdwtab}
 \usepackage{multirow}
+\usepackage{booktabs}
 \usepackage{dcolumn}
 \usepackage{pdfpages}
 \usepackage{calrsfs}
@@ -185,33 +186,120 @@ Table \ref{tab:table1} shows the summary statistics of top five vendors by sales
 \end{table}
 
 \subsection{Table 3}
+\begin{table}[!htbp]
+	\centering
+	\caption{Average Difference-in-Difference (DID) of the Outcome Variables}
+	\label{tab:table3}
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		Outcome Variable &
+		Groups &
+		\begin{tabular}[c]{@{}c@{}}After Store\\ Closure\end{tabular} &
+		\begin{tabular}[c]{@{}c@{}}Before Store\\ Closure\end{tabular} &
+		\begin{tabular}[c]{@{}c@{}}First Difference\\ (se)\end{tabular} &
+		DID \\ \hline
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Amazon\\ Sales\end{tabular}} &
+		Control &
+		3.418 &
+		3.303 &
+		\begin{tabular}[c]{@{}c@{}}0.115\\ (0.031)\end{tabular} &
+		\multirow{2}{*}{-0.167} \\ \cline{2-5}
+		&
+		Treatment &
+		3.351 &
+		3.403 &
+		\begin{tabular}[c]{@{}c@{}}-0.052\\ (0.212)\end{tabular} &
+		\\ \hline
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Amazon\\ PagesPerDollar\end{tabular}} &
+		Control &
+		1.188 &
+		1.147 &
+		\begin{tabular}[c]{@{}c@{}}0.041\\ (0.025)\end{tabular} &
+		\multirow{2}{*}{0.257} \\ \cline{2-5}
+		&
+		Treatment &
+		1.363 &
+		1.065 &
+		\begin{tabular}[c]{@{}c@{}}0.298\\ (0.153)\end{tabular} &
+		\\ \hline
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Amazon\\ MinsPerDollar\end{tabular}} &
+		Control &
+		1.016 &
+		0.975 &
+		\begin{tabular}[c]{@{}c@{}}0.041\\ (0.025)\end{tabular} &
+		\multirow{2}{*}{0.263} \\ \cline{2-5}
+		&
+		Treatment &
+		1.187 &
+		0.882 &
+		\begin{tabular}[c]{@{}c@{}}0.304\\ (0.137)\end{tabular} &
+		\\ \hline
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}bestbuy.com\\ Sales\end{tabular}} &
+		Control &
+		3.418 &
+		3.303 &
+		\begin{tabular}[c]{@{}c@{}}0.354\\ (0.031)\end{tabular} &
+		\multirow{2}{*}{0.623} \\ \cline{2-5}
+		&
+		Treatment &
+		3.351 &
+		3.403 &
+		\begin{tabular}[c]{@{}c@{}}0.976\\ (0.212)\end{tabular} &
+		\\ \hline
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}bestbuy.com\\ PagesPerDollar\end{tabular}} &
+		Control &
+		1.188 &
+		1.147 &
+		\begin{tabular}[c]{@{}c@{}}-0.109\\ (0.025)\end{tabular} &
+		\multirow{2}{*}{0.074} \\ \cline{2-5}
+		&
+		Treatment &
+		1.363 &
+		1.065 &
+		\begin{tabular}[c]{@{}c@{}}-0.035\\ (0.153)\end{tabular} &
+		\\ \hline
+		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}bestbuy.com\\ MinsPerDollar\end{tabular}} &
+		Control &
+		1.016 &
+		0.975 &
+		\begin{tabular}[c]{@{}c@{}}-0.084\\ (0.025)\end{tabular} &
+		\multirow{2}{*}{-0.012} \\ \cline{2-5}
+		&
+		Treatment &
+		1.187 &
+		0.882 &
+		\begin{tabular}[c]{@{}c@{}}-0.096\\ (0.137)\end{tabular} &
+		\\ \hline
+	\end{tabular}
+\end{table}
 
 \subsection{Table 4}
-\begin{table}[!htbp] \centering 
-	\caption{Results of the Sales Effect (All Product Categories)} 
-	\label{} 
-	\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
-		\\[-1.8ex]\hline 
-		\hline \\[-1.8ex] 
-		& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
-		\cline{2-5} 
-		\\[-1.8ex] & \multicolumn{4}{c}{log(TotalMonthlySales)} \\ 
-		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
-		\hline \\[-1.8ex] 
-		$\beta_1$ & 0.202 & -0.256 & -0.057 & -1.235 \\ 
-		& (0.597) & (0.238) & (1.257) & (0.980) \\ 
-		$\beta_2$ & 0.226 & 0.122 &  & 1.017 \\ 
-		& (0.791) & (0.291) &  & (1.336) \\ 
-		\hline \\[-1.8ex] 
-		Observations & \multicolumn{1}{c}{4,941} & \multicolumn{1}{c}{5,565} & \multicolumn{1}{c}{677} & \multicolumn{1}{c}{775} \\ 
-		R$^{2}$ & \multicolumn{1}{c}{0.0004} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.00002} & \multicolumn{1}{c}{0.016} \\ 
-		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.321} & \multicolumn{1}{c}{-1.236} & \multicolumn{1}{c}{-7.244} & \multicolumn{1}{c}{-6.931} \\ 
-		F Statistic & \multicolumn{1}{c}{0.385 (df = 2; 2128)} & \multicolumn{1}{c}{0.760 (df = 2; 2487)} & \multicolumn{1}{c}{0.002 (df = 1; 82)} & \multicolumn{1}{c}{0.797 (df = 2; 96)} \\ 
-		\hline 
-		\hline \\[-1.8ex] 
-		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
-	\end{tabular} 
-\end{table} 
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}cccccc@{}}
+		\toprule
+		Outcome Variable &
+		Groups &
+		\begin{tabular}[c]{@{}c@{}}After Store\\ Closure\end{tabular} &
+		\begin{tabular}[c]{@{}c@{}}Before Store\\ Closure\end{tabular} &
+		\begin{tabular}[c]{@{}c@{}}First Difference\\ (se)\end{tabular} &
+		DID \\ \midrule
+		\multirow{2}{*}{Amazon Sales}                 & Control   & 3.418 & 3.303 & \begin{tabular}[c]{@{}c@{}}0.115\\ (0.031)\end{tabular}  & \multirow{2}{*}{-0.167} \\
+		& Treatment & 3.351 & 3.403 & \begin{tabular}[c]{@{}c@{}}-0.052\\ (0.212)\end{tabular} &                         \\
+		\multirow{2}{*}{Amazon PagesPerDollar}        & Control   & 1.188 & 1.147 & \begin{tabular}[c]{@{}c@{}}0.041\\ (0.025)\end{tabular}  & \multirow{2}{*}{0.257}  \\
+		& Treatment & 1.363 & 1.065 & \begin{tabular}[c]{@{}c@{}}0.298\\ (0.153)\end{tabular}  &                         \\
+		\multirow{2}{*}{Amazon MinsPerDollar}         & Control   & 1.016 & 0.975 & \begin{tabular}[c]{@{}c@{}}0.041\\ (0.025)\end{tabular}  & \multirow{2}{*}{0.263}  \\
+		& Treatment & 1.187 & 0.882 & \begin{tabular}[c]{@{}c@{}}0.304\\ (0.137)\end{tabular}  &                         \\
+		\multirow{2}{*}{bestbuy.com Sales}            & Control   & 3.418 & 3.303 & \begin{tabular}[c]{@{}c@{}}0.354\\ (0.031)\end{tabular}  & \multirow{2}{*}{0.623}  \\
+		& Treatment & 3.351 & 3.403 & \begin{tabular}[c]{@{}c@{}}0.976\\ (0.212)\end{tabular}  &                         \\
+		\multirow{2}{*}{bestbuy.com   PagesPerDollar} & Control   & 1.188 & 1.147 & \begin{tabular}[c]{@{}c@{}}-0.109\\ (0.025)\end{tabular} & \multirow{2}{*}{0.074}  \\
+		& Treatment & 1.363 & 1.065 & \begin{tabular}[c]{@{}c@{}}-0.035\\ (0.153)\end{tabular} &                         \\
+		\multirow{2}{*}{bestbuy.com   MinsPerDollar}  & Control   & 1.016 & 0.975 & \begin{tabular}[c]{@{}c@{}}-0.084\\ (0.025)\end{tabular} & \multirow{2}{*}{-0.012} \\
+		& Treatment & 1.187 & 0.882 & \begin{tabular}[c]{@{}c@{}}-0.096\\ (0.137)\end{tabular} &                         \\ \cmidrule(lr){2-5}
+	\end{tabular}
+	\caption{Average Difference-in-Difference (DID) of the Outcome Variables}
+	\label{tab:table4}
+\end{table}
 \subsection{Table 5}
 \begin{table}[!htbp] \centering 
 	\caption{Results of the Search Effect (Pages Per Dollar, All Product Categories)} 
