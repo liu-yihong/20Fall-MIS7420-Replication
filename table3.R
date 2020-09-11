@@ -1,4 +1,5 @@
 library('stargazer')
+library('haven')
 
 # all data path
 bb_zipcode_path <- 'data/bestbuyzipcodes_sample.sas7bdat'
