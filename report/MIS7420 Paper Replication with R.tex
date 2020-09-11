@@ -274,28 +274,53 @@ Table \ref{tab:table1} shows the summary statistics of top five vendors by sales
 \end{table}
 
 \subsection{Table 4}
-
-\subsection{Table 5}
 \begin{table}[!htbp] \centering 
-	\caption{Results of the Search Effect (Pages Per Dollar, All Product Categories)} 
-	\label{} 
+	\caption{Results of the Sales Effect (All Product Categories)} 
+	\label{tab:table4} 
 	\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
 		& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
 		\cline{2-5} 
-		\\[-1.8ex] & \multicolumn{4}{c}{log(PagesPerDollar)} \\ 
+		\\[-1.8ex] & \multicolumn{4}{c}{log(TotalMonthlySales + 1)} \\ 
 		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
 		\hline \\[-1.8ex] 
-		$\beta_1$ & 0.004 & 0.158 & 0.573 & 1.180 \\ 
-		& (0.649) & (0.256) & (1.514) & (1.151) \\ 
-		$\beta_2$ & -0.481 & -0.140 &  & -0.065 \\ 
-		& (0.860) & (0.313) &  & (1.569) \\ 
+		$\beta_1$ & 0.140 & -0.206 & 0.087 & -1.020 \\ 
+		& (0.525) & (0.198) & (1.183) & (0.906) \\ 
+		$\beta_2$ & 0.100 & 0.094 &  & 1.120 \\ 
+		& (0.669) & (0.245) &  & (1.235) \\ 
 		\hline \\[-1.8ex] 
-		Observations & \multicolumn{1}{c}{4,941} & \multicolumn{1}{c}{5,565} & \multicolumn{1}{c}{677} & \multicolumn{1}{c}{775} \\ 
-		R$^{2}$ & \multicolumn{1}{c}{0.0003} & \multicolumn{1}{c}{0.0002} & \multicolumn{1}{c}{0.002} & \multicolumn{1}{c}{0.018} \\ 
-		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.321} & \multicolumn{1}{c}{-1.237} & \multicolumn{1}{c}{-7.230} & \multicolumn{1}{c}{-6.921} \\ 
-		F Statistic & \multicolumn{1}{c}{0.348 (df = 2; 2128)} & \multicolumn{1}{c}{0.192 (df = 2; 2487)} & \multicolumn{1}{c}{0.143 (df = 1; 82)} & \multicolumn{1}{c}{0.859 (df = 2; 96)} \\ 
+		Observations & \multicolumn{1}{c}{5,089} & \multicolumn{1}{c}{5,740} & \multicolumn{1}{c}{725} & \multicolumn{1}{c}{831} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0002} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.012} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.293} & \multicolumn{1}{c}{-1.209} & \multicolumn{1}{c}{-6.869} & \multicolumn{1}{c}{-6.593} \\ 
+		F Statistic & \multicolumn{1}{c}{0.196 (df = 2; 2219)} & \multicolumn{1}{c}{0.716 (df = 2; 2596)} & \multicolumn{1}{c}{0.005 (df = 1; 92)} & \multicolumn{1}{c}{0.653 (df = 2; 108)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table}
+
+\subsection{Table 5}
+\begin{table}[!htbp] \centering 
+	\caption{Results of the Search Effect (Pages Per Dollar, All Product Categories)} 
+	\label{tab:table5-ppd} 
+	\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+		\cline{2-5} 
+		\\[-1.8ex] & \multicolumn{4}{c}{log(PagesPerDollar + 1)} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & -0.075 & 0.075 & 0.467 & 0.397 \\ 
+		& (0.413) & (0.157) & (0.677) & (0.511) \\ 
+		$\beta_2$ & -0.262 & -0.056 &  & -0.045 \\ 
+		& (0.526) & (0.194) &  & (0.696) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{5,089} & \multicolumn{1}{c}{5,740} & \multicolumn{1}{c}{725} & \multicolumn{1}{c}{831} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0005} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.005} & \multicolumn{1}{c}{0.009} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.292} & \multicolumn{1}{c}{-1.211} & \multicolumn{1}{c}{-6.829} & \multicolumn{1}{c}{-6.615} \\ 
+		F Statistic & \multicolumn{1}{c}{0.531 (df = 2; 2219)} & \multicolumn{1}{c}{0.120 (df = 2; 2596)} & \multicolumn{1}{c}{0.477 (df = 1; 92)} & \multicolumn{1}{c}{0.499 (df = 2; 108)} \\ 
 		\hline 
 		\hline \\[-1.8ex] 
 		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 

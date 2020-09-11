@@ -74,8 +74,8 @@ sales_cc_5miles <- sales_cc_5miles[sales_cc_5miles$domain_name %in% five_target_
 # 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40
 # remove 28, 30, 39, 40
 sort(unique(rbind(sales_allother_zipcode, sales_cc_0mile, sales_cc_5miles)$prod_category_id))
-category_to_consider <- c(22, 23, 24, 25, 26, 27, 29, 31, 32, 33, 34, 35, 36, 37, 38)
-experience_product <- c(24, 25, 26, 27, 31, 32, 33, 34, 36, 37)
+category_to_consider <- c(22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37)
+experience_product <- c(24, 25, 26, 27, 28, 31, 32, 33, 34, 36, 37)
 search_product <- c(22, 23, 24, 29, 30, 35)
 
 sales_allother_zipcode <- sales_allother_zipcode[sales_allother_zipcode$prod_category_id %in% category_to_consider,]
@@ -166,43 +166,43 @@ rm("table2_raw")
 
 # Table 4
 
-ama.t4.0mile <- plm(log(TotalMonthlySales) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t4.0mile <- plm(log(TotalMonthlySales + 1) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t4.0mile)
 summary(fixef(ama.t4.0mile, effect = "time"))
 summary(fixef(ama.t4.0mile, effect = "individual"))
 
-ama.t4.5mile <- plm(log(TotalMonthlySales) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t4.5mile <- plm(log(TotalMonthlySales + 1) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t4.5mile)
 
-bb.t4.0mile <- plm(log(TotalMonthlySales) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t4.0mile <- plm(log(TotalMonthlySales + 1) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t4[data_0m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t4.0mile)
 
-bb.t4.5mile <- plm(log(TotalMonthlySales) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t4.5mile <- plm(log(TotalMonthlySales + 1) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t4[data_5m_t4$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t4.5mile)
 
 stargazer(ama.t4.0mile, ama.t4.5mile, bb.t4.0mile, bb.t4.5mile, title="Results of the Sales Effect (All Product Categories)", align=TRUE, covariate.labels=c("$beta_1$", "$beta_2$"), no.space=TRUE)
 
 # check multi-collinearity
 library(corrplot)
-X <- data_5m_t4[data_5m_t4$domain_name == "bestbuy.com",c('TotalMonthlySales', 'CCStorePresent','AfterStoreClosing','BBStorePresent')]
+X <- data_0m_t4[data_0m_t4$domain_name == "bestbuy.com",c('TotalMonthlySales', 'CCStorePresent','AfterStoreClosing','BBStorePresent')]
 cor1 = cor(X)
 corrplot.mixed(cor1, lower.col = "black", number.cex = .7)
 
 # Table 5
 # For PagesPerDollar
-ama.t5.pagesperdollar.0mile <- plm(log(PagesPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t5.pagesperdollar.0mile <- plm(log(PagesPerDollar + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t5.pagesperdollar.0mile)
 
-ama.t5.pagesperdollar.5mile <- plm(log(PagesPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t5.pagesperdollar.5mile <- plm(log(PagesPerDollar + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t5.pagesperdollar.5mile)
 
-bb.t5.pagesperdollar.0mile <- plm(log(PagesPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t5.pagesperdollar.0mile <- plm(log(PagesPerDollar + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t5.pagesperdollar.0mile)
 
-bb.t5.pagesperdollar.5mile <- plm(log(PagesPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t5.pagesperdollar.5mile <- plm(log(PagesPerDollar + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t5.pagesperdollar.5mile)
 
-stargazer(ama.t5.pagesperdollar.0mile, ama.t5.pagesperdollar.5mile, bb.t5.pagesperdollar.0mile, bb.t5.pagesperdollar.5mile, title="Results of the Search Effect (Pages Per Dollar, All Product Categories)", align=TRUE, covariate.labels=c("$\beta_1$", "$\beta_2$"), no.space=TRUE)
+stargazer(ama.t5.pagesperdollar.0mile, ama.t5.pagesperdollar.5mile, bb.t5.pagesperdollar.0mile, bb.t5.pagesperdollar.5mile, title="Results of the Search Effect (Pages Per Dollar, All Product Categories)", align=TRUE, covariate.labels=c("$beta_1$", "$beta_2$"), no.space=TRUE)
 
 # For MinsPerDollar
 ama.t5.minsperdollar.0mile <- plm(log(MinsPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
@@ -320,3 +320,7 @@ library('cem')
 
 # see (https://cran.r-project.org/web/packages/simex/index.html)
 # for SIMEX- And MCSIMEX-Algorithm for Measurement Error Models
+
+# Causal Forest
+# see (https://cran.r-project.org/web/packages/grf/grf.pdf)
+# for library
