@@ -130,12 +130,21 @@ sales_cc_5miles$ReferringDomainIsSearchEngine <- ifelse(sales_cc_5miles$ref_doma
 
 concat_data1 <- rbind(sales_allother_zipcode, sales_cc_0mile)
 concat_data2 <- rbind(sales_allother_zipcode, sales_cc_5miles)
+concat_data1_exp <- concat_data1[concat_data1$prod_category_id %in% experience_product, ]
+concat_data1_search <- concat_data1[concat_data1$prod_category_id %in% search_product, ]
+concat_data2_exp <- concat_data2[concat_data2$prod_category_id %in% experience_product, ]
+concat_data2_search <- concat_data2[concat_data2$prod_category_id %in% search_product, ]
 
 data_0m_t4 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
 data_5m_t4 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name")
 
 data_0m_t5 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
 data_5m_t5 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name")
+
+data_0m_t6_exp <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1_exp GROUP BY Zip_Code, MonthYear, domain_name")
+data_0m_t6_search <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1_search GROUP BY Zip_Code, MonthYear, domain_name")
+data_5m_t6_exp <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2_exp GROUP BY Zip_Code, MonthYear, domain_name")
+data_5m_t6_search <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2_search GROUP BY Zip_Code, MonthYear, domain_name")
 
 #data_0m_t9_NoReferringDomain <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(NoReferringDomain) AS NoReferringDomain, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
 #data_5m_t9_NoReferringDomain <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(NoReferringDomain) AS NoReferringDomain, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name, NoReferringDomain")
@@ -184,7 +193,7 @@ stargazer(ama.t4.0mile, ama.t4.5mile, bb.t4.0mile, bb.t4.5mile, title="Results o
 
 # check multi-collinearity
 library(corrplot)
-X <- data_0m_t4[data_0m_t4$domain_name == "bestbuy.com",c('TotalMonthlySales', 'CCStorePresent','AfterStoreClosing','BBStorePresent')]
+X <- data_5m_t4[data_5m_t4$domain_name == "bestbuy.com",c('TotalMonthlySales', 'CCStorePresent','AfterStoreClosing','BBStorePresent')]
 cor1 = cor(X)
 corrplot.mixed(cor1, lower.col = "black", number.cex = .7)
 
@@ -205,23 +214,33 @@ summary(bb.t5.pagesperdollar.5mile)
 stargazer(ama.t5.pagesperdollar.0mile, ama.t5.pagesperdollar.5mile, bb.t5.pagesperdollar.0mile, bb.t5.pagesperdollar.5mile, title="Results of the Search Effect (Pages Per Dollar, All Product Categories)", align=TRUE, covariate.labels=c("$beta_1$", "$beta_2$"), no.space=TRUE)
 
 # For MinsPerDollar
-ama.t5.minsperdollar.0mile <- plm(log(MinsPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t5.minsperdollar.0mile <- plm(log(MinsPerDollar + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t5.minsperdollar.0mile)
 
-ama.t5.minsperdollar.5mile <- plm(log(MinsPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t5.minsperdollar.5mile <- plm(log(MinsPerDollar + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(ama.t5.minsperdollar.5mile)
 
-bb.t5.minsperdollar.0mile <- plm(log(MinsPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t5.minsperdollar.0mile <- plm(log(MinsPerDollar + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t5[data_0m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t5.minsperdollar.0mile)
 
-bb.t5.minsperdollar.5mile <- plm(log(MinsPerDollar) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t5.minsperdollar.5mile <- plm(log(MinsPerDollar + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t5[data_5m_t5$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 summary(bb.t5.minsperdollar.5mile)
 
 stargazer(ama.t5.minsperdollar.0mile, ama.t5.minsperdollar.5mile, bb.t5.minsperdollar.0mile, bb.t5.minsperdollar.5mile, title="Results of the Search Effect (Minutes Per Dollar, All Product Categories)", align=TRUE, covariate.labels=c("$\beta_1$", "$\beta_2$"), no.space=TRUE)
 
 # Table 6
-# Question: find corresponding product categories for experience and search product
 # AmazonTotalMonthlySales & BBTotalMonthlySale vs Experience and Search Product
+ama.t4.0mile.exp <- plm(log(TotalMonthlySales + 1) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t6_exp[data_0m_t6_exp$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(ama.t4.0mile.exp)
+
+ama.t4.5mile.exp <- plm(log(TotalMonthlySales + 1) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t6_exp[data_5m_t6_exp$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(ama.t4.5mile.exp)
+
+bb.t4.0mile.exp <- plm(log(TotalMonthlySales + 1) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t6_exp[data_0m_t6_exp$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(bb.t4.0mile.exp)
+
+bb.t4.5mile.exp <- plm(log(TotalMonthlySales + 1) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_5m_t6_exp[data_5m_t6_exp$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(bb.t4.5mile.exp)
 
 # Table 7 & 8
 # AMazonPagesPerDollar, AmazonMinsPerDollar, BBPagesPerDollar, BBMinsPerDollar vs Experience and Search Product
@@ -299,6 +318,7 @@ library('cem')
 # Generalized Synthetic Control Method  for endogeneity control
 # see (https://yiqingxu.org/software/gsynth/gsynth_examples.html)
 # for library and tutorial
+# mandatory
 
 
 # Heckit Approach for endogeneity control
@@ -321,6 +341,13 @@ library('cem')
 # see (https://cran.r-project.org/web/packages/simex/index.html)
 # for SIMEX- And MCSIMEX-Algorithm for Measurement Error Models
 
+# Hierarchical Bayes
+# see (https://cran.r-project.org/web/packages/bayesm/index.html)
+# for library
+# see (https://onlinelibrary.wiley.com/doi/pdf/10.1002/0470863692.app1)
+# for tutorial
+
 # Causal Forest
 # see (https://cran.r-project.org/web/packages/grf/grf.pdf)
 # for library
+# mandatory
