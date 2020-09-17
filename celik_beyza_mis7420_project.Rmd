@@ -1,0 +1,205 @@
+---
+title: "Value of Local Showrooms to Online Competitors: Replication"
+author: "Beyza Celik"
+date: "9/17/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+rm(list = ls())
+library(magrittr)
+library(tidyverse)
+library(haven)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r data paths}
+data.dir <- "data"
+bb_zipcode_path <- file.path(data.dir,"bestbuyzipcodes_sample.sas7bdat")
+sales_cc_0mile_path <- file.path(data.dir,"sales_ccity0milezipcode_sample.sas7bdat")
+sales_cc_5miles_path <- file.path(data.dir,"sales_ccity5milezipcode_sample.sas7bdat")
+sales_allother_zipcode_path <- file.path(data.dir,"sales_allotherzipcode_sample.sas7bdat")
+```
+
+```{r load data}
+bb_zipcode <- read_sas(bb_zipcode_path) 
+# %>% 
+#   mutate_all(~as.factor(.))
+
+sales_cc_0mile <- read_sas(sales_cc_0mile_path) %>% 
+  mutate(distance = factor("0mile"))
+sales_cc_5miles <- read_sas(sales_cc_5miles_path) %>% 
+  mutate(distance = factor("5mile"))
+
+# use encoding="latin1" in mac and linux, otherwise you don't need it
+sales_allother_zipcode <- read_sas(sales_allother_zipcode_path, encoding = "latin1") %>% 
+  mutate(Store_Close_Status = 0, # NaN means no CC in 5-miles radius, we change NaN to 0
+         distance=factor("other"))
+
+# Exclude Data without purchase
+# All data should be with purchase -> tran_flg == 1
+# tran_flg=1 in all datasets already we do not need to filter 
+all_data <- rbind(sales_allother_zipcode, sales_cc_0mile, sales_cc_5miles) 
+
+```
+
+```{r}
+# Filter Referring Domain
+
+# groupby ref_domain and count
+groupby_ref_domain_result <- aggregate(machine_id ~ ref_domain_name, 
+                                       all_data, FUN = length) %>% arrange(desc(machine_id))
+
+
+# we identify some search engines
+search_engine_to_consider1 <- c("GOOGLE.COM", "YAHOO.COM", "google.com", "yahoo.com",
+                             "MSN.COM", "msn.com", "aol.com", "AOL.COM", "LIVE.COM", "live.com",
+                             "MYWEBSEARCH.COM", "ASK.COM", "MYWAY.COM", "mywebsearch.com",
+                             "ask.com", "YAHOO.NET", "BIZRATE.COM", "bizrate.com")
+
+ref_domain_to_consider1 <- c("", "GOOGLE.COM", "YAHOO.COM", "google.com", "yahoo.com",
+                             "MSN.COM", "msn.com", "aol.com", "AOL.COM", "LIVE.COM", "live.com",
+                             "MYWEBSEARCH.COM", "ASK.COM", "MYWAY.COM", "mywebsearch.com",
+                             "ask.com", "YAHOO.NET", "BIZRATE.COM", "bizrate.com")
+
+ref_domain_to_consider2 <- c("", "GOOGLE.COM", "YAHOO.COM", "google.com", "yahoo.com", "bing.com")
+```
+
+```{r}
+# Then we filter data by refer domain name
+all_data %<>% filter(ref_domain_name %in% ref_domain_to_consider1)
+
+# sales_cc_0mile %<>% filter(ref_domain_name %in% ref_domain_to_consider1)
+# sales_cc_5miles %<>% filter(ref_domain_name %in% ref_domain_to_consider1)
+# sales_allother_zipcode %<>% filter(ref_domain_name %in% ref_domain_to_consider1)
+
+```
+
+```{r}
+# Filter Target Domain Name
+groupby_target_domain_result <- aggregate(machine_id ~ domain_name, 
+                                          all_data, FUN = length) %>% arrange(desc(machine_id))
+
+# Here's the top 5 online retail vendors
+# 1                   dell.com             1473  428412.50
+# 2                 amazon.com             9973  316678.40
+# 3                staples.com             5663  225993.15
+# 4                walmart.com             1838  147445.34
+# 5                bestbuy.com             1159  142993.72
+
+five_target_domain_to_consider <- c("amazon.com", "staples.com", "dell.com", "walmart.com", "bestbuy.com")
+two_target_domain_to_consider <- c("amazon.com","bestbuy.com")
+```
+
+```{r}
+# we can choose what filter to apply
+all_data %<>% filter(domain_name %in% five_target_domain_to_consider)
+
+# sales_allother_zipcode %<>% filter(domain_name %in% five_target_domain_to_consider)
+# sales_cc_0mile %<>% filter(domain_name %in% five_target_domain_to_consider)
+# sales_cc_5miles %<>% filter(domain_name %in% five_target_domain_to_consider)
+
+```
+
+```{r}
+# Product Categories
+# 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40
+# remove 28, 30, 39, 40
+# all_data$prod_category_id %>% unique() %>% sort
+category_to_consider <- c(22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37)
+experience_product <- c(24, 25, 26, 27, 28, 31, 32, 33, 34, 36, 37)
+search_product <- c(22, 23, 24, 29, 30, 35)
+```
+
+```{r}
+all_data %<>% filter(prod_category_id %in% category_to_consider)
+
+# sales_allother_zipcode %<>% filter(prod_category_id %in% category_to_consider)
+# sales_cc_0mile %<>% filter(prod_category_id %in% category_to_consider)
+# sales_cc_5miles %<>% filter(prod_category_id %in% category_to_consider)
+
+```
+
+```{r}
+# Already Date Type
+# Date Transform
+
+# sales_allother_zipcode$event_date <- as.Date(sales_allother_zipcode$event_date)
+# sales_cc_0mile$event_date <- as.Date(sales_cc_0mile$event_date)
+# sales_cc_5miles$event_date <- as.Date(sales_cc_5miles$event_date)
+
+```
+
+```{r}
+# construct MonthYear - month of year
+all_data %<>% mutate(MonthYear = format(event_date, "%Y-%m") )
+
+# sales_allother_zipcode$MonthYear <- format(sales_allother_zipcode$event_date, "%Y-%m")
+# sales_cc_0mile$MonthYear <- format(sales_cc_0mile$event_date, "%Y-%m")
+# sales_cc_5miles$MonthYear <- format(sales_cc_5miles$event_date, "%Y-%m")
+
+```
+
+```{r}
+# Mark CC Closure
+
+# CCStorePresent
+# it is the same as Store_Close_Status
+all_data %<>% mutate(CCStorePresent = Store_Close_Status)
+
+# sales_allother_zipcode$CCStorePresent <- sales_allother_zipcode$Store_Close_Status
+# sales_cc_0mile$CCStorePresent <- sales_cc_0mile$Store_Close_Status
+# sales_cc_5miles$CCStorePresent <- sales_cc_5miles$Store_Close_Status
+
+```
+
+```{r}
+# AfterStoreClosing
+all_data %<>% mutate(AfterStoreClosing = ifelse(MonthYear < "2008-11", 0, 1))
+  
+# sales_allother_zipcode$AfterStoreClosing <- ifelse(sales_allother_zipcode$MonthYear < "2008-11", 0, 1)
+# sales_cc_0mile$AfterStoreClosing <- ifelse(sales_cc_0mile$MonthYear < "2008-11", 0, 1)
+# sales_cc_5miles$AfterStoreClosing <- ifelse(sales_cc_5miles$MonthYear < "2008-11", 0, 1)
+
+```
+
+```{r}
+# BBStorePresent
+all_data %<>% 
+  merge(.,bb_zipcode, by.x ="Zip_Code", by.y = "Zip_Code", all.x = TRUE) %>% 
+  mutate(BBStorePresent = na.fill(BB_Store_Status, 0))
+
+# sales_allother_zipcode <- merge(sales_allother_zipcode, bb_zipcode, by.x ="Zip_Code", by.y = "Zip_Code", all.x = TRUE)
+# sales_cc_0mile <- merge(sales_cc_0mile, bb_zipcode, by.x ="Zip_Code", by.y = "Zip_Code", all.x = TRUE)
+# sales_cc_5miles <- merge(sales_cc_5miles, bb_zipcode, by.x ="Zip_Code", by.y = "Zip_Code", all.x = TRUE)
+
+# sales_allother_zipcode$BBStorePresent <- na.fill(sales_allother_zipcode$BB_Store_Status, 0)
+# sales_cc_0mile$BBStorePresent <- na.fill(sales_cc_0mile$BB_Store_Status, 0)
+# sales_cc_5miles$BBStorePresent <- na.fill(sales_cc_5miles$BB_Store_Status, 0)
+
+```
+
+```{r}
+# Mark Referring Domain
+# Question: How to group data?
+
+all_data %<>% mutate(NoReferringDomain = ifelse(ref_domain_name == '', 1, 0))
+
+# sales_allother_zipcode$NoReferringDomain <- ifelse(sales_allother_zipcode$ref_domain_name == '', 1, 0)
+# sales_cc_0mile$NoReferringDomain <- ifelse(sales_cc_0mile$ref_domain_name == '', 1, 0)
+# sales_cc_5miles$NoReferringDomain <- ifelse(sales_cc_5miles$ref_domain_name == '', 1, 0)
+# 
+
+```
+
+```{r}
+
+all_data %<>% 
+  mutate(ReferringDomainIsSearchEngine = ifelse(ref_domain_name %in% search_engine_to_consider1, 1, 0))
+  
+# sales_allother_zipcode$ReferringDomainIsSearchEngine <- ifelse(sales_allother_zipcode$ref_domain_name %in% search_engine_to_consider1, 1, 0)
+# sales_cc_0mile$ReferringDomainIsSearchEngine <- ifelse(sales_cc_0mile$ref_domain_name %in% search_engine_to_consider1, 1, 0)
+# sales_cc_5miles$ReferringDomainIsSearchEngine <- ifelse(sales_cc_5miles$ref_domain_name %in% search_engine_to_consider1, 1, 0)
+
+```
+
