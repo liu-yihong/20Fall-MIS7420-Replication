@@ -238,6 +238,31 @@ library('cem')
 # the average household age, average income and average household size.
 # TotalSales, PagesPerDollar, and MinsPerDollar for Ama & BB
 
+install.packages("MatchIt")
+install.packages("cem")
+install.packages("Hmisc")
+library(MatchIt)
+library(cem)
+library(Zelig)
+library("RItools")
+library(Hmisc)
+
+data_0m_t11 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing, AVG(household_size) AS HoHSize, AVG(hoh_oldest_age) AS HoHAge, AVG(household_income) AS HoHIncome FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+data_5m_t11 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing, AVG(household_size) AS HoHSize, AVG(hoh_oldest_age) AS HoHAge, AVG(household_income) AS HoHIncome FROM concat_data2 GROUP BY Zip_Code, MonthYear, domain_name")
+
+data_0m_t11 <- data_0m_t11[data_0m_t11$domain_name %in% c("amazon.com","bestbuy.com"),]
+data_5m_t11 <- data_5m_t11[data_5m_t11$domain_name %in% c("amazon.com","bestbuy.com"),]
+
+# Matching using 0 miles data
+xBalance(CCStorePresent	~ HoHSize + HoHAge + HoHIncome,	data	= data_0m_t11,	report	= c("chisquare.test"))
+# A statistically significant chi-square indicate that at least one variable included in the model is creating an
+# imbalance between the two groups. Variables that create imbalance should be included in the selection model.
+
+# pre-treatment demographics covariate to consider
+vars <- c("HoHSize", "HoHAge", "HoHIncome")
+# calculate which covariate is imbalanced in the data set between treatment and control
+imbalance(group = data_0m_t11$CCStorePresent, data = data_0m_t11[vars])
+
 # Table 12
 # add location specific demographics
 # in the regression equations as interaction terms with
