@@ -261,7 +261,37 @@ summary(ama.t5.minsperdollar.0mile)
 # Table 10
 # SalesPerTransaction; PagesPerTransaction; MinsPerTransaction; for Ama & BB
 
-class(sales_allother_zipcode)
+data_0m_t10_count <- sqldf("SELECT Zip_Code, Count(Zip_Code) AS NoTransactions, MonthYear FROM concat_data1 GROUP BY Zip_Code, MonthYear")
+data_0m_t10 <- sqldf("SELECT Zip_Code,  MonthYear, domain_name, SUM(prod_totprice) AS TotalSales, SUM(pages_viewed) AS TotalPages, SUM(duration) AS TotalMins, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+data_0m_t10 <- data_0m_t10 %>% inner_join(data_0m_t10_count, by=c("Zip_Code","MonthYear"))
+
+# Calculate SalesPerTransactions, PagesPerTransactions, MinsPerTransactions
+data_0m_t10$SalesPerTransactions <- data_0m_t10$TotalSales/data_0m_t10$NoTransactions
+data_0m_t10$PagesPerTransactions <- data_0m_t10$TotalPages/data_0m_t10$NoTransactions
+data_0m_t10$MinsPerTransactions <- data_0m_t10$TotalMins/data_0m_t10$NoTransactions
+
+# drop unrelated data
+data_0m_t10 <- select(data_0m_t10, -c(TotalSales,TotalPages,TotalMins,NoTransactions))
+
+# result for Amazon regarding SalesPerTransactions, PagesPerTransactions, MinsPerTransactions
+ama.t10.salespertransactions.0mile <- plm(log(SalesPerTransactions + 1) ~  CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t10[(data_0m_t10$domain_name == "amazon.com"),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(ama.t10.salespertransactions.0mile)
+ama.t10.pagespertransaction.0mile <- plm(log(PagesPerTransactions + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t10[(data_0m_t10$domain_name == "amazon.com"),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(ama.t10.pagespertransaction.0mile)
+ama.t10.minspertransaction.0mile <- plm(log(MinsPerTransactions + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t10[(data_0m_t10$domain_name == "amazon.com"),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(ama.t10.minspertransaction.0mile)
+
+# result for Bestbuy regarding SalesPerTransactions, PagesPerTransactions, MinsPerTransactions
+bb.t10.salespertransactions.0mile <- plm(log(SalesPerTransactions + 1) ~  CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t10[(data_0m_t10$domain_name == "bestbuy.com"),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(bb.t10.salespertransactions.0mile)
+bb.t10.pagespertransaction.0mile <- plm(log(PagesPerTransactions + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t10[(data_0m_t10$domain_name == "bestbuy.com"),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(bb.t10.pagespertransaction.0mile)
+bb.t10.minspertransaction.0mile <- plm(log(MinsPerTransactions + 1) ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t10[(data_0m_t10$domain_name == "bestbuy.com"),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+summary(bb.t10.minspertransaction.0mile)
+
+#stargazer(ama.t11.0mile,ama.t11.pagesperdollar.0mile,ama.t11.minsperdollar.0mile)
+
+
 # Table 11
 # CEM on zip code level
 library('cem')
