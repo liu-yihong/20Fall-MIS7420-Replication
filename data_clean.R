@@ -40,6 +40,8 @@ search_engine_to_consider1 <- c("GOOGLE.COM", "YAHOO.COM", "google.com", "yahoo.
                              "MYWEBSEARCH.COM", "ASK.COM", "MYWAY.COM", "mywebsearch.com",
                              "ask.com", "YAHOO.NET", "BIZRATE.COM", "bizrate.com")
 
+search_engine_to_consider1 <- c("GOOGLE.COM", "YAHOO.COM", "google.com", "yahoo.com", "bing.com")
+
 ref_domain_to_consider1 <- c("", "GOOGLE.COM", "YAHOO.COM", "google.com", "yahoo.com",
                              "MSN.COM", "msn.com", "aol.com", "AOL.COM", "LIVE.COM", "live.com",
                              "MYWEBSEARCH.COM", "ASK.COM", "MYWAY.COM", "mywebsearch.com",
@@ -72,7 +74,8 @@ sales_cc_5miles <- sales_cc_5miles[sales_cc_5miles$domain_name %in% five_target_
 
 # Product Categories
 # 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40
-# remove 28, 30, 39, 40
+# Jay removed 28, 30, 39, 40
+# We choose to remove 38 39 40
 sort(unique(rbind(sales_allother_zipcode, sales_cc_0mile, sales_cc_5miles)$prod_category_id))
 category_to_consider <- c(22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37)
 experience_product <- c(24, 25, 26, 27, 28, 31, 32, 33, 34, 36, 37)
