@@ -382,19 +382,33 @@ stargazer(ama.t8.pagesperdollar.0mile.search, ama.t8.pagesperdollar.5mile.search
 
 # Table 9
 # Check clogit, gplm, glmmML, lme4, bife
+# Not work clogit, bife, glmmML
 # Check (https://data.princeton.edu/wws509/r/fixedRandom3)
 library('pglm')
 ama.t9.ReferringDomainIsSearchEngine.0mile <- pglm(ReferringDomainIsSearchEngine ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = concat_data1[concat_data1$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways", family = binomial('probit'))
 summary(ama.t5.minsperdollar.0mile)
 
 library(survival)
-clogit(ReferringDomainIsSearchEngine ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent + strata(Zip_Code) + strata(MonthYear), data = concat_data1[concat_data1$domain_name == "amazon.com",])
+test <- clogit(ReferringDomainIsSearchEngine ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent + strata(Zip_Code) + strata(MonthYear), data = concat_data1[concat_data1$domain_name == "amazon.com",])
 
 library(bife)
 mod <- bife(ReferringDomainIsSearchEngine ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent + factor(MonthYear) | Zip_Code, data = concat_data1[concat_data1$domain_name == "amazon.com",])
 summary(mod)
 
-ama.t9.ReferringDomainIsSearchEngine.0mile <- glm(ReferringDomainIsSearchEngine ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent + factor(Zip_Code) + factor(MonthYear), data = concat_data1[concat_data1$domain_name == "amazon.com",], family = binomial(link='logit'))
+library(glmmML)
+# https://stats.idre.ucla.edu/r/dae/mixed-effects-logistic-regression/
+test <- glmmML(ReferringDomainIsSearchEngine ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent - 1,
+               data=concat_data1[concat_data1$domain_name == "amazon.com",],
+               cluster = Zip_Code, family = binomial())
+library(lme4)
+test <- glmer(ReferringDomainIsSearchEngine ~ factor(Zip_Code) + factor(MonthYear) + (1 | CCStorePresent:AfterStoreClosing) + (1 | CCStorePresent:AfterStoreClosing:BBStorePresent),
+              data=concat_data1[concat_data1$domain_name == "amazon.com",],
+              family = binomial)
+
+# glm
+# no convergence
+ama.t9.ReferringDomainIsSearchEngine.0mile <- glm(ReferringDomainIsSearchEngine ~ CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent + factor(MonthYear) + factor(Zip_Code) - 1, data = concat_data1[concat_data1$domain_name == "amazon.com",], family = binomial(link='logit'))
+
 # Table 10
 # SalesPerTransaction; PagesPerTransaction; MinsPerTransaction; for Ama & BB
 
