@@ -372,6 +372,51 @@ Table \ref{tab:table1} shows the summary statistics of top five vendors by sales
 \subsection{Table 14}
 
 \subsection{Table C1}
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+% \usepackage{multirow}
+\begin{table}[!htb]
+	\centering
+	\caption{Change in Demographics after Circuit City Store Closure}
+	\label{tab:tabc1}
+	\begin{tabular}{@{}cccccccccc@{}}
+		\toprule
+		\multirow{2}{*}{\textbf{Group}} &
+		\multicolumn{3}{c}{\textbf{Before Store Closure}} &
+		\multicolumn{3}{c}{\textbf{After Store Closure}} &
+		\multicolumn{3}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}First Difference of Mean\\ (p-value)\end{tabular}}} \\ \cmidrule(l){2-10} 
+		&
+		\textbf{\begin{tabular}[c]{@{}c@{}}Mean\\ Age\end{tabular}} &
+		\textbf{\begin{tabular}[c]{@{}c@{}}Mean\\ Income\end{tabular}} &
+		\textbf{\begin{tabular}[c]{@{}c@{}}Mean\\ Education\end{tabular}} &
+		\textbf{\begin{tabular}[c]{@{}c@{}}Mean\\ Age\end{tabular}} &
+		\textbf{\begin{tabular}[c]{@{}c@{}}Mean\\ Income\end{tabular}} &
+		\textbf{\begin{tabular}[c]{@{}c@{}}Mean\\ Education\end{tabular}} &
+		\textbf{\begin{tabular}[c]{@{}c@{}}Mean\\ Age\end{tabular}} &
+		\textbf{\begin{tabular}[c]{@{}c@{}}Mean\\ Income\end{tabular}} &
+		\textbf{\begin{tabular}[c]{@{}c@{}}Mean\\ Education\end{tabular}} \\ \midrule
+		\textbf{Control} &
+		7.048 &
+		4.479 &
+		97.957 &
+		6.937 &
+		4.498 &
+		97.999 &
+		\begin{tabular}[c]{@{}c@{}}-0.111\\ ($<$0.0001)\end{tabular} &
+		\begin{tabular}[c]{@{}c@{}}0.019\\ (0.300)\end{tabular} &
+		\begin{tabular}[c]{@{}c@{}}0.042\\ (0.639)\end{tabular} \\
+		\textbf{Treated} &
+		7.68 &
+		4.971 &
+		98.632 &
+		6.645 &
+		4.739 &
+		96.843 &
+		\begin{tabular}[c]{@{}c@{}}-1.035\\ ($<$0.0001)\end{tabular} &
+		\begin{tabular}[c]{@{}c@{}}-0.232\\ (0.029)\end{tabular} &
+		\begin{tabular}[c]{@{}c@{}}-1.789\\ (0.004)\end{tabular} \\ \bottomrule
+	\end{tabular}
+\end{table}
 
 \subsection{Table D1-D4}
 

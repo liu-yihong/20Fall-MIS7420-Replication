@@ -66,5 +66,58 @@ control_after_income <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 0)&(t
 control_after_edu    <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 0)&(table_C1_0m_raw$AfterStoreClosing==1),]$hoh_most_education
 
 test.control.age <- t.test(control_before_age, control_after_age)
+test.control.income <- t.test(control_before_income, control_after_income)
+test.control.edu <- t.test(control_before_edu, control_after_edu)
 
-treated_before_age
+treated_before_age    <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 1)&(table_C1_0m_raw$AfterStoreClosing==0),]$hoh_oldest_age
+treated_before_income <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 1)&(table_C1_0m_raw$AfterStoreClosing==0),]$household_income
+treated_before_edu    <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 1)&(table_C1_0m_raw$AfterStoreClosing==0),]$hoh_most_education
+
+treated_after_age    <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 1)&(table_C1_0m_raw$AfterStoreClosing==1),]$hoh_oldest_age
+treated_after_income <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 1)&(table_C1_0m_raw$AfterStoreClosing==1),]$household_income
+treated_after_edu    <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 1)&(table_C1_0m_raw$AfterStoreClosing==1),]$hoh_most_education
+
+test.treated.age <- t.test(treated_before_age, treated_after_age)
+test.treated.income <- t.test(treated_before_income, treated_after_income)
+test.treated.edu <- t.test(treated_before_edu, treated_after_edu)
+
+# Construct Variables
+test.control.age.before.mean    <- test.control.age$estimate[["mean of x"]]
+test.control.income.before.mean <- test.control.income$estimate[["mean of x"]]
+test.control.edu.before.mean    <- test.control.edu$estimate[["mean of x"]]
+
+test.control.age.after.mean    <- test.control.age$estimate[["mean of y"]]
+test.control.income.after.mean <- test.control.income$estimate[["mean of y"]]
+test.control.edu.after.mean    <- test.control.edu$estimate[["mean of y"]]
+
+test.control.age.diff    <- test.control.age.after.mean - test.control.age.before.mean
+test.control.age.diff.se <- test.control.age$p.value
+test.control.income.diff    <- test.control.income.after.mean - test.control.income.before.mean
+test.control.income.diff.se <- test.control.income$p.value
+test.control.edu.diff    <- test.control.edu.after.mean - test.control.edu.before.mean
+test.control.edu.diff.se <- test.control.edu$p.value
+
+test.treated.age.before.mean    <- test.treated.age$estimate[["mean of x"]]
+test.treated.income.before.mean <- test.treated.income$estimate[["mean of x"]]
+test.treated.edu.before.mean    <- test.treated.edu$estimate[["mean of x"]]
+
+test.treated.age.after.mean    <- test.treated.age$estimate[["mean of y"]]
+test.treated.income.after.mean <- test.treated.income$estimate[["mean of y"]]
+test.treated.edu.after.mean    <- test.treated.edu$estimate[["mean of y"]]
+
+test.treated.age.diff    <- test.treated.age.after.mean - test.treated.age.before.mean
+test.treated.age.diff.se <- test.treated.age$p.value
+test.treated.income.diff    <- test.treated.income.after.mean - test.treated.income.before.mean
+test.treated.income.diff.se <- test.treated.income$p.value
+test.treated.edu.diff    <- test.treated.edu.after.mean - test.treated.edu.before.mean
+test.treated.edu.diff.se <- test.treated.edu$p.value
+
+# Construct Table
+tabc1 <- rbind(c("Control", test.control.age.before.mean, test.control.income.before.mean, test.control.edu.before.mean,
+                   test.control.age.after.mean, test.control.income.after.mean, test.control.edu.after.mean,
+                   test.control.age.diff, test.control.age.diff.se, test.control.income.diff, test.control.income.diff.se, test.control.edu.diff, test.control.edu.diff.se),
+      c("Treated", test.treated.age.before.mean, test.treated.income.before.mean, test.treated.edu.before.mean,
+                   test.treated.age.after.mean, test.treated.income.after.mean, test.treated.edu.after.mean,
+                   test.treated.age.diff, test.treated.age.diff.se, test.treated.income.diff, test.treated.income.diff.se, test.treated.edu.diff, test.treated.edu.diff.se))
+#
+stargazer(tabc1, align=TRUE, summary = FALSE, rownames = FALSE, title="Change in Demographics after Circuit City Store Closure")
