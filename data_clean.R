@@ -203,6 +203,21 @@ data_5m_t9_ReferringDomainIsSearchEngine <- sqldf("SELECT Zip_Code, MonthYear, d
 
 # sqldf("SELECT Zip_Code, MonthYear, domain_name, count(*) as TotalTransaction, SUM(prod_totprice) AS TotalMonthlySales, SUM(pages_viewed) AS TotalPagesViewed, SUM(duration) AS TotalDuration, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
 
+# Table 10
+data_0m_t10 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, AVG(pages_viewed) AS PagesPerTransaction, AVG(duration) AS MinsPerTransaction, AVG(prod_totprice) AS SalesPerTransaction, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+
+data_0m_t10$DID <- data_0m_t10$CCStorePresent * data_0m_t10$AfterStoreClosing
+data_0m_t10$THREEINTER <- data_0m_t10$CCStorePresent * data_0m_t10$AfterStoreClosing * data_0m_t10$BBStorePresent
+
+# Table 11
+data_0m_t11 <- sqldf("SELECT Zip_Code, SUM(prod_totprice) AS TotalMonthlySales,  AVG(CCStorePresent) AS CCStorePresent, AVG(household_size) AS HoHSize, AVG(hoh_oldest_age) AS HoHAge, AVG(household_income) AS HoHIncome FROM concat_data1 GROUP BY Zip_Code")
+data_5m_t11 <- sqldf("SELECT Zip_Code, SUM(prod_totprice) AS TotalMonthlySales,  AVG(CCStorePresent) AS CCStorePresent, AVG(household_size) AS HoHSize, AVG(hoh_oldest_age) AS HoHAge, AVG(household_income) AS HoHIncome FROM concat_data2 GROUP BY Zip_Code")
+
+# Table 12
+data_0m_t12 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(household_size) AS HoHSize, AVG(hoh_oldest_age) AS HoHAge, AVG(household_income) AS HoHIncome, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+data_0m_t12$DID <- data_0m_t12$CCStorePresent * data_0m_t12$AfterStoreClosing * data_0m_t12$HoHSize * data_0m_t12$HoHAge * data_0m_t12$HoHIncome
+data_0m_t12$THREEINTER <- data_0m_t12$CCStorePresent * data_0m_t12$AfterStoreClosing * data_0m_t12$BBStorePresent
+
 # Table 1
 table1_raw <-  rbind(read_sas(sales_allother_zipcode_path), read_sas(sales_cc_0mile_path))
 table1 <- sqldf("SELECT domain_name as DomainName, count(*) as TotalTransaction, SUM(prod_totprice) AS TotalSales, SUM(pages_viewed) AS TotalPagesViewed, SUM(pages_viewed)/SUM(prod_totprice) AS PagesPerDollar, SUM(duration) AS TotalDuration, SUM(duration)/SUM(prod_totprice) AS MinsPerDollar FROM table1_raw GROUP BY domain_name ORDER BY TotalSales DESC")
@@ -411,16 +426,82 @@ ama.t9.ReferringDomainIsSearchEngine.0mile <- glm(ReferringDomainIsSearchEngine 
 
 # Table 10
 # SalesPerTransaction; PagesPerTransaction; MinsPerTransaction; for Ama & BB
+ama.t10.0mile.SalesPerTransaction <- plm(log(SalesPerTransaction + 1) ~ DID + THREEINTER, data = data_0m_t10[data_0m_t10$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t10.0mile.SalesPerTransaction  <- plm(log(SalesPerTransaction + 1) ~ DID + THREEINTER, data = data_0m_t10[data_0m_t10$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t10.0mile.PagesPerTransaction <- plm(log(PagesPerTransaction + 1) ~ DID + THREEINTER, data = data_0m_t10[data_0m_t10$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t10.0mile.PagesPerTransaction  <- plm(log(PagesPerTransaction + 1) ~ DID + THREEINTER, data = data_0m_t10[data_0m_t10$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t10.0mile.MinsPerTransaction <- plm(log(MinsPerTransaction + 1) ~ DID + THREEINTER, data = data_0m_t10[data_0m_t10$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t10.0mile.MinsPerTransaction  <- plm(log(MinsPerTransaction + 1) ~ DID + THREEINTER, data = data_0m_t10[data_0m_t10$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 
+stargazer(ama.t10.0mile.SalesPerTransaction, bb.t10.0mile.SalesPerTransaction,
+          ama.t10.0mile.PagesPerTransaction, bb.t10.0mile.PagesPerTransaction,
+          ama.t10.0mile.MinsPerTransaction, bb.t10.0mile.MinsPerTransaction,
+          title="Results of the Online Sales and Search Effect (All Product Categories)",
+          align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE,
+          column.sep.width = "1pt",
+          float.env = "sidewaystable", label = "tab:table10",
+          column.labels=c("Amazon-0 Mile","BestBuy-0 Mile", "Amazon-0 Mile","BestBuy-0 Mile", "Amazon-0 Mile","BestBuy-0 Mile"))
 
 # Table 11
 # CEM on zip code level
 library('cem')
+library(MatchIt)
+library("RItools")
+library(Hmisc)
 # see vignette("cem") how to use CEM
 # match locations in the treatment group with locations in the control
 # group which have similar demographics such as 
 # the average household age, average income and average household size.
 # TotalSales, PagesPerDollar, and MinsPerDollar for Ama & BB
+
+# CEM: Default is not 1-1 matching in CEM. Use k2k = "True" to enforce 1 to 1 matching.
+todrop <- c("TotalMonthlySales")
+mat <- cem(treatment = "CCStorePresent", data = data_0m_t11, drop = todrop, k2k ="True")
+
+# assign ID of row value of zipcode from "matched"
+zipcheck <- c()
+
+for (i in 1:length(mat$matched)){
+  if (mat$matched[i] == "TRUE") zipcheck <-c(zipcheck,i)
+}
+
+data.frame(zipcheck)
+
+# assign ID of row value of zipcode from "w"
+zipcheck1 <- c()
+
+for (i in 1:length(mat$w)){
+  if (mat$w[i] == 1) zipcheck1 <-c(zipcheck1,i)
+}
+
+data.frame(zipcheck1)
+
+# add specific Zipcode by mapping from ID of row of matched zipcode
+ziplist <- c()
+for (i in 1:length(data_0m_t11$Zip_Code)){
+  if ( i %in% zipcheck) ziplist <-c(ziplist,data_0m_t11$Zip_Code[i])
+}
+data.frame(ziplist)
+
+# assign matched zipcode to dataset
+concat_data1$Zipmatch <- ifelse(concat_data1$Zip_Code %in% ziplist, 1, 0)
+data_0m_t11_matched <- sqldf("SELECT Zip_Code, Zipmatch, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+data_0m_t11_matched$DID <- data_0m_t11_matched$CCStorePresent * data_0m_t11_matched$AfterStoreClosing
+data_0m_t11_matched$THREEINTER <- data_0m_t11_matched$CCStorePresent * data_0m_t11_matched$AfterStoreClosing * data_0m_t11_matched$BBStorePresent
+
+ama.t11.0m.TotalMonthlySales <- plm(log(TotalMonthlySales + 1) ~ DID + THREEINTER, data = data_0m_t11_matched[(data_0m_t11_matched$domain_name == "amazon.com") & (data_0m_t11_matched$Zipmatch == 1),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t11.0m.PagesPerDollar <- plm(log(PagesPerDollar + 1) ~ DID + THREEINTER, data = data_0m_t11_matched[(data_0m_t11_matched$domain_name == "amazon.com") & (data_0m_t11_matched$Zipmatch == 1),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t11.0m.MinsPerDollar <- plm(log(MinsPerDollar + 1) ~ DID + THREEINTER, data = data_0m_t11_matched[(data_0m_t11_matched$domain_name == "amazon.com") & (data_0m_t11_matched$Zipmatch == 1),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t11.0m.TotalMonthlySales <- plm(log(TotalMonthlySales + 1) ~ DID + THREEINTER, data = data_0m_t11_matched[(data_0m_t11_matched$domain_name == "bestbuy.com") & (data_0m_t11_matched$Zipmatch == 1),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t11.0m.PagesPerDollar <- plm(log(PagesPerDollar + 1) ~ DID + THREEINTER, data = data_0m_t11_matched[(data_0m_t11_matched$domain_name == "bestbuy.com") & (data_0m_t11_matched$Zipmatch == 1),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t11.0m.MinsPerDollar <- plm(log(MinsPerDollar + 1) ~ DID + THREEINTER, data = data_0m_t11_matched[(data_0m_t11_matched$domain_name == "bestbuy.com") & (data_0m_t11_matched$Zipmatch == 1),], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+
+stargazer(ama.t11.0m.TotalMonthlySales, ama.t11.0m.PagesPerDollar, ama.t11.0m.MinsPerDollar,
+          title="Results of the Online Sales and Search Effect After Matching Zip Codes (All Product Categories)",
+          align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE,
+          column.sep.width = "1pt",
+          float.env = "sidewaystable", label = "tab:table11",
+          column.labels=c("Amazon-0 Mile","Amazon-0 Mile","Amazon-0 Mile"))
 
 # Table 12
 # add location specific demographics
@@ -429,16 +510,34 @@ library('cem')
 # zip code specific average household age, average income and
 # average household size for each location where online sales
 # originated.
+ama.t12.0m.PagesPerDollar <- plm(log(PagesPerDollar + 1) ~ DID + THREEINTER, data = data_0m_t12[data_0m_t12$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t12.0m.MinsPerDollar <- plm(log(MinsPerDollar + 1) ~ DID + THREEINTER, data = data_0m_t12[data_0m_t12$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+ama.t12.0m.TotalMonthlySales <- plm(log(TotalMonthlySales + 1) ~ DID + THREEINTER, data = data_0m_t12[data_0m_t12$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t12.0m.PagesPerDollar <- plm(log(PagesPerDollar + 1) ~ DID + THREEINTER, data = data_0m_t12[data_0m_t12$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t12.0m.MinsPerDollar <- plm(log(MinsPerDollar + 1) ~ DID + THREEINTER, data = data_0m_t12[data_0m_t12$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+bb.t12.0m.TotalMonthlySales <- plm(log(TotalMonthlySales + 1) ~ DID + THREEINTER, data = data_0m_t12[data_0m_t12$domain_name == "bestbuy.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
+
+stargazer(ama.t12.0m.TotalMonthlySales, bb.t12.0m.TotalMonthlySales,
+          ama.t12.0m.PagesPerDollar, bb.t12.0m.PagesPerDollar,
+          ama.t12.0m.MinsPerDollar, bb.t12.0m.MinsPerDollar,
+          title="Results of the Online Sales and Search Effect with Zip Code Demographics as Interactions and Time Fixed Effects (All Product Categories)",
+          align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE,
+          column.sep.width = "1pt",
+          float.env = "sidewaystable", label = "tab:table12",
+          column.labels=c("Amazon-0 Mile","BestBuy-0 Mile", "Amazon-0 Mile","BestBuy-0 Mile", "Amazon-0 Mile","BestBuy-0 Mile"))
 
 # Table 13
 # averaged the outcome variable
 # for each zip code before and after the Circuit City store
 # closure date for the 110 matched zip codes.
-
 # performed the same DID analysis
 # as before but without time fixed effects.
 
+# follow Table 11 without considering time fixed effect
+
 # Table 14
+library(lmtest)
+library(sandwich)
 # see (https://stat.ethz.ch/R-manual/R-patched/library/stats/html/cor.html)
 # see (https://www.rdocumentation.org/packages/pbdDMAT/versions/0.2-3/topics/Variance%2FCovariance)
 # for matrix
@@ -446,6 +545,15 @@ library('cem')
 # see (https://web.stanford.edu/~mrosenfe/soc_meth_proj3/matrix_OLS_NYU_notes.pdf)
 # see (https://stats.stackexchange.com/questions/62470/variance-covariance-matrix-of-the-errors-in-linear-regression)
 # for variance-covariance matrix of error term
+# see (https://www.youtube.com/watch?v=hFoDDwTF4KY&ab_channel=intromediateecon)
+# see (https://www.researchgate.net/publication/334896463_Estimating_robust_standard_errors_for_financial_datasets_with_R_and_plm_A_replication_of_Petersen's_artificial_example)
+
+## White, no clustering
+vcovW <- function(x) vcovHC(x, method="white1")
+summary(ama.t4.0mile, vcov=vcovW)
+
+## double-clustering> 
+coeftest(ama.t4.0mile, vcovDC)
 
 # Table C1
 
