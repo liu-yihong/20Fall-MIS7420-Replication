@@ -1,5 +1,7 @@
 library('stargazer')
 library('haven')
+library('sqldf')
+library('zoo')
 
 # all data path
 bb_zipcode_path <- 'data/bestbuyzipcodes_sample.sas7bdat'
@@ -65,10 +67,10 @@ table3_gen <- function(table3_raw, domain_name_used, print_name){
   amazonsales_control_after <- log(amazonsales_control_after + 1)
   # t test
   t_test.amazonsales_control <- t.test(amazonsales_control_after, amazonsales_control_before)
-  t_test.amazonsales_control$stderr
+  amazonsales_control_mean_diff_se <- t_test.amazonsales_control$stderr
   t_test.amazonsales_control$p.value
-  t_test.amazonsales_control$estimate[["mean of x"]]
-  t_test.amazonsales_control$estimate[["mean of y"]]
+  amazonsales_control_after_mean <- t_test.amazonsales_control$estimate[["mean of x"]]
+  amazonsales_control_before_mean <- t_test.amazonsales_control$estimate[["mean of y"]]
   amazonsales_control_mean_diff <- t_test.amazonsales_control$estimate[["mean of x"]] - t_test.amazonsales_control$estimate[["mean of y"]]
   
   # Amazon Sales
@@ -80,10 +82,10 @@ table3_gen <- function(table3_raw, domain_name_used, print_name){
   amazonsales_treatment_after  <- log(amazonsales_treatment_after + 1)
   # t test
   t_test.amazonsales_treatment <- t.test(amazonsales_treatment_after, amazonsales_treatment_before)
-  t_test.amazonsales_treatment$stderr
+  amazonsales_treatment_mean_diff_se <- t_test.amazonsales_treatment$stderr
   t_test.amazonsales_treatment$p.value
-  t_test.amazonsales_treatment$estimate[["mean of x"]]
-  t_test.amazonsales_treatment$estimate[["mean of y"]]
+  amazonsales_treatment_after_mean <- t_test.amazonsales_treatment$estimate[["mean of x"]]
+  amazonsales_treatment_before_mean <- t_test.amazonsales_treatment$estimate[["mean of y"]]
   amazonsales_treatment_mean_diff <- t_test.amazonsales_treatment$estimate[["mean of x"]] - t_test.amazonsales_treatment$estimate[["mean of y"]]
   
   # Amazon Sales DID
@@ -98,10 +100,10 @@ table3_gen <- function(table3_raw, domain_name_used, print_name){
   amazonppd_control_after  <- log(amazonppd_control_after + 1)
   # t test
   t_test.amazonppd_control <- t.test(amazonppd_control_after, amazonppd_control_before)
-  t_test.amazonppd_control$stderr
+  amazonppd_control_mean_diff_se <- t_test.amazonppd_control$stderr
   t_test.amazonppd_control$p.value
-  t_test.amazonppd_control$estimate[["mean of x"]]
-  t_test.amazonppd_control$estimate[["mean of y"]]
+  amazonppd_control_after_mean <- t_test.amazonppd_control$estimate[["mean of x"]]
+  amazonppd_control_before_mean <- t_test.amazonppd_control$estimate[["mean of y"]]
   amazonppd_control_mean_diff <- t_test.amazonppd_control$estimate[["mean of x"]] - t_test.amazonppd_control$estimate[["mean of y"]]
   
   # Amazon PagesPerDollar
@@ -113,10 +115,10 @@ table3_gen <- function(table3_raw, domain_name_used, print_name){
   amazonppd_treatment_after  <- log(amazonppd_treatment_after + 1)
   # t test
   t_test.amazonppd_treatment <- t.test(amazonppd_treatment_after, amazonppd_treatment_before)
-  t_test.amazonppd_treatment$stderr
+  amazonppd_treatment_mean_diff_se <- t_test.amazonppd_treatment$stderr
   t_test.amazonppd_treatment$p.value
-  t_test.amazonppd_treatment$estimate[["mean of x"]]
-  t_test.amazonppd_treatment$estimate[["mean of y"]]
+  amazonppd_treatment_after_mean <- t_test.amazonppd_treatment$estimate[["mean of x"]]
+  amazonppd_treatment_before_mean <-t_test.amazonppd_treatment$estimate[["mean of y"]]
   amazonppd_treatment_mean_diff <- t_test.amazonppd_treatment$estimate[["mean of x"]] - t_test.amazonppd_treatment$estimate[["mean of y"]]
   
   # Amazon PagesPerDollar DID
@@ -131,10 +133,10 @@ table3_gen <- function(table3_raw, domain_name_used, print_name){
   amazonmpd_control_after  <- log(amazonmpd_control_after + 1)
   # t test
   t_test.amazonmpd_control <- t.test(amazonmpd_control_after, amazonmpd_control_before)
-  t_test.amazonmpd_control$stderr
+  amazonmpd_control_mean_diff_se <- t_test.amazonmpd_control$stderr
   t_test.amazonmpd_control$p.value
-  t_test.amazonmpd_control$estimate[["mean of x"]]
-  t_test.amazonmpd_control$estimate[["mean of y"]]
+  amazonmpd_control_after_mean <- t_test.amazonmpd_control$estimate[["mean of x"]]
+  amazonmpd_control_before_mean <- t_test.amazonmpd_control$estimate[["mean of y"]]
   amazonmpd_control_mean_diff <- t_test.amazonmpd_control$estimate[["mean of x"]] - t_test.amazonmpd_control$estimate[["mean of y"]]
   
   # Amazon MinsPerDollar
@@ -146,10 +148,10 @@ table3_gen <- function(table3_raw, domain_name_used, print_name){
   amazonmpd_treatment_after  <- log(amazonmpd_treatment_after + 1)
   # t test
   t_test.amazonmpd_treatment <- t.test(amazonmpd_treatment_after, amazonmpd_treatment_before)
-  t_test.amazonmpd_treatment$stderr
+  amazonmpd_treatment_mean_diff_se <- t_test.amazonmpd_treatment$stderr
   t_test.amazonmpd_treatment$p.value
-  t_test.amazonmpd_treatment$estimate[["mean of x"]]
-  t_test.amazonmpd_treatment$estimate[["mean of y"]]
+  amazonmpd_treatment_after_mean <- t_test.amazonmpd_treatment$estimate[["mean of x"]]
+  amazonmpd_treatment_before_mean <- t_test.amazonmpd_treatment$estimate[["mean of y"]]
   amazonmpd_treatment_mean_diff <- t_test.amazonmpd_treatment$estimate[["mean of x"]] - t_test.amazonmpd_treatment$estimate[["mean of y"]]
   
   # Amazon MinsPerDollar DID
