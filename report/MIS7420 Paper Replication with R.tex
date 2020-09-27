@@ -41,7 +41,7 @@
 	keywordstyle=\color{magenta},
 	numberstyle=\tiny\color{codegray},
 	stringstyle=\color{codepurple},
-	basicstyle=\ttfamily\footnotesize,
+	basicstyle=\ttfamily\tiny,
 	breakatwhitespace=false,         
 	breaklines=true,                 
 	captionpos=b,                    
@@ -51,7 +51,8 @@
 	showspaces=false,                
 	showstringspaces=false,
 	showtabs=false,                  
-	tabsize=2
+	tabsize=2,
+	rulecolor=\color{black}
 }
 
 \lstset{style=mystyle}
@@ -139,139 +140,117 @@
 
 \section{Data Cleaning Process}
 
-\subsection{BOBO1}
-This is a reference test. \cite{hlavac2015stargazer} is used to generate many summary tables in this report.
+\lstinputlisting[language=R, linerange={1-7, 10-63, 71-134, 138-143}]{../data_clean.R}
+
+\break
 
 \section{Paper Replication}
-In this section, we provide our replication for this paper.
+In this section, we provide our replication for this paper. Names for subsections correspond to the tables in the published paper.
 \subsection{Table 1}
 Table \ref{tab:table1} shows the summary statistics of top five vendors by sales volume.
-\begin{table}[!htbp] \centering 
+\begin{table}[!h] \centering 
 	\caption{Summary Statistics of Top Five Vendors by Sales Volume} 
 	\label{tab:table1} 
 	\resizebox{\columnwidth}{!}{
 		\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 			\\[-1.8ex]\hline 
-			\hline \\[-1.8ex] 
-			\multicolumn{1}{c}{DomainName} & \multicolumn{1}{c}{TotalTransaction} & \multicolumn{1}{c}{TotalSales} & \multicolumn{1}{c}{TotalPagesViewed} & \multicolumn{1}{c}{PagesPerDollar} & \multicolumn{1}{c}{TotalDuration} & \multicolumn{1}{c}{MinsPerDollar} \\ 
+			\hline 
+			%\\[-1.8ex] 
+			\multicolumn{1}{c}{\textbf{DomainName}} & \multicolumn{1}{c}{\textbf{TotalTransaction}} & \multicolumn{1}{c}{\textbf{TotalSales}} & \multicolumn{1}{c}{\textbf{TotalPagesViewed}} & \multicolumn{1}{c}{\textbf{PagesPerDollar}} & \multicolumn{1}{c}{\textbf{TotalDuration}} & \multicolumn{1}{c}{\textbf{MinsPerDollar}} \\ 
 			\hline \\[-1.8ex] 
 			\multicolumn{1}{c}{dell.com} & 1,620 & 483,703.300 & 66,953 & 0.138 & 57,225.660 & 0.118 \\ 
 			\multicolumn{1}{c}{amazon.com} & 10,904 & 354,573.300 & 464,383 & 1.310 & 369,227.900 & 1.041 \\ 
 			\multicolumn{1}{c}{staples.com} & 5,927 & 236,982.300 & 247,163 & 1.043 & 166,189.900 & 0.701 \\ 
 			\multicolumn{1}{c}{walmart.com} & 1,977 & 156,606.100 & 80,397 & 0.513 & 68,434.890 & 0.437 \\ 
 			\multicolumn{1}{c}{bestbuy.com} & 1,230 & 149,950.400 & 50,627 & 0.338 & 36,735.900 & 0.245 \\ 
-			\hline \\[-1.8ex] 
+			\bottomrule
+			%\hline \\[-1.8ex] 
 		\end{tabular} 
 	}
 \end{table}
 
-\subsection{Table 2}
+Codes for generating Table \ref{tab:table1} are listed below.
+\lstinputlisting[language=R, linerange={228-231}]{../data_clean.R}
 
-\begin{table}[!htbp] \centering 
+\subsection{Table 2}
+Table \ref{tab:table2} summarizes the frequency of referral channels for various online retailers.
+\begin{table}[!h] \centering 
 	\caption{Summary Statistics of Referring Domain Categories} 
 	\label{tab:table2} 
 	\resizebox{\columnwidth}{!}{
 		\begin{tabular}{@{\extracolsep{5pt}} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 			\\[-1.8ex]\hline 
-			\hline \\[-1.8ex] 
-			\multicolumn{1}{c}{Domain Name} & \multicolumn{1}{c}{Total Transaction} & \multicolumn{1}{c}{Referred by SearchEngine} & \multicolumn{1}{c}{Direct to Website} & \multicolumn{1}{c}{Referred by Others} \\ 
+			\hline 
+			%\\[-1.8ex] 
+			\multicolumn{1}{c}{\textbf{Domain Name}} & \multicolumn{1}{c}{\textbf{Total Transaction}} & \multicolumn{1}{c}{\textbf{Referred by SearchEngine}} & \multicolumn{1}{c}{\textbf{Direct to Website}} & \multicolumn{1}{c}{\textbf{Referred by Others}} \\ 
 			\hline \\[-1.8ex]  
 			\multicolumn{1}{c}{amazon.com} & 10,904 & 2,955(27.1\%) & 7,018(64.4\%) & 931(8.6\%) \\ 
 			\multicolumn{1}{c}{bestbuy.com} & 1,230 & 258(21.0\%) & 901(73.3\%) & 71(5.8\%) \\ 
 			\multicolumn{1}{c}{All Others} & 36,794 & 6,999(19.0\%) & 25,483(69.3\%) & 4,312(11.7\%) \\ 
 			\multicolumn{1}{c}{All Transactions} & 48,928 & 10,212(20.9\%) & 33,402(68.3\%) & 5,314(10.9\%) \\
-			\hline \\[-1.8ex] 
+			\bottomrule
+			%\hline \\[-1.8ex] 
 		\end{tabular} 
 	}
 \end{table}
 
+Codes for generating Table \ref{tab:table2} are listed below.
+\lstinputlisting[language=R, linerange={233-239}]{../data_clean.R}
+
 \subsection{Table 3}
-\begin{table}[]
+Table \ref{tab:table3} reports the model-free average DID values for some outcome variables.
+\begin{table}[!h]
 	\centering
 	\caption{Average Difference-in-Difference (DID) of the Outcome Variables}
 	\label{tab:table3}
-	\begin{tabular}{@{}cccccc@{}}
-		\toprule
-		Outcome Variable &
-		Groups &
-		\begin{tabular}[c]{@{}c@{}}After Store\\ Closure\end{tabular} &
-		\begin{tabular}[c]{@{}c@{}}Before Store\\ Closure\end{tabular} &
-		\begin{tabular}[c]{@{}c@{}}First Difference\\ (se)\end{tabular} &
-		DID \\ \midrule
-		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Amazon\\ Sales\end{tabular}} &
-		Control &
-		3.418 &
-		3.303 &
-		\begin{tabular}[c]{@{}c@{}}0.115\\ (0.031)\end{tabular} &
-		\multirow{2}{*}{-0.167} \\
-		&
-		Treatment &
-		3.351 &
-		3.403 &
-		\begin{tabular}[c]{@{}c@{}}-0.052\\ (0.212)\end{tabular} &
-		\\
-		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Amazon\\ PagesPerDollar\end{tabular}} &
-		Control &
-		1.188 &
-		1.147 &
-		\begin{tabular}[c]{@{}c@{}}0.041\\ (0.025)\end{tabular} &
-		\multirow{2}{*}{0.257} \\
-		&
-		Treatment &
-		1.363 &
-		1.065 &
-		\begin{tabular}[c]{@{}c@{}}0.298\\ (0.153)\end{tabular} &
-		\\
-		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Amazon\\ MinsPerDollar\end{tabular}} &
-		Control &
-		1.016 &
-		0.975 &
-		\begin{tabular}[c]{@{}c@{}}0.041\\ (0.025)\end{tabular} &
-		\multirow{2}{*}{0.263} \\
-		&
-		Treatment &
-		1.187 &
-		0.882 &
-		\begin{tabular}[c]{@{}c@{}}0.304\\ (0.137)\end{tabular} &
-		\\
-		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}bestbuy.com\\ Sales\end{tabular}} &
-		Control &
-		3.418 &
-		3.303 &
-		\begin{tabular}[c]{@{}c@{}}0.354\\ (0.031)\end{tabular} &
-		\multirow{2}{*}{0.623} \\
-		&
-		Treatment &
-		3.351 &
-		3.403 &
-		\begin{tabular}[c]{@{}c@{}}0.976\\ (0.212)\end{tabular} &
-		\\
-		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}bestbuy.com\\ PagesPerDollar\end{tabular}} &
-		Control &
-		1.188 &
-		1.147 &
-		\begin{tabular}[c]{@{}c@{}}-0.109\\ (0.025)\end{tabular} &
-		\multirow{2}{*}{0.074} \\
-		&
-		Treatment &
-		1.363 &
-		1.065 &
-		\begin{tabular}[c]{@{}c@{}}-0.035\\ (0.153)\end{tabular} &
-		\\
-		\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}bestbuy.com\\ MinsPerDollar\end{tabular}} &
-		Control &
-		1.016 &
-		0.975 &
-		\begin{tabular}[c]{@{}c@{}}-0.084\\ (0.025)\end{tabular} &
-		\multirow{2}{*}{-0.012} \\
-		&
-		Treatment &
-		1.187 &
-		0.882 &
-		\begin{tabular}[c]{@{}c@{}}-0.096\\ (0.137)\end{tabular} &
-		\\ \bottomrule
-	\end{tabular}
+	\scalebox{0.8}{
+		\begin{tabular}{@{}cccccc@{}}
+			\\[-1.8ex]\hline 
+			\hline 
+			%\\[-1.8ex] 
+			\textbf{Outcome Variable} &
+			\textbf{Groups} &
+			\begin{tabular}[c]{@{}c@{}}\textbf{After Store}\\ \textbf{Closure}\end{tabular} &
+			\begin{tabular}[c]{@{}c@{}}\textbf{Before Store}\\ \textbf{Closure}\end{tabular} &
+			\begin{tabular}[c]{@{}c@{}}\textbf{First Difference} \\ (se)\end{tabular} &
+			\textbf{DID} \\ \midrule
+			\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Amazon\\ Sales\end{tabular}} &
+			Control & 3.418 & 3.303 &
+			\begin{tabular}[c]{@{}c@{}}0.115\\ (0.031)\end{tabular} &
+			\multirow{2}{*}{-0.167} \\ 	& Treatment & 3.351 & 3.403 &
+			\begin{tabular}[c]{@{}c@{}}-0.052\\ (0.212)\end{tabular} & \\
+			\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Amazon\\ PagesPerDollar\end{tabular}} &
+			Control & 1.188 & 1.147 &
+			\begin{tabular}[c]{@{}c@{}}0.041\\ (0.025)\end{tabular} &
+			\multirow{2}{*}{0.257} \\ & Treatment & 1.363 & 1.065 &
+			\begin{tabular}[c]{@{}c@{}}0.298\\ (0.153)\end{tabular} & \\
+			\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Amazon\\ MinsPerDollar\end{tabular}} &
+			Control & 1.016 & 0.975 &
+			\begin{tabular}[c]{@{}c@{}}0.041\\ (0.025)\end{tabular} &
+			\multirow{2}{*}{0.263} \\ & Treatment & 1.187 & 0.882 &
+			\begin{tabular}[c]{@{}c@{}}0.304\\ (0.137)\end{tabular} &
+			\\ \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}bestbuy.com\\ Sales\end{tabular}} &
+			Control & 3.418 & 3.303 &
+			\begin{tabular}[c]{@{}c@{}}0.354\\ (0.031)\end{tabular} &
+			\multirow{2}{*}{0.623} \\ & Treatment & 3.351 & 3.403 &
+			\begin{tabular}[c]{@{}c@{}}0.976\\ (0.212)\end{tabular} &
+			\\ \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}bestbuy.com\\ PagesPerDollar\end{tabular}} &
+			Control & 1.188 & 1.147 &
+			\begin{tabular}[c]{@{}c@{}}-0.109\\ (0.025)\end{tabular} &
+			\multirow{2}{*}{0.074} \\ & Treatment & 1.363 & 1.065 &
+			\begin{tabular}[c]{@{}c@{}}-0.035\\ (0.153)\end{tabular} &
+			\\ \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}bestbuy.com\\ MinsPerDollar\end{tabular}} &
+			Control & 1.016 & 0.975 &
+			\begin{tabular}[c]{@{}c@{}}-0.084\\ (0.025)\end{tabular} &
+			\multirow{2}{*}{-0.012} \\ & Treatment & 1.187 & 0.882 &
+			\begin{tabular}[c]{@{}c@{}}-0.096\\ (0.137)\end{tabular} &
+			\\ \bottomrule
+		\end{tabular}
+	}
 \end{table}
+
+Codes for generating Table \ref{tab:table3} are listed below.
+\lstinputlisting[language=R, linerange={15-15, 23-175}]{../table3.R}
 
 \subsection{Table 4}
 \begin{table}[!htbp] \centering 
@@ -379,8 +358,11 @@ Table \ref{tab:table1} shows the summary statistics of top five vendors by sales
 	\centering
 	\caption{Change in Demographics after Circuit City Store Closure}
 	\label{tab:tabc1}
+	\resizebox{\columnwidth}{!}{
 	\begin{tabular}{@{}cccccccccc@{}}
-		\toprule
+		%\toprule
+		\\[-1.8ex]\hline 
+		\hline 
 		\multirow{2}{*}{\textbf{Group}} &
 		\multicolumn{3}{c}{\textbf{Before Store Closure}} &
 		\multicolumn{3}{c}{\textbf{After Store Closure}} &
@@ -415,7 +397,7 @@ Table \ref{tab:table1} shows the summary statistics of top five vendors by sales
 		\begin{tabular}[c]{@{}c@{}}-1.035\\ ($<$0.0001)\end{tabular} &
 		\begin{tabular}[c]{@{}c@{}}-0.232\\ (0.029)\end{tabular} &
 		\begin{tabular}[c]{@{}c@{}}-1.789\\ (0.004)\end{tabular} \\ \bottomrule
-	\end{tabular}
+	\end{tabular}}
 \end{table}
 
 \subsection{Table D1-D4}
