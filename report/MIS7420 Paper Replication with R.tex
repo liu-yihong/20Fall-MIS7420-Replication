@@ -122,6 +122,11 @@
 
 \renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
 
+\renewcommand*{\lstlistingname}{Code}
+\renewcommand*{\lstlistlistingname}{List of Codes}
+%\captionsetup[lstlisting]{margin=0cm,format=hang,font=small,format=plain,labelfont={bf,up},textfont={it}}
+%\captionsetup[lstlistoflistings]{\lstname Code \arabic{lstlisting} :}
+
 \begin{document}
 
 \maketitle
@@ -137,12 +142,16 @@
 % Make List of Tables
 \listoftables
 \pagebreak
+% Make List of Codes
+\addcontentsline{toc}{section}{List of Codes}
+\lstlistoflistings 
+\pagebreak
 
 \section{Data Cleaning Process}
 
-\lstinputlisting[language=R, linerange={1-7, 10-63, 71-134, 138-143}]{../data_clean.R}
+\lstinputlisting[language=R, caption={Data Preprocess}, label={lst:dtaclean}, linerange={1-7, 10-63, 71-134, 138-143}]{../data_clean.R}
 
-\break
+\pagebreak
 
 \section{Paper Replication}
 In this section, we provide our replication for this paper. Names for subsections correspond to the tables in the published paper.
@@ -170,7 +179,7 @@ Table \ref{tab:table1} shows the summary statistics of top five vendors by sales
 \end{table}
 
 Codes for generating Table \ref{tab:table1} are listed below.
-\lstinputlisting[language=R, linerange={228-231}]{../data_clean.R}
+\lstinputlisting[language=R, caption={Table 1 Generation}, label={lst:table1}, linerange={228-231}]{../data_clean.R}
 
 \subsection{Table 2}
 Table \ref{tab:table2} summarizes the frequency of referral channels for various online retailers.
@@ -195,7 +204,7 @@ Table \ref{tab:table2} summarizes the frequency of referral channels for various
 \end{table}
 
 Codes for generating Table \ref{tab:table2} are listed below.
-\lstinputlisting[language=R, linerange={233-239}]{../data_clean.R}
+\lstinputlisting[language=R, caption={Table 2 Generation}, label={lst:table2}, linerange={233-239}]{../data_clean.R}
 
 \subsection{Table 3}
 Table \ref{tab:table3} reports the model-free average DID values for some outcome variables.
@@ -250,7 +259,7 @@ Table \ref{tab:table3} reports the model-free average DID values for some outcom
 \end{table}
 
 Codes for generating Table \ref{tab:table3} are listed below.
-\lstinputlisting[language=R, linerange={15-15, 23-175}]{../table3.R}
+\lstinputlisting[language=R, caption={Table 3 Generation}, label={lst:table3}, linerange={15-15, 23-175}]{../table3.R}
 
 \subsection{Table 4}
 \begin{table}[!htbp] \centering 
