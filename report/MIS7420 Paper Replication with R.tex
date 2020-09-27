@@ -21,6 +21,7 @@
 \usepackage[round]{natbib}
 \usepackage[nottoc,numbib]{tocbibind}
 \usepackage{hyperref}
+\usepackage{rotating}
 
 \setlength{\parindent}{2em}
 \usetikzlibrary{automata,positioning}
@@ -262,84 +263,73 @@ Codes for generating Table \ref{tab:table3} are listed below.
 \lstinputlisting[language=R, caption={Table 3 Generation}, label={lst:table3}, linerange={15-15, 23-175}]{../table3.R}
 
 \subsection{Table 4}
-\begin{table}[!htbp] \centering 
+\begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect (All Product Categories)} 
 	\label{tab:table4} 
-	\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
-		\\[-1.8ex]\hline 
-		\hline \\[-1.8ex] 
-		& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
-		\cline{2-5} 
-		\\[-1.8ex] & \multicolumn{4}{c}{log(TotalMonthlySales + 1)} \\ 
-		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
-		\hline \\[-1.8ex] 
-		$\beta_1$ & 0.140 & -0.206 & 0.087 & -1.020 \\ 
-		& (0.525) & (0.198) & (1.183) & (0.906) \\ 
-		$\beta_2$ & 0.100 & 0.094 &  & 1.120 \\ 
-		& (0.669) & (0.245) &  & (1.235) \\ 
-		\hline \\[-1.8ex] 
-		Observations & \multicolumn{1}{c}{5,089} & \multicolumn{1}{c}{5,740} & \multicolumn{1}{c}{725} & \multicolumn{1}{c}{831} \\ 
-		R$^{2}$ & \multicolumn{1}{c}{0.0002} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.012} \\ 
-		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.293} & \multicolumn{1}{c}{-1.209} & \multicolumn{1}{c}{-6.869} & \multicolumn{1}{c}{-6.593} \\ 
-		F Statistic & \multicolumn{1}{c}{0.196 (df = 2; 2219)} & \multicolumn{1}{c}{0.716 (df = 2; 2596)} & \multicolumn{1}{c}{0.005 (df = 1; 92)} & \multicolumn{1}{c}{0.653 (df = 2; 108)} \\ 
-		\hline 
-		\hline \\[-1.8ex] 
-		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
-	\end{tabular} 
+	\resizebox{\columnwidth}{!}{
+		\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+			\\[-1.8ex]\hline 
+			\hline \\[-1.8ex] 
+			% & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+			% \cline{2-5} 
+			% \\[-1.8ex] 
+			& \multicolumn{4}{c}{log(TotalMonthlySales + 1)} \\ 
+			& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{BestBuy-5 Miles} \\ 
+			\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
+			\hline \\[-1.8ex] 
+			$\beta_1$ & 0.138 & -0.202 & 0.090 & -1.002 \\ 
+			& (0.524) & (0.198) & (1.171) & (0.896) \\ 
+			$\beta_2$ & 0.109 & 0.096 &  & 1.116 \\ 
+			& (0.668) & (0.245) &  & (1.224) \\ 
+			\hline \\[-1.8ex] 
+			Observations & \multicolumn{1}{c}{5,126} & \multicolumn{1}{c}{5,781} & \multicolumn{1}{c}{729} & \multicolumn{1}{c}{837} \\ 
+			R$^{2}$ & \multicolumn{1}{c}{0.0002} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.012} \\ 
+			Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.279} & \multicolumn{1}{c}{-1.199} & \multicolumn{1}{c}{-6.744} & \multicolumn{1}{c}{-6.512} \\ 
+			F Statistic & \multicolumn{1}{c}{0.204 (df = 2; 2248)} & \multicolumn{1}{c}{0.672 (df = 2; 2627)} & \multicolumn{1}{c}{0.006 (df = 1; 94)} & \multicolumn{1}{c}{0.647 (df = 2; 110)} \\ 
+			\hline 
+			\hline \\[-1.8ex] 
+			\textit{Note: Standard errors are in parentheses}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+		\end{tabular} 
+	}
 \end{table}
 
+Codes for generating Table \ref{tab:table4} are listed below.
+\lstinputlisting[language=R, caption={Table 4 Generation}, label={lst:table4}, linerange={145-152, 248-252}]{../data_clean.R}
+
 \subsection{Table 5}
-\begin{table}[!htbp] \centering 
-	\caption{Results of the Search Effect (Pages Per Dollar, All Product Categories)} 
-	\label{tab:table5-ppd} 
-	\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
-		\\[-1.8ex]\hline 
-		\hline \\[-1.8ex] 
-		& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
-		\cline{2-5} 
-		\\[-1.8ex] & \multicolumn{4}{c}{log(PagesPerDollar + 1)} \\ 
-		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
-		\hline \\[-1.8ex] 
-		$\beta_1$ & -0.075 & 0.075 & 0.467 & 0.397 \\ 
-		& (0.413) & (0.157) & (0.677) & (0.511) \\ 
-		$\beta_2$ & -0.262 & -0.056 &  & -0.045 \\ 
-		& (0.526) & (0.194) &  & (0.696) \\ 
-		\hline \\[-1.8ex] 
-		Observations & \multicolumn{1}{c}{5,089} & \multicolumn{1}{c}{5,740} & \multicolumn{1}{c}{725} & \multicolumn{1}{c}{831} \\ 
-		R$^{2}$ & \multicolumn{1}{c}{0.0005} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.005} & \multicolumn{1}{c}{0.009} \\ 
-		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.292} & \multicolumn{1}{c}{-1.211} & \multicolumn{1}{c}{-6.829} & \multicolumn{1}{c}{-6.615} \\ 
-		F Statistic & \multicolumn{1}{c}{0.531 (df = 2; 2219)} & \multicolumn{1}{c}{0.120 (df = 2; 2596)} & \multicolumn{1}{c}{0.477 (df = 1; 92)} & \multicolumn{1}{c}{0.499 (df = 2; 108)} \\ 
-		\hline 
-		\hline \\[-1.8ex] 
-		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
-	\end{tabular} 
-\end{table} 
 
 \begin{table}[!htbp] \centering 
-	\caption{Results of the Search Effect (Minutes Per Dollar, All Product Categories)} 
-	\label{} 
-	\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
-		\\[-1.8ex]\hline 
-		\hline \\[-1.8ex] 
-		& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
-		\cline{2-5} 
-		\\[-1.8ex] & \multicolumn{4}{c}{log(MinsPerDollar)} \\ 
-		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
-		\hline \\[-1.8ex] 
-		$\beta_1$ & 0.248 & 0.049 & 0.165 & 1.821 \\ 
-		& (0.700) & (0.275) & (1.570) & (1.211) \\ 
-		$\beta_2$ & -0.744 & -0.089 &  & -0.459 \\ 
-		& (0.928) & (0.336) &  & (1.650) \\ 
-		\hline \\[-1.8ex] 
-		Observations & \multicolumn{1}{c}{4,941} & \multicolumn{1}{c}{5,565} & \multicolumn{1}{c}{677} & \multicolumn{1}{c}{775} \\ 
-		R$^{2}$ & \multicolumn{1}{c}{0.0004} & \multicolumn{1}{c}{0.00003} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.031} \\ 
-		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.321} & \multicolumn{1}{c}{-1.237} & \multicolumn{1}{c}{-7.243} & \multicolumn{1}{c}{-6.811} \\ 
-		F Statistic & \multicolumn{1}{c}{0.389 (df = 2; 2128)} & \multicolumn{1}{c}{0.035 (df = 2; 2487)} & \multicolumn{1}{c}{0.011 (df = 1; 82)} & \multicolumn{1}{c}{1.548 (df = 2; 96)} \\ 
-		\hline 
-		\hline \\[-1.8ex] 
-		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
-	\end{tabular} 
-\end{table} 
+	\caption{Results of the Search Effect (All Product Categories)} 
+	\label{tab:table5} 
+	\resizebox{\columnwidth}{!}{
+		\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+			\\[-1.8ex]\hline 
+			\hline \\[-1.8ex] 
+			%& \multicolumn{8}{c}{\textit{Dependent variable:}} \\ 
+			%\cline{2-9} 
+			%\\[-1.8ex] 
+			& \multicolumn{4}{c}{log(PagesPerDollar + 1)} & \multicolumn{4}{c}{log(MinsPerDollar + 1)} \\ 
+			& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{BestBuy-5 Miles} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{BestBuy-5 Miles} \\ 
+			\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}{(6)} & \multicolumn{1}{c}{(7)} & \multicolumn{1}{c}{(8)}\\ 
+			\hline \\[-1.8ex] 
+			$\beta_1$ & -0.078 & 0.072 & 0.476 & 0.373 & 0.149 & 0.063 & 0.127 & 0.513 \\ 
+			& (0.411) & (0.156) & (0.680) & (0.511) & (0.400) & (0.152) & (0.544) & (0.425) \\ 
+			$\beta_2$ & -0.263 & -0.056 &  & -0.028 & -0.387 & -0.047 &  & -0.309 \\ 
+			& (0.524) & (0.193) &  & (0.697) & (0.510) & (0.188) &  & (0.580) \\ 
+			\hline \\[-1.8ex] 
+			Observations & \multicolumn{1}{c}{5,126} & \multicolumn{1}{c}{5,781} & \multicolumn{1}{c}{729} & \multicolumn{1}{c}{837} & \multicolumn{1}{c}{5,126} & \multicolumn{1}{c}{5,781} & \multicolumn{1}{c}{729} & \multicolumn{1}{c}{837} \\ 
+			R$^{2}$ & \multicolumn{1}{c}{0.0005} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.005} & \multicolumn{1}{c}{0.008} & \multicolumn{1}{c}{0.0003} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.014} \\ 
+			Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.279} & \multicolumn{1}{c}{-1.200} & \multicolumn{1}{c}{-6.705} & \multicolumn{1}{c}{-6.537} & \multicolumn{1}{c}{-1.279} & \multicolumn{1}{c}{-1.200} & \multicolumn{1}{c}{-6.740} & \multicolumn{1}{c}{-6.490} \\ 
+			F Statistic & \multicolumn{1}{c}{0.552 (df = 2; 2248)} & \multicolumn{1}{c}{0.109 (df = 2; 2627)} & \multicolumn{1}{c}{0.490 (df = 1; 94)} & \multicolumn{1}{c}{0.458 (df = 2; 110)} & \multicolumn{1}{c}{0.347 (df = 2; 2248)} & \multicolumn{1}{c}{0.089 (df = 2; 2627)} & \multicolumn{1}{c}{0.055 (df = 1; 94)} & \multicolumn{1}{c}{0.805 (df = 2; 110)} \\ 
+			\hline 
+			\hline \\[-1.8ex] 
+			\textit{Note:}  & \multicolumn{8}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+		\end{tabular} 
+	}
+\end{table}
+
+Codes for generating Table \ref{tab:table5} are listed below.
+\lstinputlisting[language=R, caption={Table 5 Generation}, label={lst:table5}, linerange={154-161, 278-283, 299-303}]{../data_clean.R}
 
 \subsection{Table 6}
 

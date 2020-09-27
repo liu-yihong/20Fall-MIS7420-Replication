@@ -322,6 +322,13 @@ stargazer(ama.t5.pagesperdollar.0mile, ama.t5.pagesperdollar.5mile, bb.t5.pagesp
           column.sep.width = "1pt", float.env = "sidewaystable", label = "tab:table5",
           column.labels=c("Amazon-0 Mile","Amazon-5 Miles","BestBuy-0 Mile","BestBuy-5 Miles", "Amazon-0 Mile","Amazon-5 Miles","BestBuy-0 Mile","BestBuy-5 Miles"))
 
+stargazer(ama.t5.pagesperdollar.0mile, ama.t5.pagesperdollar.5mile, bb.t5.pagesperdollar.0mile, bb.t5.pagesperdollar.5mile, 
+          ama.t5.minsperdollar.0mile, ama.t5.minsperdollar.5mile, bb.t5.minsperdollar.0mile, bb.t5.minsperdollar.5mile,
+          title="Results of the Search Effect (All Product Categories)",
+          align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE,
+          column.sep.width = "1pt", label = "tab:table5",
+          column.labels=c("Amazon-0 Mile","Amazon-5 Miles","BestBuy-0 Mile","BestBuy-5 Miles", "Amazon-0 Mile","Amazon-5 Miles","BestBuy-0 Mile","BestBuy-5 Miles"))
+
 # Table 6
 # AmazonTotalMonthlySales & BBTotalMonthlySale vs Experience and Search Product
 ama.t6.0mile.exp <- plm(log(TotalMonthlySales + 1) ~ DID + THREEINTER, data = data_0m_t6_exp[data_0m_t6_exp$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
