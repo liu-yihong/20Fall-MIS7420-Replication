@@ -569,11 +569,26 @@ coeftest(ama.t4.0mile, vcovDC)
 # Table D1-D4
 
 # Table E1-E2
+# see table_E.R
 
 # Figure F1
 # see (https://dhicks.github.io/2018-10-10-did/)
+# see (https://nateapathy.com/2019/08/06/dd-viz/)
+library(ggplot2)
+data_0m_tF <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+ggplot(data_0m_tF[data_0m_tF$domain_name == "amazon.com", ],
+       aes(MonthYear, PagesPerDollar, group = CCStorePresent, color = CCStorePresent)) + 
+  stat_summary(geom = 'line') + 
+  geom_vline(xintercept = "2008-11") + 
+  theme_minimal()
 
+ggplot(data_0m_tF[data_0m_tF$domain_name == "amazon.com", ],
+       aes(MonthYear, MinsPerDollar, group = CCStorePresent, color = CCStorePresent)) + 
+  stat_summary(geom = 'line') + 
+  geom_vline(xintercept = "2008-11") + 
+  theme_minimal()
 # Table G1-G3
+tableG_category_to_consider <- c(22, 23, 37)
 
 # Advanced Method
 # IV for endogeneity control
