@@ -176,9 +176,9 @@ data_5m_t6_search$DID <- data_5m_t6_search$CCStorePresent * data_5m_t6_search$Af
 data_5m_t6_search$THREEINTER <- data_5m_t6_search$CCStorePresent * data_5m_t6_search$AfterStoreClosing * data_5m_t6_search$BBStorePresent
 
 # Table 7 & 8 Data
-data_0m_t7_exp <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1_exp GROUP BY Zip_Code, MonthYear, domain_name")
+data_0m_t7_exp    <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1_exp GROUP BY Zip_Code, MonthYear, domain_name")
 data_0m_t8_search <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1_search GROUP BY Zip_Code, MonthYear, domain_name")
-data_5m_t7_exp <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2_exp GROUP BY Zip_Code, MonthYear, domain_name")
+data_5m_t7_exp    <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2_exp GROUP BY Zip_Code, MonthYear, domain_name")
 data_5m_t8_search <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data2_search GROUP BY Zip_Code, MonthYear, domain_name")
 # manually construct DID and THREEINTERACTION
 data_0m_t7_exp$DID <- data_0m_t7_exp$CCStorePresent * data_0m_t7_exp$AfterStoreClosing
@@ -342,12 +342,20 @@ bb.t6.5mile.search <- plm(log(TotalMonthlySales + 1) ~ DID + THREEINTER, data = 
 
 stargazer(ama.t6.0mile.exp, ama.t6.5mile.exp, ama.t6.0mile.search, ama.t6.5mile.search,
           bb.t6.0mile.exp, bb.t6.5mile.exp, bb.t6.0mile.search, bb.t6.5mile.search, title="Results of the Sales Effect: Experience and Search Products", align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE)
+
 stargazer(ama.t6.0mile.exp, ama.t6.5mile.exp, ama.t6.0mile.search, ama.t6.5mile.search,
           bb.t6.0mile.exp, bb.t6.5mile.exp, bb.t6.5mile.search,
           title="Results of the Sales Effect: Experience and Search Products",
           align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE,
           column.sep.width = "1pt", label = "tab:table6",
           float.env = "sidewaystable",
+          column.labels=c("Amazon-0 Mile-Exp","Amazon-5 Miles-Exp", "Amazon-0 Mile-Search","Amazon-5 Miles-Search", "BestBuy-0 Mile-Exp","BestBuy-5 Miles-Exp", "BestBuy-5 Miles-Search"))
+
+stargazer(ama.t6.0mile.exp, ama.t6.5mile.exp, ama.t6.0mile.search, ama.t6.5mile.search,
+          bb.t6.0mile.exp, bb.t6.5mile.exp, bb.t6.5mile.search,
+          title="Results of the Sales Effect: Experience and Search Products",
+          align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE,
+          column.sep.width = "1pt", label = "tab:table6",
           column.labels=c("Amazon-0 Mile-Exp","Amazon-5 Miles-Exp", "Amazon-0 Mile-Search","Amazon-5 Miles-Search", "BestBuy-0 Mile-Exp","BestBuy-5 Miles-Exp", "BestBuy-5 Miles-Search"))
 
 #ama.t6.0mile.exp <- plm(log(TotalMonthlySales + 1) ~ CCStorePresent + AfterStoreClosing + BBStorePresent + CCStorePresent:AfterStoreClosing + CCStorePresent:AfterStoreClosing:BBStorePresent, data = data_0m_t6_exp[data_0m_t6_exp$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
@@ -389,6 +397,16 @@ stargazer(ama.t7.pagesperdollar.0mile.exp, ama.t7.pagesperdollar.5mile.exp,
           float.env = "sidewaystable", label = "tab:table7",
           column.labels=c("Amazon-0 Mile","Amazon-5 Miles", "BestBuy-0 Mile","BestBuy-5 Miles", "Amazon-0 Mile","Amazon-5 Miles", "BestBuy-0 Mile","BestBuy-5 Miles"))
 
+stargazer(ama.t7.pagesperdollar.0mile.exp, ama.t7.pagesperdollar.5mile.exp,
+          bb.t7.pagesperdollar.0mile.exp, bb.t7.pagesperdollar.5mile.exp,
+          ama.t7.minsperdollar.0mile.exp, ama.t7.minsperdollar.5mile.exp,
+          bb.t7.minsperdollar.0mile.exp, bb.t7.minsperdollar.5mile.exp,
+          title="Results of the Online Search Effect: Experience Products",
+          align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE,
+          column.sep.width = "1pt",
+          label = "tab:table7",
+          column.labels=c("Amazon-0 Mile","Amazon-5 Miles", "BestBuy-0 Mile","BestBuy-5 Miles", "Amazon-0 Mile","Amazon-5 Miles", "BestBuy-0 Mile","BestBuy-5 Miles"))
+
 # Table 8
 ama.t8.pagesperdollar.0mile.search <- plm(log(PagesPerDollar + 1) ~ DID + THREEINTER, data = data_0m_t8_search[data_0m_t8_search$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
 ama.t8.pagesperdollar.5mile.search <- plm(log(PagesPerDollar + 1) ~ DID + THREEINTER, data = data_5m_t8_search[data_5m_t8_search$domain_name == "amazon.com",], index = c("Zip_Code", "MonthYear"), model = "within", effect = "twoways")
@@ -407,6 +425,16 @@ stargazer(ama.t8.pagesperdollar.0mile.search, ama.t8.pagesperdollar.5mile.search
           align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE,
           column.sep.width = "1pt",
           float.env = "sidewaystable", label = "tab:table8",
+          column.labels=c("Amazon-0 Mile","Amazon-5 Miles", "BestBuy-5 Miles", "Amazon-0 Mile","Amazon-5 Miles", "BestBuy-5 Miles"))
+
+stargazer(ama.t8.pagesperdollar.0mile.search, ama.t8.pagesperdollar.5mile.search,
+          bb.t8.pagesperdollar.5mile.search,
+          ama.t8.minsperdollar.0mile.search, ama.t8.minsperdollar.5mile.search,
+          bb.t8.minsperdollar.5mile.search,
+          title="Results of the Online Search Effect: Search Products",
+          align=TRUE, covariate.labels=c("beta_1", "beta_2"), no.space=TRUE,
+          column.sep.width = "1pt",
+          label = "tab:table8",
           column.labels=c("Amazon-0 Mile","Amazon-5 Miles", "BestBuy-5 Miles", "Amazon-0 Mile","Amazon-5 Miles", "BestBuy-5 Miles"))
 
 # Table 9

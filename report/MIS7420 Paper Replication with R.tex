@@ -333,9 +333,107 @@ Codes for generating Table \ref{tab:table5} are listed below.
 
 \subsection{Table 6}
 
+\begin{table}[!h] \centering 
+	\caption{Results of the Sales Effect: Experience and Search Products} 
+	\label{tab:table6} 
+	\resizebox{\columnwidth}{!}{
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{7}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-8} 
+		%\\[-1.8ex] 
+		& \multicolumn{7}{c}{log(TotalMonthlySales + 1)} \\ 
+		% \begin{tabular}[c]{@{}c@{}}Mean\\ Age\end{tabular}
+		% & \multicolumn{1}{c}{Amazon-0 Mile-Exp} & \multicolumn{1}{c}{Amazon-5 Miles-Exp} & \multicolumn{1}{c}{Amazon-0 Mile-Search} & \multicolumn{1}{c}{Amazon-5 Miles-Search} & \multicolumn{1}{c}{BestBuy-0 Mile-Exp} & \multicolumn{1}{c}{BestBuy-5 Miles-Exp} & \multicolumn{1}{c}{BestBuy-5 Miles-Search} \\ 
+		& \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Amazon\\0 Mile\\Experience\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Amazon\\5 Miles\\Experience\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Amazon\\0 Mile\\Search\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Amazon\\5 Miles\\Search\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}BestBuy\\0 Mile\\Experience\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}BestBuy\\5 Miles\\Experience\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}BestBuy\\5 Miles\\Search\end{tabular}} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}{(6)} & \multicolumn{1}{c}{(7)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & -1.783 & 0.245 & 0.517 & -0.304^{*} & -1.574 & -2.021 & -2.515^{**} \\ 
+		& (1.821) & (0.697) & (0.634) & (0.180) & (2.994) & (2.054) & (0.993) \\ 
+		$\beta_2$ & 1.785 & -0.173 & -0.069 & 0.281 &  & 2.867 &  \\ 
+		& (2.015) & (0.772) & (0.816) & (0.229) &  & (2.277) &  \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{1,788} & \multicolumn{1}{c}{2,022} & \multicolumn{1}{c}{3,741} & \multicolumn{1}{c}{4,229} & \multicolumn{1}{c}{461} & \multicolumn{1}{c}{529} & \multicolumn{1}{c}{342} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.002} & \multicolumn{1}{c}{0.0003} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.002} & \multicolumn{1}{c}{0.024} & \multicolumn{1}{c}{0.090} & \multicolumn{1}{c}{0.130} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-3.195} & \multicolumn{1}{c}{-2.923} & \multicolumn{1}{c}{-1.437} & \multicolumn{1}{c}{-1.343} & \multicolumn{1}{c}{-39.794} & \multicolumn{1}{c}{-29.016} & \multicolumn{1}{c}{-5.901} \\ 
+		F Statistic & \multicolumn{1}{c}{0.480 (df = 2; 425)} & \multicolumn{1}{c}{0.071 (df = 2; 515)} & \multicolumn{1}{c}{0.704 (df = 2; 1533)} & \multicolumn{1}{c}{1.424 (df = 2; 1802)} & \multicolumn{1}{c}{0.276 (df = 1; 11)} & \multicolumn{1}{c}{0.795 (df = 2; 16)} & \multicolumn{1}{c}{6.417$^{**}$ (df = 1; 43)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{7}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} }
+\end{table}
+
+Codes for generating Table \ref{tab:table6} are listed below.
+\lstinputlisting[language=R, caption={Table 6 Generation}, label={lst:table6}, linerange={163-176, 332-341}]{../data_clean.R}
+
 \subsection{Table 7}
 
+\begin{table}[!h] \centering 
+	\caption{Results of the Online Search Effect: Experience Products} 
+	\label{tab:table7} 
+	\resizebox{\columnwidth}{!}{
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{8}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-9} 
+		%\\[-1.8ex] 
+		& \multicolumn{4}{c}{log(PagesPerDollar + 1)} & \multicolumn{4}{c}{log(MinsPerDollar + 1)} \\ 
+		& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{BestBuy-5 Miles} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{BestBuy-5 Miles} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}{(6)} & \multicolumn{1}{c}{(7)} & \multicolumn{1}{c}{(8)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.663 & -0.067 & 1.091 & 0.136 & 1.046 & 0.039 & 0.886 & 0.386 \\ 
+		& (1.451) & (0.547) & (0.800) & (0.634) & (1.406) & (0.536) & (0.625) & (0.481) \\ 
+		$\beta_2$ & -1.167 & 0.145 &  & 0.043 & -1.366 & -0.021 &  & -0.122 \\ 
+		& (1.605) & (0.606) &  & (0.703) & (1.555) & (0.593) &  & (0.533) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{1,788} & \multicolumn{1}{c}{2,022} & \multicolumn{1}{c}{461} & \multicolumn{1}{c}{529} & \multicolumn{1}{c}{1,788} & \multicolumn{1}{c}{2,022} & \multicolumn{1}{c}{461} & \multicolumn{1}{c}{529} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.002} & \multicolumn{1}{c}{0.0002} & \multicolumn{1}{c}{0.145} & \multicolumn{1}{c}{0.013} & \multicolumn{1}{c}{0.002} & \multicolumn{1}{c}{0.00002} & \multicolumn{1}{c}{0.155} & \multicolumn{1}{c}{0.069} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-3.198} & \multicolumn{1}{c}{-2.924} & \multicolumn{1}{c}{-34.767} & \multicolumn{1}{c}{-31.568} & \multicolumn{1}{c}{-3.197} & \multicolumn{1}{c}{-2.924} & \multicolumn{1}{c}{-34.355} & \multicolumn{1}{c}{-29.730} \\ 
+		F Statistic & \multicolumn{1}{c}{0.358 (df = 2; 425)} & \multicolumn{1}{c}{0.040 (df = 2; 515)} & \multicolumn{1}{c}{1.861 (df = 1; 11)} & \multicolumn{1}{c}{0.106 (df = 2; 16)} & \multicolumn{1}{c}{0.390 (df = 2; 425)} & \multicolumn{1}{c}{0.004 (df = 2; 515)} & \multicolumn{1}{c}{2.011 (df = 1; 11)} & \multicolumn{1}{c}{0.591 (df = 2; 16)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{8}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} }
+\end{table}
+
+Codes for generating Table \ref{tab:table7} are listed below.
+\lstinputlisting[language=R, caption={Table 7 Generation}, label={lst:table7}, linerange={178-191, 380-388}]{../data_clean.R}
+
 \subsection{Table 8}
+
+\begin{table}[!h] \centering 
+	\caption{Results of the Online Search Effect: Search Products} 
+	\label{tab:table8} 
+	\resizebox{\columnwidth}{!}{
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{6}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-7} 
+		%\\[-1.8ex] 
+		& \multicolumn{3}{c}{log(PagesPerDollar + 1)} & \multicolumn{3}{c}{log(MinsPerDollar + 1)} \\ 
+		& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} & \multicolumn{1}{c}{BestBuy-5 Miles} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} & \multicolumn{1}{c}{BestBuy-5 Miles} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}{(6)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.051 & 0.181 & 1.038 & 0.395 & 0.151 & 1.522^{**} \\ 
+		& (0.554) & (0.160) & (0.752) & (0.555) & (0.159) & (0.711) \\ 
+		$\beta_2$ & -0.320 & -0.214 &  & -0.778 & -0.182 &  \\ 
+		& (0.713) & (0.203) &  & (0.715) & (0.203) &  \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{3,741} & \multicolumn{1}{c}{4,229} & \multicolumn{1}{c}{342} & \multicolumn{1}{c}{3,741} & \multicolumn{1}{c}{4,229} & \multicolumn{1}{c}{342} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0002} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.042} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.096} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.439} & \multicolumn{1}{c}{-1.344} & \multicolumn{1}{c}{-6.593} & \multicolumn{1}{c}{-1.438} & \multicolumn{1}{c}{-1.345} & \multicolumn{1}{c}{-6.166} \\ 
+		F Statistic & \multicolumn{1}{c}{0.182 (df = 2; 1533)} & \multicolumn{1}{c}{0.704 (df = 2; 1802)} & \multicolumn{1}{c}{1.907 (df = 1; 43)} & \multicolumn{1}{c}{0.613 (df = 2; 1533)} & \multicolumn{1}{c}{0.501 (df = 2; 1802)} & \multicolumn{1}{c}{4.583$^{**}$ (df = 1; 43)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{6}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} }
+\end{table} 
+
+Codes for generating Table \ref{tab:table8} are listed below.
+\lstinputlisting[language=R, caption={Table 8 Generation}, label={lst:table8}, linerange={410-418}]{../data_clean.R}
 
 \subsection{Table 9}
 
