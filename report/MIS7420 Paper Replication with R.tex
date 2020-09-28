@@ -166,7 +166,7 @@ Table \ref{tab:table1} shows the summary statistics of top five vendors by sales
 			\\[-1.8ex]\hline 
 			\hline 
 			%\\[-1.8ex] 
-			\multicolumn{1}{c}{\textbf{DomainName}} & \multicolumn{1}{c}{\textbf{TotalTransaction}} & \multicolumn{1}{c}{\textbf{TotalSales}} & \multicolumn{1}{c}{\textbf{TotalPagesViewed}} & \multicolumn{1}{c}{\textbf{PagesPerDollar}} & \multicolumn{1}{c}{\textbf{TotalDuration}} & \multicolumn{1}{c}{\textbf{MinsPerDollar}} \\ 
+			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Domain \\ Name\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Total \\ Transactions\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Total \\ Sales\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Total Pages \\ Viewed\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Pages \\ Per Dollar\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Total \\ Duration\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Mins \\ Per Dollar\end{tabular}}} \\ 
 			\hline \\[-1.8ex] 
 			\multicolumn{1}{c}{dell.com} & 1,620 & 483,703.300 & 66,953 & 0.138 & 57,225.660 & 0.118 \\ 
 			\multicolumn{1}{c}{amazon.com} & 10,904 & 354,573.300 & 464,383 & 1.310 & 369,227.900 & 1.041 \\ 
@@ -192,7 +192,7 @@ Table \ref{tab:table2} summarizes the frequency of referral channels for various
 			\\[-1.8ex]\hline 
 			\hline 
 			%\\[-1.8ex] 
-			\multicolumn{1}{c}{\textbf{Domain Name}} & \multicolumn{1}{c}{\textbf{Total Transaction}} & \multicolumn{1}{c}{\textbf{Referred by SearchEngine}} & \multicolumn{1}{c}{\textbf{Direct to Website}} & \multicolumn{1}{c}{\textbf{Referred by Others}} \\ 
+			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Domain \\ Name\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Total \\ Transactions\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Referred by \\ Search Engine\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Direct to \\ Website\end{tabular}}} & \multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Referred by \\ Others\end{tabular}}} \\ 
 			\hline \\[-1.8ex]  
 			\multicolumn{1}{c}{amazon.com} & 10,904 & 2,955(27.1\%) & 7,018(64.4\%) & 931(8.6\%) \\ 
 			\multicolumn{1}{c}{bestbuy.com} & 1,230 & 258(21.0\%) & 901(73.3\%) & 71(5.8\%) \\ 
@@ -288,7 +288,7 @@ Codes for generating Table \ref{tab:table3} are listed below.
 			F Statistic & \multicolumn{1}{c}{0.204 (df = 2; 2248)} & \multicolumn{1}{c}{0.672 (df = 2; 2627)} & \multicolumn{1}{c}{0.006 (df = 1; 94)} & \multicolumn{1}{c}{0.647 (df = 2; 110)} \\ 
 			\hline 
 			\hline \\[-1.8ex] 
-			\textit{Note: Standard errors are in parentheses}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+			\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
 		\end{tabular} 
 	}
 \end{table}
@@ -437,6 +437,36 @@ Codes for generating Table \ref{tab:table8} are listed below.
 
 \subsection{Table 9}
 
+\begin{table}[!h] \centering 
+	\caption{Results of Logistic Regression for Referring Domain} 
+	\label{tab:table9} 
+	\resizebox{\columnwidth}{!}{
+		\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+			\\[-1.8ex]\hline 
+			\hline \\[-1.8ex] 
+			% & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+			% \cline{2-5} 
+			% \\[-1.8ex] 
+			& \multicolumn{2}{c}{ReferringDomainIsSearchEngine} & \multicolumn{2}{c}{NoReferringDomain} \\
+			& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BestBuy-0 Mile} \\ 
+			\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
+			\hline \\[-1.8ex] 
+			$\beta_1$ & -0.817^{*} & -15.12^{***} & 0.325 & -0.223 \\ 
+			& (0.337)  & (0.611) & (0.346) & (1.259) \\ 
+			$\beta_2$ & 0.697 & 14.43^{***} & -0.415 & 0.916 \\ 
+			& (0.564) & (0.944) & (0.544) & (1.615) \\ 
+			\hline \\[-1.8ex] 
+			Observations & \multicolumn{1}{c}{10,791} & \multicolumn{1}{c}{1,225} & \multicolumn{1}{c}{10,791} & \multicolumn{1}{c}{1,225} \\ 
+			\hline 
+			\hline \\[-1.8ex] 
+			\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.05; $^{**}$p$<$0.01; $^{***}$p$<$0.001} \\ 
+		\end{tabular} 
+	}
+\end{table}
+
+Stata codes for generating Table \ref{tab:table9} are listed below.
+\lstinputlisting[caption={Table 9 Generation}, label={lst:table9}, linerange={3-9, 13-13, 17-18, 22-22}]{../t9.do}
+
 \subsection{Table 10}
 
 \begin{table}[!htbp] \centering 
@@ -472,6 +502,37 @@ Codes for generating Table \ref{tab:table10} are listed below.
 \lstinputlisting[language=R, caption={Table 10 Generation}, label={lst:table10}, linerange={210-214, 471-478}]{../data_clean.R}
 
 \subsection{Table 11}
+
+\begin{table}[!h] \centering 
+	\caption{Results of the Online Sales and Search Effect After Matching Zip Codes: TotalMonthlySales, PagesPerDollar, and MinsPerDollar (All Product Categories)} 
+	\label{tab:table11} 
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-4} 
+		%\\[-1.8ex] 
+		& \multicolumn{1}{c}{log(TotalMonthlySales + 1)} & \multicolumn{1}{c}{log(PagesPerDollar + 1)} & \multicolumn{1}{c}{log(MinsPerDollar + 1)} \\ 
+		& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & -0.069 & -0.137 & 0.009 \\ 
+		& (0.833) & (0.455) & (0.403) \\ 
+		$\beta_2$ & 0.035 & -0.112 & -0.286 \\ 
+		& (0.849) & (0.464) & (0.411) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{67} & \multicolumn{1}{c}{67} & \multicolumn{1}{c}{67} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.054} & \multicolumn{1}{c}{0.213} & \multicolumn{1}{c}{0.235} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-19.809} & \multicolumn{1}{c}{-16.304} & \multicolumn{1}{c}{-15.837} \\ 
+		F Statistic (df = 2; 3) & \multicolumn{1}{c}{0.086} & \multicolumn{1}{c}{0.407} & \multicolumn{1}{c}{0.460} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table} 
+
+Codes for generating Table \ref{tab:table11} are listed below.
+\lstinputlisting[language=R, caption={Table 11 Generation}, label={lst:table11}, linerange={156-156, 161-228, 236-239}]{../table11.R}
 
 \subsection{Table 12}
 
@@ -509,12 +570,73 @@ Codes for generating Table \ref{tab:table12} are listed below.
 
 \subsection{Table 13}
 
+\begin{table}[!htbp] \centering 
+	\caption{Results of the Online Sales and Search Effect While Ignoring Time Series (All Product Categories)} 
+	\label{tab:table13} 
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-4} 
+		%\\[-1.8ex] 
+		& \multicolumn{1}{c}{log(TotalMonthlySales + 1)} & \multicolumn{1}{c}{log(PagesPerDollar + 1)} & \multicolumn{1}{c}{log(MinsPerDollar + 1)} \\ 
+		& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.106 & 0.160 & 0.548 \\ 
+		& (0.812) & (0.593) & (0.499) \\ 
+		$\beta_2$ & 2.281 & -1.116 & -1.369 \\ 
+		& (1.519) & (1.109) & (0.934) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{107} & \multicolumn{1}{c}{107} & \multicolumn{1}{c}{107} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.101} & \multicolumn{1}{c}{0.035} & \multicolumn{1}{c}{0.069} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-2.075} & \multicolumn{1}{c}{-2.301} & \multicolumn{1}{c}{-2.184} \\ 
+		F Statistic (df = 2; 31) & \multicolumn{1}{c}{1.738} & \multicolumn{1}{c}{0.556} & \multicolumn{1}{c}{1.143} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table}
 
+Codes for generating Table \ref{tab:table13} are listed below.
+\lstinputlisting[language=R, caption={Table 13 Generation}, label={lst:table13}, linerange={7-7, 137-197}]{../table13_14.R}
 
 \subsection{Table 14}
 
-\subsection{Table C1}
+\begin{table}[!h] \centering 
+	\caption{Results of the Online Sales and Search Effect with Arbitrary Variance-Covariance Matrix
+		Corrections (All Product Categories)} 
+	\label{tab:table14} 
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-4} 
+		%\\[-1.8ex] 
+		& \multicolumn{1}{c}{log(TotalMonthlySales + 1)} & \multicolumn{1}{c}{log(PagesPerDollar + 1)} & \multicolumn{1}{c}{log(MinsPerDollar + 1)} \\ 
+		& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 1.910 & 0.054 & 0.372 \\ 
+		& (1.061) & (0.348) & (0.256) \\ 
+		$\beta_2$ & -1.699 & -1.048^{*} & -1.310^{***} \\ 
+		& (1.190) & (0.381) & (0.307) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{107} & \multicolumn{1}{c}{107} & \multicolumn{1}{c}{107} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.078} & \multicolumn{1}{c}{0.034} & \multicolumn{1}{c}{0.059} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-11.213} & \multicolumn{1}{c}{-2.658} & \multicolumn{1}{c}{-2.562} \\ 
+		F Statistic & \multicolumn{1}{c}{0.340 (df = 2; 8)} & \multicolumn{1}{c}{0.488 (df = 2; 28)} & \multicolumn{1}{c}{0.880 (df = 2; 28)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.01; $^{**}$p$<$0.001; $^{***}$p$<$0.0001} \\ 
+	\end{tabular} 
+\end{table}
 
+Codes for generating Table \ref{tab:table14} are listed below.
+\lstinputlisting[language=R, caption={Table 14 Generation}, label={lst:table14}, linerange={205-221}]{../table13_14.R}
+
+\subsection{Table C1}
+Table \ref{tab:tabc1} shows 
 \begin{table}[!h]
 	\centering
 	\caption{Change in Demographics after Circuit City Store Closure}
@@ -572,15 +694,17 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 
 \section{Advanced Method}
 
-\subsection{Synthetic Control Method}
+%\subsection{Synthetic Control Method}
 
 \subsection{Generalized Synthetic Control Method}
 
-\subsection{Heckit Approach}
+%\subsection{Heckit Approach}
 
 \subsection{PSM and LA-PSM}
 
-\subsection{Measurement Error Bias Correction}
+%\subsection{Measurement Error Bias Correction}
+
+\subsection{Causal Forest}
 
 \pagebreak
 % \section{Reference}
