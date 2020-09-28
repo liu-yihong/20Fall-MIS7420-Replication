@@ -23,9 +23,7 @@ eststo: logit NoReferringDomain DID THREEINTER if domain_name == "bestbuy.com", 
 
 logistic NoReferringDomain DID THREEINTER if domain_name == "bestbuy.com", noconstant vce(cluster Code_Time)
 
-* check http://scorreia.com/software/reghdfe/
-
 * output table
 esttab se
 
-esttab using example.tex, se label replace booktabs title(Results of Logistic Regression for Referring Domain\label{tab:tab9})
+esttab using t9-28-sep-n.tex, se label replace booktabs title(Results of Logistic Regression for Referring Domain\label{tab:tab9})
