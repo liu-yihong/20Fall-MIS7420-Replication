@@ -51,11 +51,6 @@ table_C1_5m_raw <- merge(table_C1_5m_raw, bb_zipcode, by.x ="Zip_Code", by.y = "
 table_C1_0m_raw$BBStorePresent <- na.fill(table_C1_0m_raw$BB_Store_Status, 0)
 table_C1_5m_raw$BBStorePresent <- na.fill(table_C1_5m_raw$BB_Store_Status, 0)
 
-# aggregate data
-
-table3_0m_aggregate <- sqldf("SELECT Zip_Code, MonthYear, AVG(hoh_oldest_age) AS HoHAge, AVG(household_income) AS HoHIncome, AVG(hoh_most_education) AS HoHEdu, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM table_C1_0m_raw GROUP BY Zip_Code, MonthYear")
-table3_5m_aggregate <- sqldf("SELECT Zip_Code, MonthYear, AVG(hoh_oldest_age) AS HoHAge, AVG(household_income) AS HoHIncome, AVG(hoh_most_education) AS HoHEdu, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM table_C1_5m_raw GROUP BY Zip_Code, MonthYear")
-
 # t test
 control_before_age    <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 0)&(table_C1_0m_raw$AfterStoreClosing==0),]$hoh_oldest_age
 control_before_income <- table_C1_0m_raw[(table_C1_0m_raw$CCStorePresent == 0)&(table_C1_0m_raw$AfterStoreClosing==0),]$household_income

@@ -439,19 +439,83 @@ Codes for generating Table \ref{tab:table8} are listed below.
 
 \subsection{Table 10}
 
+\begin{table}[!htbp] \centering 
+	\caption{Results of the Online Sales and Search Effect (All Product Categories)} 
+	\label{tab:table10} 
+	\resizebox{\columnwidth}{!}{
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{6}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-7} 
+		%\\[-1.8ex] 
+		& \multicolumn{2}{c}{log(SalesPerTransaction + 1)} & \multicolumn{2}{c}{log(PagesPerTransaction + 1)} & \multicolumn{2}{c}{log(MinsPerTransaction + 1)} \\ 
+		& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BestBuy-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}{(6)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.104 & 0.064 & 0.137 & 0.929 & 0.366 & 0.468 \\ 
+		& (0.449) & (1.148) & (0.324) & (0.683) & (0.403) & (0.741) \\ 
+		$\beta_2$ & 0.133 &  & -0.446 &  & -0.559 &  \\ 
+		& (0.572) &  & (0.413) &  & (0.514) &  \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{5,126} & \multicolumn{1}{c}{729} & \multicolumn{1}{c}{5,126} & \multicolumn{1}{c}{729} & \multicolumn{1}{c}{5,126} & \multicolumn{1}{c}{729} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0002} & \multicolumn{1}{c}{0.00003} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.019} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.004} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.279} & \multicolumn{1}{c}{-6.744} & \multicolumn{1}{c}{-1.278} & \multicolumn{1}{c}{-6.595} & \multicolumn{1}{c}{-1.279} & \multicolumn{1}{c}{-6.712} \\ 
+		F Statistic & \multicolumn{1}{c}{0.240 (df = 2; 2248)} & \multicolumn{1}{c}{0.003 (df = 1; 94)} & \multicolumn{1}{c}{0.800 (df = 2; 2248)} & \multicolumn{1}{c}{1.850 (df = 1; 94)} & \multicolumn{1}{c}{0.596 (df = 2; 2248)} & \multicolumn{1}{c}{0.399 (df = 1; 94)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{6}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} }
+\end{table}
+
+Codes for generating Table \ref{tab:table10} are listed below.
+\lstinputlisting[language=R, caption={Table 10 Generation}, label={lst:table10}, linerange={210-214, 471-478}]{../data_clean.R}
+
 \subsection{Table 11}
 
 \subsection{Table 12}
 
+\begin{table}[!htbp] \centering 
+	\caption{Results of the Online Sales and Search Effect with Zip Code Demographics as Interactions and Time Fixed Effects (All Product Categories)} 
+	\label{tab:table12} 
+	\resizebox{\columnwidth}{!}{
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{6}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-7} 
+		%\\[-1.8ex] 
+		& \multicolumn{2}{c}{log(TotalMonthlySales + 1)} & \multicolumn{2}{c}{log(PagesPerDollar + 1)} & \multicolumn{2}{c}{log(MinsPerDollar + 1)} \\ 
+		& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BestBuy-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BestBuy-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}{(6)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & -0.001 & -0.012 & 0.002 & -0.003 & 0.002 & 0.0001 \\ 
+		& (0.002) & (0.018) & (0.002) & (0.010) & (0.002) & (0.008) \\ 
+		$\beta_2$ & 0.352 & 1.008 & -0.493 & 0.718 & -0.427 & 0.123 \\ 
+		& (0.457) & (1.779) & (0.359) & (1.034) & (0.349) & (0.829) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{5,126} & \multicolumn{1}{c}{729} & \multicolumn{1}{c}{5,126} & \multicolumn{1}{c}{729} & \multicolumn{1}{c}{5,126} & \multicolumn{1}{c}{729} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0003} & \multicolumn{1}{c}{0.005} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.006} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.001} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-1.279} & \multicolumn{1}{c}{-6.788} & \multicolumn{1}{c}{-1.278} & \multicolumn{1}{c}{-6.779} & \multicolumn{1}{c}{-1.277} & \multicolumn{1}{c}{-6.823} \\ 
+		F Statistic & \multicolumn{1}{c}{0.348 (df = 2; 2248)} & \multicolumn{1}{c}{0.239 (df = 2; 93)} & \multicolumn{1}{c}{1.116 (df = 2; 2248)} & \multicolumn{1}{c}{0.291 (df = 2; 93)} & \multicolumn{1}{c}{1.216 (df = 2; 2248)} & \multicolumn{1}{c}{0.027 (df = 2; 93)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{6}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} }
+\end{table}
+
+Codes for generating Table \ref{tab:table12} are listed below.
+\lstinputlisting[language=R, caption={Table 12 Generation}, label={lst:table12}, linerange={220-223, 550-550, 557-562}]{../data_clean.R}
+
 \subsection{Table 13}
+
+
 
 \subsection{Table 14}
 
 \subsection{Table C1}
-% Please add the following required packages to your document preamble:
-% \usepackage{booktabs}
-% \usepackage{multirow}
-\begin{table}[!htb]
+
+\begin{table}[!h]
 	\centering
 	\caption{Change in Demographics after Circuit City Store Closure}
 	\label{tab:tabc1}
@@ -496,6 +560,9 @@ Codes for generating Table \ref{tab:table8} are listed below.
 		\begin{tabular}[c]{@{}c@{}}-1.789\\ (0.004)\end{tabular} \\ \bottomrule
 	\end{tabular}}
 \end{table}
+
+Codes for generating Table \ref{tab:tabc1} are listed below.
+\lstinputlisting[language=R, caption={Table C1 Generation}, label={lst:tableC1}, linerange={23-116}]{../table_C1.R}
 
 \subsection{Table D1-D4}
 
