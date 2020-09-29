@@ -686,9 +686,249 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 
 \subsection{Table D1-D4}
 
+\begin{table}[!h]\centering
+	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+	\caption{Search Intensity Effects on Sales for Amazon}
+	\label{tab:tabD1}
+	\begin{tabular}{l*{1}{c}}
+		%\toprule
+		\\[-1.8ex]\hline 
+		\hline
+		&\multicolumn{1}{c}{(1)}\\
+		&\multicolumn{1}{c}{Log(Sales + 1)}\\
+		\midrule
+		$\beta_1$         &       2.376\sym{***}\\
+		&    (0.0435)         \\
+		\addlinespace
+		$\beta_2$      &       3.194\sym{***}\\
+		&    (0.0675)         \\
+		\addlinespace
+		$\beta_3$            &      -2.153\sym{***}\\
+		&    (0.0744)         \\
+		\midrule
+		Observations        &       10791         \\
+		\bottomrule
+		\multicolumn{2}{l}{\footnotesize Standard errors in parentheses}\\
+		\multicolumn{2}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\ 
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]\centering
+	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+	\caption{Product Characteristics Effects on Search Intensity for Amazon}
+	\label{tab:tabD2}
+	\begin{tabular}{l*{2}{c}}
+		%\toprule
+		\\[-1.8ex]\hline 
+		\hline
+		&\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}\\
+		&\multicolumn{1}{c}{Log(PagesViewed)}&\multicolumn{1}{c}{Log(MinsSpent + 1)}\\
+		\midrule
+		$\beta_1$       &     0.00465\sym{***}&     0.00450\sym{***}\\
+		&  (0.000843)         &  (0.000785)         \\
+		\addlinespace
+		$\beta_2$      &       3.156\sym{***}&       2.923\sym{***}\\
+		&    (0.0581)         &    (0.0558)         \\
+		\midrule
+		Observations        &       10791         &       10791         \\
+		\bottomrule
+		\multicolumn{3}{l}{\footnotesize Standard errors in parentheses}\\
+		\multicolumn{3}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]\centering
+	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+	\caption{Product Characteristics Effects on Search Intensity for Amazon}
+	\label{tab:tabD3}
+	\begin{tabular}{l*{2}{c}}
+		\\[-1.8ex]\hline 
+		\hline
+		&\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}\\
+		&\multicolumn{1}{c}{RefDomainIsAmazon}&\multicolumn{1}{c}{ReferringDomainIsSearchEngine}\\
+		\midrule
+		ExperienceGood      &      -4.274\sym{***}&      -0.828\sym{***}\\
+		&     (0.310)         &    (0.0672)         \\
+		\midrule
+		Observations        &       10791         &       10791         \\
+		\bottomrule
+		\multicolumn{3}{l}{\footnotesize Standard errors in parentheses}\\
+		\multicolumn{3}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+	\end{tabular}
+\end{table}
+
 \subsection{Table E1-E2}
 
+\begin{table}[!h] \centering 
+	\caption{Results of the Sales Effect (All Product Categories)} 
+	\label{tab:tabE1} 
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-5} 
+		%\\[-1.8ex] 
+		& \multicolumn{4}{c}{log(TotalMonthlySales + 1)} \\ 
+		& \multicolumn{1}{c}{staples.com-0 Mile} & \multicolumn{1}{c}{walmart.com-0 Mile} & \multicolumn{1}{c}{dell.com-0 Mile} & \multicolumn{1}{c}{circuitcity.com-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & -0.027 & 0.026 & -0.006 & 0.003 \\ 
+		& (0.064) & (0.018) & (0.018) & (0.036) \\ 
+		$\beta_2$ & 0.082 & -0.034 & -0.018 & 0.013 \\ 
+		& (0.075) & (0.022) & (0.026) & (0.051) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{8,352} & \multicolumn{1}{c}{24,912} & \multicolumn{1}{c}{19,440} & \multicolumn{1}{c}{3,940} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0003} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.0001} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-0.046} & \multicolumn{1}{c}{-0.044} & \multicolumn{1}{c}{-0.045} & \multicolumn{1}{c}{-0.058} \\ 
+		F Statistic & \multicolumn{1}{c}{1.004 (df = 2; 7979)} & \multicolumn{1}{c}{1.332 (df = 2; 23849)} & \multicolumn{1}{c}{0.834 (df = 2; 18605)} & \multicolumn{1}{c}{0.094 (df = 2; 3722)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table} 
+
+\begin{table}[!h] \centering 
+	\caption{Results of the Online Search Effect (All Product Categories)} 
+	\label{tab:tabE2} 
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-5} 
+		%\\[-1.8ex] 
+		& \multicolumn{4}{c}{log(PagesPerDollar + 1)} \\ 
+		& \multicolumn{1}{c}{staples.com-0 Mile} & \multicolumn{1}{c}{walmart.com-0 Mile} & \multicolumn{1}{c}{dell.com-0 Mile} & \multicolumn{1}{c}{circuitcity.com-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.010 & 0.004 & 0.001 & -0.002 \\ 
+		& (0.027) & (0.009) & (0.004) & (0.012) \\ 
+		$\beta_2$ & -0.017 & -0.002 & -0.002 & 0.0002 \\ 
+		& (0.031) & (0.011) & (0.005) & (0.016) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{8,352} & \multicolumn{1}{c}{24,912} & \multicolumn{1}{c}{19,440} & \multicolumn{1}{c}{3,940} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.00004} & \multicolumn{1}{c}{0.00001} & \multicolumn{1}{c}{0.00001} & \multicolumn{1}{c}{0.00002} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-0.047} & \multicolumn{1}{c}{-0.045} & \multicolumn{1}{c}{-0.045} & \multicolumn{1}{c}{-0.058} \\ 
+		F Statistic & \multicolumn{1}{c}{0.171 (df = 2; 7979)} & \multicolumn{1}{c}{0.123 (df = 2; 23849)} & \multicolumn{1}{c}{0.083 (df = 2; 18605)} & \multicolumn{1}{c}{0.030 (df = 2; 3722)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table}
+
+\begin{table}[!h] \centering 
+	\caption{Results of the Online Search Effect (All Product Categories)} 
+	\label{tab:tabE3} 
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-5} 
+		%\\[-1.8ex] 
+		& \multicolumn{4}{c}{log(MinsPerDollar + 1)} \\ 
+		& \multicolumn{1}{c}{staples.com-0 Mile} & \multicolumn{1}{c}{walmart.com-0 Mile} & \multicolumn{1}{c}{dell.com-0 Mile} & \multicolumn{1}{c}{circuitcity.com-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & -0.011 & 0.002 & -0.001 & -0.002 \\ 
+		& (0.022) & (0.008) & (0.003) & (0.010) \\ 
+		$\beta_2$ & 0.008 & -0.001 & -0.001 & 0.00003 \\ 
+		& (0.027) & (0.010) & (0.005) & (0.014) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{8,352} & \multicolumn{1}{c}{24,912} & \multicolumn{1}{c}{19,440} & \multicolumn{1}{c}{3,940} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.00003} & \multicolumn{1}{c}{0.00000} & \multicolumn{1}{c}{0.00001} & \multicolumn{1}{c}{0.00002} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-0.047} & \multicolumn{1}{c}{-0.045} & \multicolumn{1}{c}{-0.045} & \multicolumn{1}{c}{-0.058} \\ 
+		F Statistic & \multicolumn{1}{c}{0.137 (df = 2; 7979)} & \multicolumn{1}{c}{0.056 (df = 2; 23849)} & \multicolumn{1}{c}{0.124 (df = 2; 18605)} & \multicolumn{1}{c}{0.037 (df = 2; 3722)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table}
+
 \subsection{Table G1-G3}
+
+\begin{table}[!h] \centering 
+	\caption{Results of the Sales Effect (Music, Movies and Videos, Console Video Games)} 
+	\label{tab:tabG1} 
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-4} 
+		%\\[-1.8ex] 
+		& \multicolumn{3}{c}{log(TotalMonthlySales + 1)} \\ 
+		& \multicolumn{1}{c}{amazon.com-0 Mile} & \multicolumn{1}{c}{bestbuy.com-0 Mile} & \multicolumn{1}{c}{circuitcity.com-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.005 & -0.001 & -0.002 \\ 
+		& (0.013) & (0.024) & (0.043) \\ 
+		$\beta_2$ & 0.008 & 0.000 &  \\ 
+		& (0.019) & (0.028) &  \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{52,416} & \multicolumn{1}{c}{5,808} & \multicolumn{1}{c}{810} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.00002} & \multicolumn{1}{c}{0.00000} & \multicolumn{1}{c}{0.00000} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-0.044} & \multicolumn{1}{c}{-0.048} & \multicolumn{1}{c}{-0.092} \\ 
+		F Statistic & \multicolumn{1}{c}{0.535 (df = 2; 50207)} & \multicolumn{1}{c}{0.004 (df = 2; 5541)} & \multicolumn{1}{c}{0.001 (df = 1; 741)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table}
+
+\begin{table}[!h] \centering 
+	\caption{Results of the Sales Effect (All Products; All Online Sellers in the Control Group)} 
+	\label{tab:tabG2} 
+	\resizebox{\columnwidth}{!}{
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{5}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-6} 
+		%\\[-1.8ex] 
+		& \multicolumn{5}{c}{log(TotalMonthlySales + 1)} \\ 
+		& \multicolumn{1}{c}{amazon.com-0 Mile} & \multicolumn{1}{c}{bestbuy.com-0 Mile} & \multicolumn{1}{c}{staples.com-0 Mile} & \multicolumn{1}{c}{walmart.com-0 Mile} & \multicolumn{1}{c}{circuitcity.com-0 Mile} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & 0.014 & -0.002 & -0.027 & -0.006 & 0.003 \\ 
+		& (0.015) & (0.033) & (0.064) & (0.018) & (0.036) \\ 
+		$\beta_2$ & -0.033 & 0.009 & 0.082 & -0.018 & 0.013 \\ 
+		& (0.022) & (0.036) & (0.075) & (0.026) & (0.051) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{68,472} & \multicolumn{1}{c}{14,664} & \multicolumn{1}{c}{8,352} & \multicolumn{1}{c}{19,440} & \multicolumn{1}{c}{3,940} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.00003} & \multicolumn{1}{c}{0.00002} & \multicolumn{1}{c}{0.0003} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.0001} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-0.044} & \multicolumn{1}{c}{-0.045} & \multicolumn{1}{c}{-0.046} & \multicolumn{1}{c}{-0.045} & \multicolumn{1}{c}{-0.058} \\ 
+		F Statistic & \multicolumn{1}{c}{1.091 (df = 2; 65594)} & \multicolumn{1}{c}{0.154 (df = 2; 14028)} & \multicolumn{1}{c}{1.004 (df = 2; 7979)} & \multicolumn{1}{c}{0.834 (df = 2; 18605)} & \multicolumn{1}{c}{0.094 (df = 2; 3722)} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{5}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} }
+\end{table}
+
+\begin{table}[!h] \centering 
+	\caption{Effect Referring Domain on Amazon Sales} 
+	\label{tab:tableG3} 
+	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} } 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		%& \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+		%\cline{2-3} 
+		%\\[-1.8ex] 
+		& \multicolumn{1}{c}{ReferringDomainIsSearchEngineRatio} & \multicolumn{1}{c}{NoReferringDomainRatio} \\ 
+		& \multicolumn{1}{c}{Amazon} & \multicolumn{1}{c}{Amazon} \\ 
+		\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)}\\ 
+		\hline \\[-1.8ex] 
+		$\beta_1$ & -0.010^{**} & 0.009^{*} \\ 
+		& (0.005) & (0.005) \\ 
+		$\beta_2$ & 0.011 & -0.008 \\ 
+		& (0.007) & (0.007) \\ 
+		\hline \\[-1.8ex] 
+		Observations & \multicolumn{1}{c}{73,416} & \multicolumn{1}{c}{73,416} \\ 
+		R$^{2}$ & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.00004} \\ 
+		Adjusted R$^{2}$ & \multicolumn{1}{c}{-0.044} & \multicolumn{1}{c}{-0.044} \\ 
+		F Statistic (df = 2; 70332) & \multicolumn{1}{c}{1.961} & \multicolumn{1}{c}{1.422} \\ 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table}
 
 \section{Advanced Method}
 
