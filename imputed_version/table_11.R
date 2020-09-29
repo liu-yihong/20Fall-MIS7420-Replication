@@ -5,7 +5,7 @@ library('sqldf')
 library('zoo')
 library('plm')
 library('stargazer')
-library('mice')
+library('cem')
 
 # all data path
 bb_zipcode_path <- 'data/bestbuyzipcodes_sample.sas7bdat'
@@ -164,9 +164,7 @@ for (i in 1:length(data_0m_t11_raw$Zip_Code)){
   if ( i %in% zipcheck) ziplist <-c(ziplist,data_0m_t11_raw$Zip_Code[i])
 }
 
-# assign matched zipcode to dataset
-concat_data1$Zipmatch <- ifelse(concat_data1$Zip_Code %in% ziplist, 1, 0)
-data_0m_t11 <- sqldf("SELECT Zip_Code, Zipmatch, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
+data_0m_t11 <- sqldf("SELECT Zip_Code, MonthYear, domain_name, SUM(prod_totprice) AS TotalMonthlySales, SUM(pages_viewed) / SUM(prod_totprice) AS PagesPerDollar, SUM(duration) / SUM(prod_totprice) AS MinsPerDollar, AVG(CCStorePresent) AS CCStorePresent, AVG(BBStorePresent) AS BBStorePresent, AVG(AfterStoreClosing) AS AfterStoreClosing FROM concat_data1 GROUP BY Zip_Code, MonthYear, domain_name")
 
 # Data Balancing & Imputation Function
 dta_bal_imp_all <- function(unbalanced_data){
@@ -210,7 +208,11 @@ dta_bal_imp_all <- function(unbalanced_data){
   return(balanced_data[-1, ])
 }
 
-data_0m_t11_balanced <- dta_bal_imp_all(data_0m_t11[data_0m_t11$Zipmatch==1, ])
+data_0m_t11_balanced <- dta_bal_imp_all(data_0m_t11)
+
+# assign matched zipcode to dataset
+data_0m_t11_balanced$Zipmatch <- ifelse(data_0m_t11_balanced$Zip_Code %in% ziplist, 1, 0)
+data_0m_t11_balanced <- data_0m_t11_balanced[data_0m_t11_balanced$Zipmatch == 1, ]
 
 # Table 11
 ama.t11.0mile.sale <- plm(log(TotalMonthlySales + 1) ~ DID + THREEINTER, data = data_0m_t11_balanced[(data_0m_t11_balanced$domain_name == "amazon.com"),], index = c("Zip_Code", "Time"), model = "within", effect = "twoways")
