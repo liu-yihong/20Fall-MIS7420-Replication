@@ -272,6 +272,14 @@ Codes for generating Table \ref{tab:table3} are listed below.
 
 \pagebreak
 \subsection{Table 4}
+In order to examine whether a competing online retailer benefits from the presence of a local showroom, we run the following regressionsfor Amazon.com and BestBuy.com:
+\begin{equation}
+	\begin{aligned}
+		& \log\left( \texttt{TotalMonthlySales} + 1\right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+		\\ &+ \beta_1 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t 
+		\\ &+ \beta_2 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t \times \texttt{BBStorePresent}_i \\ & + \epsilon_{i,t}
+	\end{aligned}
+\end{equation}
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect (All Product Categories)} 
 	\label{tab:table4} 
@@ -307,7 +315,19 @@ Codes for generating Table \ref{tab:table4} are listed below.
 
 \pagebreak
 \subsection{Table 5}
-
+To measure the impact of the exit of local showrooms on consumer online
+search intensity and the moderating effect of Best Buy Stores as an alternative local showroom, we run the following regressions:
+\resizebox{.8\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{equation}
+			\begin{aligned}
+				& \log\left( \texttt{PagesPerDollar} + 1,\ \texttt{MinsPerDollar} + 1\right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+				\\ &+ \beta_1 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t 
+				\\ &+ \beta_2 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t \times \texttt{BBStorePresent}_i \\ & + \epsilon_{i,t}
+			\end{aligned}
+		\end{equation}
+	\end{minipage}
+}
 \begin{table}[!htbp] \centering 
 	\caption{Results of the Search Effect (All Product Categories)} 
 	\label{tab:table5} 
@@ -343,7 +363,15 @@ Codes for generating Table \ref{tab:table5} are listed below.
 
 \pagebreak
 \subsection{Table 6}
-
+To capture the expected change in the odds ratio of the impact of Circuit City store closures and
+the moderating effect of Best Buy stores as an alternative local showroom, we run the following regressions:
+\begin{equation}
+	\begin{aligned}
+		& \textrm{Logit}\left( \texttt{ReferringDomainIsSearchEngine}, \texttt{NoReferringDomain} \right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+		\\ &+ \beta_1 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t 
+		\\ &+ \beta_2 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t \times \texttt{BBStorePresent}_i \\ & + \epsilon_{i,t}
+	\end{aligned}
+\end{equation}
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect: Experience and Search Products} 
 	\label{tab:table6} 
@@ -378,7 +406,8 @@ Codes for generating Table \ref{tab:table6} are listed below.
 
 \pagebreak
 \subsection{Table 7}
-
+We then test whether the show-rooming effect is stronger for experience goods, by grouping products into physical experience goods and search goods. Table \ref{tab:table7} and \ref{tab:table8} presents the
+results for sales model on physical experience products and search products separately.
 \begin{table}[!h] \centering 
 	\caption{Results of the Online Search Effect: Experience Products} 
 	\label{tab:table7} 
@@ -448,7 +477,7 @@ Codes for generating Table \ref{tab:table8} are listed below.
 
 \pagebreak
 \subsection{Table 9}
-
+Table \ref{tab:table9} presents the effect of store closure on referring domain.
 \begin{table}[!h] \centering 
 	\caption{Results of Logistic Regression for Referring Domain} 
 	\label{tab:table9} 
@@ -481,7 +510,7 @@ Stata codes for generating Table \ref{tab:table9} are listed below.
 
 \pagebreak
 \subsection{Table 10}
-
+By applying more traditional online search measures, we perform the same DID analysis for Amazon and bestbuy.com, to further investigate if the increase in search intensity manifests itself independent of sales amount.
 \begin{table}[!htbp] \centering 
 	\caption{Results of the Online Sales and Search Effect (All Product Categories)} 
 	\label{tab:table10} 
@@ -516,7 +545,16 @@ Codes for generating Table \ref{tab:table10} are listed below.
 
 \pagebreak
 \subsection{Table 11}
-
+To further investigate if the increase in search intensity has a
+causal link to the Circuit City store closures and not due to 
+other endogenous reasons, we adopt coarsened exact matching
+algorithm to match each zip code from
+the treatment group with an equivalent zip code from the
+control group, using zip code level demographics (average
+household age, average income and average household size).
+The matching results left us with 56 zip codes in each group.
+Using the data from the combined 112 zip codes, we ran the
+models for sales and search.
 \begin{table}[!htbp] \centering 
 	\caption{Results of the Online Sales and Search Effect After Matching Zip Codes: TotalMonthlySales, PagesPerDollar, and MinsPerDollar (All Product Categories)} 
 	\label{tab:table11} 
@@ -539,7 +577,10 @@ Codes for generating Table \ref{tab:table10} are listed below.
 		Observations & \multicolumn{1}{c}{1,776} & \multicolumn{1}{c}{384} & \multicolumn{1}{c}{1,776} & \multicolumn{1}{c}{384} & \multicolumn{1}{c}{1,776} & \multicolumn{1}{c}{384} \\ 
 		R$^{2}$ & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.00002} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.0001} & \multicolumn{1}{c}{0.002} & \multicolumn{1}{c}{0.00003} \\ 
 		Adjusted R$^{2}$ & \multicolumn{1}{c}{-0.058} & \multicolumn{1}{c}{-0.113} & \multicolumn{1}{c}{-0.057} & \multicolumn{1}{c}{-0.113} & \multicolumn{1}{c}{-0.056} & \multicolumn{1}{c}{-0.113} \\ 
-		F Statistic & \multicolumn{1}{c}{0.740 (df = 2; 1677)} & \multicolumn{1}{c}{0.008 (df = 1; 344)} & \multicolumn{1}{c}{1.183 (df = 2; 1677)} & \multicolumn{1}{c}{0.030 (df = 1; 344)} & \multicolumn{1}{c}{1.931 (df = 2; 1677)} & \multicolumn{1}{c}{0.012 (df = 1; 344)} \\ 
+		F Statistic & \multicolumn{1}{c}{0.740 (df = 2; 1677)} & \multicolumn{1}{c}{0.008 (df = 1; 344)} & \multicolumn{1}{c}{1.183 (df = 2; 1677)} & \multicolumn{1}{c}{0.030 (df = 1; 344)} & \multicolumn{1}{c}{1.931 (df = 2; 1677)} & \multicolumn{1}{c}{0.012 (df = 1; 344)} \\
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{6}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
 	\end{tabular} }
 \end{table}
 
@@ -548,7 +589,11 @@ Codes for generating Table \ref{tab:table11} are listed below.
 
 \pagebreak
 \subsection{Table 12}
-
+To examine the possible heterogeneity
+within the geographic zip code area which may be
+unaccounted for, we add location specific demographics
+in the regression equations as interaction terms with
+DID term.
 \begin{table}[!htbp] \centering 
 	\caption{Results of the Online Sales and Search Effect with Zip Code Demographics as Interactions and Time Fixed Effects (All Product Categories)} 
 	\label{tab:table12} 
@@ -583,7 +628,7 @@ Codes for generating Table \ref{tab:table12} are listed below.
 
 \pagebreak
 \subsection{Table 13}
-
+In order to address the serial correlation issue, the first solution is to ignore the time series and the results is in Table \ref{tab:table13}.
 \begin{table}[!h] \centering 
 	\caption{Results of the Online Sales and Search Effect After Matching Zip Codes: TotalMonthlySales, PagesPerDollar, and MinsPerDollar (All Product Categories)} 
 	\label{tab:table13} 
@@ -618,7 +663,9 @@ Codes for generating Table \ref{tab:table13} are listed below.
 
 \pagebreak
 \subsection{Table 14}
-
+For the serial correlation issue, another solution is to to use a
+White-like estimator to calculate the variance-covariance
+matrix of the error term.The results is in Table \ref{tab:table14}.
 \begin{table}[!htbp] \centering 
 	\caption{Results of the Online Sales and Search Effect with Arbitrary Variance-Covariance Matrix
 		Corrections (All Product Categories)} 
@@ -705,9 +752,23 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 \lstinputlisting[language=R, caption={Table C1 Generation}, label={lst:tableC1}, linerange={23-116}]{../table_C1.R}
 
 \pagebreak
-\subsection{Table D1-D4}
-
+\subsection{Table D1-D3}
+In this section, we further investigate the relationship between search and sales to understand the underlying conversion.
 \subsubsection{Table D1}
+In order to capture how much time a user would spend on a page on average before making a purchase, we define a new search intensity measure called minutes per page. And we run the following model to explore the relationship between search intensity and change in sales:\\
+\resizebox{.9\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{equation}
+			\begin{aligned}
+				& \log\left( \texttt{Sales} + 1\right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+				\\ &+ \beta_1 \ \texttt{MinsPerPage}_{i,t} 
+				\\ &+ \beta_2 \ \texttt{ExperienceGood}_{i,t} 
+				\\ &+ \beta_3 \ \texttt{MinsPerPage}_{i,t} \times \texttt{ExperienceGood}_{i,t} 
+				\\ & + \epsilon_{i,t}
+			\end{aligned}
+		\end{equation}
+	\end{minipage}
+}
 \begin{table}[!h]\centering
 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 	\caption{Search Intensity Effects on Sales for Amazon}
@@ -740,6 +801,15 @@ Stata codes for generating Table \ref{tab:tabD1} are listed below.
 \pagebreak
 
 \subsubsection{Table D2}
+Next, we explored the correlation between product characteristics and search intensity during a transaction for Amazon sales:
+\begin{equation}
+	\begin{aligned}
+		& \log\left( \texttt{PagesViewed}, \texttt{MinsSpent} + 1\right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+		\\ &+ \beta_1 \ \texttt{ProductPrice}_{i,t} 
+		\\ &+ \beta_2 \ \texttt{ExperienceGood}_{i,t} 
+		\\ & + \epsilon_{i,t}
+	\end{aligned}
+\end{equation}
 \begin{table}[!h]\centering
 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 	\caption{Product Characteristics Effects on Search Intensity for Amazon}
@@ -769,6 +839,14 @@ Stata codes for generating Table \ref{tab:tabD2} are listed below.
 \pagebreak
 
 \subsubsection{Table D3}
+To study the search path used by experienced goods buyers, we run the following regression to assess whether experience goods buyers come directly to Amazon or through a search engine:
+\begin{equation}
+	\begin{aligned}
+		& \textrm{Logit}\left( \texttt{RefDomainIsAmazon}, \texttt{RefDomainIsSearchEngine}\right)_{i,t} \\ &= \tau_{t} 
+		\\ &+ \beta_1 \ \texttt{ExperienceGood}_{i,t} 
+		\\ & + \epsilon_{i,t}
+	\end{aligned}
+\end{equation}
 \begin{table}[!h]\centering
 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 	\caption{Product Characteristics Effects on Search Intensity for Amazon}
@@ -794,10 +872,24 @@ Stata codes for generating Table \ref{tab:tabD3} are listed below.
 \pagebreak
 
 \subsection{Table E1-E3}
+In this section, we examine the effect of a physical store closure on some other online retailers, to investigate concern that the effect of the Circuit City store may also be felt by the other smaller online consumer electronic stores.
 \subsubsection{Table E1}
+In order to check which online seller benefits due to the exit of the offline Circuit City store, we run the following regression model:\\
+\resizebox{.8\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{equation}
+			\begin{aligned}
+				& \log\left( \texttt{TotalMonthlySales} + 1\right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+				\\ &+ \beta_1 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t 
+				\\ &+ \beta_2 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t \times \texttt{BBStorePresent}_i \\ & + \epsilon_{i,t}
+			\end{aligned}
+		\end{equation}
+	\end{minipage}
+}
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect (All Product Categories)} 
 	\label{tab:tabE1} 
+	\resizebox{0.85\columnwidth}{!}{
 	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
@@ -820,7 +912,7 @@ Stata codes for generating Table \ref{tab:tabD3} are listed below.
 		\hline 
 		\hline \\[-1.8ex] 
 		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
-	\end{tabular} 
+	\end{tabular} }
 \end{table} 
 
 Codes for generating Table \ref{tab:tabE1} are listed below.
@@ -828,9 +920,23 @@ Codes for generating Table \ref{tab:tabE1} are listed below.
 \pagebreak
 
 \subsubsection{Table E2}
+We run the following regression model to investigate if the change in search intensity as seen for amazon.com is also prevalent in the other major online seller categories.\\
+\resizebox{.8\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{equation}
+			\begin{aligned}
+				& \log\left( \texttt{PagesPerDollar} + 1, \texttt{MinsPerDollar} + 1\right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+				\\ &+ \beta_1 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t 
+				\\ &+ \beta_2 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t \times \texttt{BBStorePresent}_i \\ & + \epsilon_{i,t}
+			\end{aligned}
+		\end{equation}
+	\end{minipage}
+}\\
+The results of the search models are presented in Table \ref{tab:tabE2} and \ref{tab:tabE3}.
 \begin{table}[!h] \centering 
 	\caption{Results of the Online Search Effect (All Product Categories)} 
 	\label{tab:tabE2} 
+	\resizebox{0.85\columnwidth}{!}{
 	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
@@ -853,7 +959,7 @@ Codes for generating Table \ref{tab:tabE1} are listed below.
 		\hline 
 		\hline \\[-1.8ex] 
 		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
-	\end{tabular} 
+	\end{tabular} }
 \end{table}
 
 Codes for generating Table \ref{tab:tabE2} are listed below.
@@ -864,6 +970,7 @@ Codes for generating Table \ref{tab:tabE2} are listed below.
 \begin{table}[!h] \centering 
 	\caption{Results of the Online Search Effect (All Product Categories)} 
 	\label{tab:tabE3} 
+	\resizebox{0.85\columnwidth}{!}{
 	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
@@ -886,7 +993,7 @@ Codes for generating Table \ref{tab:tabE2} are listed below.
 		\hline 
 		\hline \\[-1.8ex] 
 		\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
-	\end{tabular} 
+	\end{tabular} }
 \end{table}
 
 Codes for generating Table \ref{tab:tabE3} are listed below.
@@ -895,9 +1002,24 @@ Codes for generating Table \ref{tab:tabE3} are listed below.
 
 \subsection{Table G1-G3}
 \subsubsection{Table G1}
+In order to further rule out other alternate
+explanations, we extracted the product categories most purchased by returning customers. We accordingly run the following regressions (with the selected product category sales as the outcome
+variable), for all the focal online competitors to Circuit City.\\
+\resizebox{.8\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{equation}
+			\begin{aligned}
+				& \log\left( \texttt{TotalMonthlySales} + 1\right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+				\\ &+ \beta_1 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t 
+				\\ &+ \beta_2 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t \times \texttt{BBStorePresent}_i \\ & + \epsilon_{i,t}
+			\end{aligned}
+		\end{equation}
+	\end{minipage}
+}
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect (Music, Movies and Videos, Console Video Games)} 
 	\label{tab:tabG1} 
+	\resizebox{0.85\columnwidth}{!}{
 	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
@@ -920,7 +1042,7 @@ Codes for generating Table \ref{tab:tabE3} are listed below.
 		\hline 
 		\hline \\[-1.8ex] 
 		\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
-	\end{tabular} 
+	\end{tabular} }
 \end{table}
 
 Codes for generating Table \ref{tab:tabG1} are listed below.
@@ -928,10 +1050,11 @@ Codes for generating Table \ref{tab:tabG1} are listed below.
 \pagebreak
 
 \subsubsection{Table G2}
+We further, included all the zip codes in our dataset even if they did not have any sale at one of the five top online competitors. The results are given below:
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect (All Products; All Online Sellers in the Control Group)} 
 	\label{tab:tabG2} 
-	\resizebox{\columnwidth}{!}{
+	\resizebox{0.85\columnwidth}{!}{
 	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
@@ -962,9 +1085,24 @@ Codes for generating Table \ref{tab:tabG2} are listed below.
 \pagebreak
 
 \subsubsection{Table G3}
+There might also be a concern that we use individual level transactions to tease out how customers landed into Amazon’s site after the store
+closure, not the zip code level aggregated data. Hence, we aggregated all the sales per zip code per month and calculated the ratio of sales navigation originating from a search engine and also those going directly to amazon.com. We then run a regression on both ratios as outcome variables.
+\resizebox{.8\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{equation}
+			\begin{aligned}
+				& \left( \texttt{AmazonReferringDomainIsSearchEngine Ratio}, \texttt{NoReferringDomain
+					Ratio}\right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+				\\ &+ \beta_1 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t 
+				\\ &+ \beta_2 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t \times \texttt{BBStorePresent}_i \\ & + \epsilon_{i,t}
+			\end{aligned}
+		\end{equation}
+	\end{minipage}
+}
 \begin{table}[!h] \centering 
 	\caption{Effect Referring Domain on Amazon Sales} 
 	\label{tab:tableG3} 
+	\resizebox{0.85\columnwidth}{!}{
 	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} } 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
@@ -987,7 +1125,7 @@ Codes for generating Table \ref{tab:tabG2} are listed below.
 		\hline 
 		\hline \\[-1.8ex] 
 		\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
-	\end{tabular} 
+	\end{tabular} }
 \end{table}
 
 Codes for generating Table \ref{tab:tableG3} are listed below.
