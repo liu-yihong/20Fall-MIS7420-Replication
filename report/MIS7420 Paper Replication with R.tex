@@ -149,13 +149,19 @@
 \pagebreak
 
 \section{Data Cleaning Process}
-
+In this section, we present our codes for data cleaning and panel data preparation. Package \texttt{dplyr} \cite{wickham2015dplyr}, \texttt{haven} \cite{wickham2018haven}, \texttt{sqldf} \cite{grothendieck2017sqldf}, \texttt{zoo} \cite{zeileis2005zoo}, \texttt{plm} \cite{croissant2008panel}, are used in this process. \\
+Notice that the provided data only contain users' browsing transactions with purchase. When we apply search engine filter on reference domain, besides google.com, yahoo.com, bing.com, some other search engines (msn.com, aol.com, live.com, mywebsearch.com) and five vendors (amazon.com, staples.com, dell.com, walmart.com, bestbuy.com) are also involved. For product categories, we only consider those sold at Circuit City and exclude three other types (Business machines, Office furniture, Office supplies
+).\\
+% Focused Variables
+For \texttt{CCStorePresent}, its value is the same as \texttt{Store\_Close\_Status} in original data. And we set \texttt{AfterStoreClosing} to 0 if the time of user transaction is before November, 2008 and 1 otherwise. For \texttt{BBStorePresent}, we set it as 1 for user transactions if there's any Best Buy stores around user's location and 0 otherwise, using the \texttt{bestbuyzipcodes\_sample} dataset. \texttt{NoReferringDomain} is the variable we construct if the user directly came to the target website without any referring domain. And \texttt{ReferringDomainIsSearchEngine} is the variable we construct if the user was referred by search engine to the target website.\\
+Finally, two panel data are constructed by concatenating \texttt{sales\_allotherzipcode} with \texttt{sales\_ccity0mile} and \texttt{sales\_ccity5mile}. After the concatenation and aggregation, we found that the built panel data are unbalanced, in a sense that, for instance, \texttt{zip\_code} 75080 only has 2 records, instead of 24 (2 years). It happens because (a) the provided data are a small sample from the whole original one; (b) the original data might not cover the full 2 years period. Unbalanced panel data has been studied by many researchers \cite{baltagi2006unbalanced}, like unbalanced seemingly unrelated regression \cite{mcdowell2004help}. Here we adopt a naive solution: we impute the missing values for one \texttt{zip\_code} by averaging those non-missing values of this \texttt{zip\_code}.
+% imbalanced Panel Data
 \lstinputlisting[language=R, caption={Data Preprocess}, label={lst:dtaclean}, linerange={1-7, 10-63, 71-134, 138-143}]{../data_clean.R}
 
 \pagebreak
 
 \section{Paper Replication}
-In this section, we provide our replication for this paper. Names for subsections correspond to the tables in the published paper.
+In this section, we provide our replication for this paper. Names for subsections correspond to the tables in the published paper. Package \texttt{stargazer} \cite{hlavac2015stargazer} and \texttt{estout} \cite{jann2004estout} are used to export estimation into \LaTeX \ format.
 \subsection{Table 1}
 Table \ref{tab:table1} shows the summary statistics of top five vendors by sales volume.
 \begin{table}[!h] \centering 
@@ -182,6 +188,7 @@ Table \ref{tab:table1} shows the summary statistics of top five vendors by sales
 Codes for generating Table \ref{tab:table1} are listed below.
 \lstinputlisting[language=R, caption={Table 1 Generation}, label={lst:table1}, linerange={228-231}]{../data_clean.R}
 
+\pagebreak
 \subsection{Table 2}
 Table \ref{tab:table2} summarizes the frequency of referral channels for various online retailers.
 \begin{table}[!h] \centering 
@@ -207,6 +214,7 @@ Table \ref{tab:table2} summarizes the frequency of referral channels for various
 Codes for generating Table \ref{tab:table2} are listed below.
 \lstinputlisting[language=R, caption={Table 2 Generation}, label={lst:table2}, linerange={233-239}]{../data_clean.R}
 
+\pagebreak
 \subsection{Table 3}
 Table \ref{tab:table3} reports the model-free average DID values for some outcome variables.
 \begin{table}[!h]
@@ -262,11 +270,12 @@ Table \ref{tab:table3} reports the model-free average DID values for some outcom
 Codes for generating Table \ref{tab:table3} are listed below.
 \lstinputlisting[language=R, caption={Table 3 Generation}, label={lst:table3}, linerange={15-15, 23-175}]{../table3.R}
 
+\pagebreak
 \subsection{Table 4}
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect (All Product Categories)} 
 	\label{tab:table4} 
-	\resizebox{\columnwidth}{!}{
+	\resizebox{0.8\columnwidth}{!}{
 		\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 			\\[-1.8ex]\hline 
 			\hline \\[-1.8ex] 
@@ -296,6 +305,7 @@ Codes for generating Table \ref{tab:table3} are listed below.
 Codes for generating Table \ref{tab:table4} are listed below.
 \lstinputlisting[language=R, caption={Table 4 Generation}, label={lst:table4}, linerange={145-152, 248-252}]{../data_clean.R}
 
+\pagebreak
 \subsection{Table 5}
 
 \begin{table}[!htbp] \centering 
@@ -331,6 +341,7 @@ Codes for generating Table \ref{tab:table4} are listed below.
 Codes for generating Table \ref{tab:table5} are listed below.
 \lstinputlisting[language=R, caption={Table 5 Generation}, label={lst:table5}, linerange={154-161, 278-283, 299-303}]{../data_clean.R}
 
+\pagebreak
 \subsection{Table 6}
 
 \begin{table}[!h] \centering 
@@ -365,6 +376,7 @@ Codes for generating Table \ref{tab:table5} are listed below.
 Codes for generating Table \ref{tab:table6} are listed below.
 \lstinputlisting[language=R, caption={Table 6 Generation}, label={lst:table6}, linerange={163-176, 332-341}]{../data_clean.R}
 
+\pagebreak
 \subsection{Table 7}
 
 \begin{table}[!h] \centering 
@@ -399,6 +411,7 @@ Codes for generating Table \ref{tab:table6} are listed below.
 Codes for generating Table \ref{tab:table7} are listed below.
 \lstinputlisting[language=R, caption={Table 7 Generation}, label={lst:table7}, linerange={178-191, 380-388}]{../data_clean.R}
 
+\pagebreak
 \subsection{Table 8}
 
 \begin{table}[!h] \centering 
@@ -433,12 +446,13 @@ Codes for generating Table \ref{tab:table7} are listed below.
 Codes for generating Table \ref{tab:table8} are listed below.
 \lstinputlisting[language=R, caption={Table 8 Generation}, label={lst:table8}, linerange={410-418}]{../data_clean.R}
 
+\pagebreak
 \subsection{Table 9}
 
 \begin{table}[!h] \centering 
 	\caption{Results of Logistic Regression for Referring Domain} 
 	\label{tab:table9} 
-	\resizebox{\columnwidth}{!}{
+	\resizebox{0.7\columnwidth}{!}{
 		\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 			\\[-1.8ex]\hline 
 			\hline \\[-1.8ex] 
@@ -465,6 +479,7 @@ Codes for generating Table \ref{tab:table8} are listed below.
 Stata codes for generating Table \ref{tab:table9} are listed below.
 \lstinputlisting[caption={Table 9 Generation}, label={lst:table9}, linerange={3-9, 13-13, 17-18, 22-22}]{../t9.do}
 
+\pagebreak
 \subsection{Table 10}
 
 \begin{table}[!htbp] \centering 
@@ -499,6 +514,7 @@ Stata codes for generating Table \ref{tab:table9} are listed below.
 Codes for generating Table \ref{tab:table10} are listed below.
 \lstinputlisting[language=R, caption={Table 10 Generation}, label={lst:table10}, linerange={210-214, 471-478}]{../data_clean.R}
 
+\pagebreak
 \subsection{Table 11}
 
 \begin{table}[!htbp] \centering 
@@ -530,6 +546,7 @@ Codes for generating Table \ref{tab:table10} are listed below.
 Codes for generating Table \ref{tab:table11} are listed below.
 \lstinputlisting[language=R, caption={Table 11 Generation}, label={lst:table11}, linerange={156-156, 161-228, 236-239}]{../table11.R}
 
+\pagebreak
 \subsection{Table 12}
 
 \begin{table}[!htbp] \centering 
@@ -564,6 +581,7 @@ Codes for generating Table \ref{tab:table11} are listed below.
 Codes for generating Table \ref{tab:table12} are listed below.
 \lstinputlisting[language=R, caption={Table 12 Generation}, label={lst:table12}, linerange={220-223, 550-550, 557-562}]{../data_clean.R}
 
+\pagebreak
 \subsection{Table 13}
 
 \begin{table}[!h] \centering 
@@ -598,6 +616,7 @@ Codes for generating Table \ref{tab:table12} are listed below.
 Codes for generating Table \ref{tab:table13} are listed below.
 \lstinputlisting[language=R, caption={Table 13 Generation}, label={lst:table13}, linerange={7-7, 137-197}]{../table13_14.R}
 
+\pagebreak
 \subsection{Table 14}
 
 \begin{table}[!htbp] \centering 
@@ -633,13 +652,14 @@ Codes for generating Table \ref{tab:table13} are listed below.
 Codes for generating Table \ref{tab:table14} are listed below.
 \lstinputlisting[language=R, caption={Table 14 Generation}, label={lst:table14}, linerange={205-221}]{../table13_14.R}
 
+\pagebreak
 \subsection{Table C1}
-Table \ref{tab:tabc1} shows 
+
 \begin{table}[!h]
 	\centering
 	\caption{Change in Demographics after Circuit City Store Closure}
 	\label{tab:tabc1}
-	\resizebox{\columnwidth}{!}{
+	\resizebox{0.9\columnwidth}{!}{
 	\begin{tabular}{@{}cccccccccc@{}}
 		%\toprule
 		\\[-1.8ex]\hline 
@@ -684,8 +704,10 @@ Table \ref{tab:tabc1} shows
 Codes for generating Table \ref{tab:tabc1} are listed below.
 \lstinputlisting[language=R, caption={Table C1 Generation}, label={lst:tableC1}, linerange={23-116}]{../table_C1.R}
 
+\pagebreak
 \subsection{Table D1-D4}
 
+\subsubsection{Table D1}
 \begin{table}[!h]\centering
 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 	\caption{Search Intensity Effects on Sales for Amazon}
@@ -713,6 +735,11 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 	\end{tabular}
 \end{table}
 
+Stata codes for generating Table \ref{tab:tabD1} are listed below.
+\lstinputlisting[language=R, caption={Table D1 Generation}, label={lst:tableD1}, linerange={11-15}]{../table_D.do}
+\pagebreak
+
+\subsubsection{Table D2}
 \begin{table}[!h]\centering
 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 	\caption{Product Characteristics Effects on Search Intensity for Amazon}
@@ -737,6 +764,11 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 	\end{tabular}
 \end{table}
 
+Stata codes for generating Table \ref{tab:tabD2} are listed below.
+\lstinputlisting[language=R, caption={Table D2 Generation}, label={lst:tableD2}, linerange={18-24}]{../table_D.do}
+\pagebreak
+
+\subsubsection{Table D3}
 \begin{table}[!h]\centering
 	\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 	\caption{Product Characteristics Effects on Search Intensity for Amazon}
@@ -757,8 +789,12 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 	\end{tabular}
 \end{table}
 
-\subsection{Table E1-E2}
+Stata codes for generating Table \ref{tab:tabD3} are listed below.
+\lstinputlisting[language=R, caption={Table D3 Generation}, label={lst:tableD3}, linerange={27-33}]{../table_D.do}
+\pagebreak
 
+\subsection{Table E1-E3}
+\subsubsection{Table E1}
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect (All Product Categories)} 
 	\label{tab:tabE1} 
@@ -787,6 +823,11 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 	\end{tabular} 
 \end{table} 
 
+Codes for generating Table \ref{tab:tabE1} are listed below.
+\lstinputlisting[language=R, caption={Table E1 Generation}, label={lst:tableE1}, linerange={187-191}]{../imputed_version/table_16E.R}
+\pagebreak
+
+\subsubsection{Table E2}
 \begin{table}[!h] \centering 
 	\caption{Results of the Online Search Effect (All Product Categories)} 
 	\label{tab:tabE2} 
@@ -815,6 +856,11 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 	\end{tabular} 
 \end{table}
 
+Codes for generating Table \ref{tab:tabE2} are listed below.
+\lstinputlisting[language=R, caption={Table E2 Generation}, label={lst:tableE2}, linerange={198-202}]{../imputed_version/table_16E.R}
+\pagebreak
+
+\subsubsection{Table E3}
 \begin{table}[!h] \centering 
 	\caption{Results of the Online Search Effect (All Product Categories)} 
 	\label{tab:tabE3} 
@@ -843,8 +889,12 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 	\end{tabular} 
 \end{table}
 
-\subsection{Table G1-G3}
+Codes for generating Table \ref{tab:tabE3} are listed below.
+\lstinputlisting[language=R, caption={Table E3 Generation}, label={lst:tableE3}, linerange={209-213}]{../imputed_version/table_16E.R}
+\pagebreak
 
+\subsection{Table G1-G3}
+\subsubsection{Table G1}
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect (Music, Movies and Videos, Console Video Games)} 
 	\label{tab:tabG1} 
@@ -873,6 +923,11 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 	\end{tabular} 
 \end{table}
 
+Codes for generating Table \ref{tab:tabG1} are listed below.
+\lstinputlisting[language=R, caption={Table G1 Generation}, label={lst:tableG1}, linerange={229-234}]{../imputed_version/table_17G.R}
+\pagebreak
+
+\subsubsection{Table G2}
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect (All Products; All Online Sellers in the Control Group)} 
 	\label{tab:tabG2} 
@@ -902,6 +957,11 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 	\end{tabular} }
 \end{table}
 
+Codes for generating Table \ref{tab:tabG2} are listed below.
+\lstinputlisting[language=R, caption={Table G2 Generation}, label={lst:tableG2}, linerange={241-247}]{../imputed_version/table_17G.R}
+\pagebreak
+
+\subsubsection{Table G3}
 \begin{table}[!h] \centering 
 	\caption{Effect Referring Domain on Amazon Sales} 
 	\label{tab:tableG3} 
@@ -930,8 +990,12 @@ Codes for generating Table \ref{tab:tabc1} are listed below.
 	\end{tabular} 
 \end{table}
 
-\section{Advanced Method}
+Codes for generating Table \ref{tab:tabG3} are listed below.
+\lstinputlisting[language=R, caption={Table G3 Generation}, label={lst:tableG3}, linerange={255-257}]{../imputed_version/table_17G.R}
+\pagebreak
 
+\section{Advanced Method}
+In this section, we present some advanced methods on the provided data.
 %\subsection{Synthetic Control Method}
 
 \subsection{Generalized Synthetic Control Method}
