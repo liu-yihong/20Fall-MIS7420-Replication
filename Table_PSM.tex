@@ -46,3 +46,5 @@ For robustness, we use nearest propensity score matching to match each zipcode f
 
 The code for generating Table \ref{tab:tablepsm} are listed as below.
 \lstinputlisting[language=R, caption={Table PSM Generation}, label={lst:tablepsm}, linerange={138-172, 216-237}]{../psm.R}
+
+For this paper, look-ahead propensity score matching (LA-PSM) is not a viable method. The main assumption of LA-PSM is to match observations in treatment group with observations in control group that will convert to treatment group later. For example, if Circuit City would have closed 100 stores during November 2008 and another 100 store during November 2009, then we can be able to implement LA-PSM. However, in this case, all Circuit City stores were closed during at the same time, making LA-PSM impossible to implement.
