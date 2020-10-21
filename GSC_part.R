@@ -109,102 +109,404 @@ concat_data2 %<>%
 
 # Treatment
 concat_data1 %<>% 
-  mutate(treatment = ifelse(CCStorePresent==1 & AfterStoreClosing == 1, 1, 0))
+  mutate(treatment = ifelse(CCStorePresent==1 & AfterStoreClosing==1, 1, 0))
 concat_data2 %<>% 
-  mutate(treatment = ifelse(CCStorePresent==1 & AfterStoreClosing == 1, 1, 0))
+  mutate(treatment = ifelse(CCStorePresent==1 & AfterStoreClosing==1, 1, 0))
 
 
 
-# Select the useful variables
-while(FALSE) {
-gsc_0mile <- concat_data1 %>% 
-  select(-Store_Close_Status, -domain_id, -ref_domain_name, -MinsPerDollar,
-         -event_date,-event_time,-tran_flg,-prod_name, -MonthYear,
-         -CCStorePresent,- AfterStoreClosing,-BB_Store_Status, -PagesPerDollar,
-         -site_session_id, -prod_category_id, -basket_tot, -machine_id, -Zip_Code,
-         -pages_viewed, -duration, -prod_qty, -prod_totprice, -household_size, 
-         -hoh_oldest_age, -household_income, -children, -treatment)
-
-gsc_5mile <- concat_data2  %>%
-  select(-Store_Close_Status,-domain_id, -ref_domain_name, -MinsPerDollar,
-         -event_date,-event_time,-tran_flg,-prod_name, -MonthYear,
-         -CCStorePresent, -AfterStoreClosing,-BB_Store_Status, -PagesPerDollar,
-         -site_session_id,-prod_category_id, -basket_tot, -machine_id, -Zip_Code,
-         -pages_viewed, -duration, -prod_qty, -prod_totprice, -household_size, 
-         -hoh_oldest_age, -household_income, -children, -treatment)
-}
 
 
-################################# Amazon Total month sales #####################################
+################################# Amazon Total monthly sales 0 mile #####################################
 # Select all the observable variables that can be grouped
 # Group data by zip code and time
-amzon_mothsales_0mile <- sqldf("SELECT SUM(prod_totprice) AS TotalMonthlySales, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
+amazon_monthsales_0mile <- sqldf("SELECT SUM(prod_totprice) AS TotalMonthlySales, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
                                AVG(household_size) AS Household_Size, AVG(hoh_oldest_age) AS Hoh_Oldest_Age, AVG(household_income) AS Household_Income, 
                                AVG(children) AS Children, AVG(connection_speed) AS Connection_Speed, MonthYear, Zip_Code 
                                FROM concat_data1 WHERE domain_name='amazon.com' GROUP BY MonthYear, Zip_Code ORDER BY Zip_Code, MonthYear")
 # number of control group = 2796
-num_control = length(unique(amzon_mothsales_0mile$Zip_Code)) - length(unique(amzon_mothsales_0mile[which(amzon_mothsales_0mile$Treatment == 1), ]$Zip_Code))
+num_control = length(unique(amazon_monthsales_0mile$Zip_Code)) - length(unique(amazon_monthsales_0mile[which(amazon_monthsales_0mile$Treatment == 1), ]$Zip_Code))
 # the last pre-treatment period = 10
-t0 = length(unique(amzon_mothsales_0mile$MonthYear)) - length(unique(amzon_mothsales_0mile[which(amzon_mothsales_0mile$Treatment == 1), ]$MonthYear))
+t0 = length(unique(amazon_monthsales_0mile$MonthYear)) - length(unique(amazon_monthsales_0mile[which(amazon_monthsales_0mile$Treatment == 1), ]$MonthYear))
 
-amzon_mothsales_0mile$logTotalMonthlySales = log(amzon_mothsales_0mile$TotalMonthlySales + 1)
-amzon_mothsales_0mile$endo = amzon_mothsales_0mile$Treatment * amzon_mothsales_0mile$BBStorePresent
+amazon_monthsales_0mile$logTotalMonthlySales = log(amazon_monthsales_0mile$TotalMonthlySales + 1)
+amazon_monthsales_0mile$endo = amazon_monthsales_0mile$Treatment * amazon_monthsales_0mile$BBStorePresent
 
-# Visualize the data structure and spot missing values
-panelView(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
-            Children + Connection_Speed, data = amzon_mothsales_0mile,  index = c("Zip_Code","MonthYear"), pre.post = TRUE)
+# Visualize the data structure for treated units and spot missing values
+treated_zip = unique(amazon_monthsales_0mile[which(amazon_monthsales_0mile$Treatment == 1), ]$Zip_Code)
+control_zip = unique(amazon_monthsales_0mile[which(amazon_monthsales_0mile$Treatment == 0), ]$Zip_Code)
+panelView(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income + Children + Connection_Speed, 
+          data = amazon_monthsales_0mile, show.id = c(970:1030), theme.bw = TRUE, index = c("Zip_Code","MonthYear"), 
+          xlab = "Time", axis.adjust = TRUE, pre.post = TRUE, main = "Panel View of a Subset of Amazon Sales Data for Missing values")
 
-# Error: Will remove all treated units then min.T0 >= 4; treated units has too few pre-treatment periods when min.T0 <= 3
-out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
-              Children + Connection_Speed, data = amzon_mothsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
-              CV = FALSE, r = c(0, 5), estimator = "mc", se = TRUE, inference = "parametric", min.T0 = 4, nboots = 1000, parallel = TRUE)
+# With BBStorePresent, even with r=0, we are not able to run the function
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#              Children + Connection_Speed, data = amazon_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# With BBStorePresent, try matrix completion method: does not work because the matrix is too sparse
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                Children + Connection_Speed, data = amazon_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, estimator = "mc", se = TRUE, inference = "nonparametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# Without BBStorePresent, but increase r (can only run with r={0,1} and min.To = 3)
+out_amazon_monthsales_0mile <- gsynth(logTotalMonthlySales ~ Treatment + Household_Size + Hoh_Oldest_Age + Household_Income +
+                Children + Connection_Speed, data = amazon_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+              CV = TRUE, r = c(0,1), se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# insignificant result
+print(out_amazon_monthsales_0mile)
+
+# some figures
+plot(out_amazon_monthsales_0mile, type = "raw", theme.bw = TRUE, axis.adjust = TRUE)
+plot(out_amazon_monthsales_0mile, type = "counterfactual", raw = "all", theme.bw = TRUE, axis.adjust = TRUE)
 
 
 
-amzon_mothsales_5mile <- sqldf("SELECT SUM(prod_totprice) AS TotalMonthlySales, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
+
+################################# Amazon Total monthly sales 5 mile #####################################
+
+amazon_monthsales_5mile <- sqldf("SELECT SUM(prod_totprice) AS TotalMonthlySales, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
                                AVG(household_size) AS Household_Size, AVG(hoh_oldest_age) AS Hoh_Oldest_Age, AVG(household_income) AS Household_Income, 
                                AVG(children) AS Children, AVG(connection_speed) AS Connection_Speed, MonthYear, Zip_Code 
                                FROM concat_data2 WHERE domain_name='amazon.com' GROUP BY MonthYear, Zip_Code ORDER BY Zip_Code, MonthYear")
 # number of control group = 2855
-num_control = length(unique(amzon_mothsales_5mile$Zip_Code)) - length(unique(amzon_mothsales_5mile[which(amzon_mothsales_5mile$Treatment == 1), ]$Zip_Code))
+num_control = length(unique(amazon_monthsales_5mile$Zip_Code)) - length(unique(amazon_monthsales_5mile[which(amazon_monthsales_5mile$Treatment == 1), ]$Zip_Code))
 # the last pre-treatment period = 10
-t0 = length(unique(amzon_mothsales_5mile$MonthYear)) - length(unique(amzon_mothsales_5mile[which(amzon_mothsales_5mile$Treatment == 1), ]$MonthYear))
+t0 = length(unique(amazon_monthsales_5mile$MonthYear)) - length(unique(amazon_monthsales_5mile[which(amazon_monthsales_5mile$Treatment == 1), ]$MonthYear))
 
-amzon_mothsales_5mile$logTotalMonthlySales = log(amzon_mothsales_5mile$TotalMonthlySales + 1)
-amzon_mothsales_5mile$endo = amzon_mothsales_5mile$Treatment * amzon_mothsales_5mile$BBStorePresent
+amazon_monthsales_5mile$logTotalMonthlySales = log(amazon_monthsales_5mile$TotalMonthlySales + 1)
+amazon_monthsales_5mile$endo = amazon_mothsales_5mile$Treatment * amazon_monthsales_5mile$BBStorePresent
 
-# Visualize the data structure and spot missing values
-panelView(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
-            Children + Connection_Speed, data = amzon_mothsales_5mile,  index = c("Zip_Code","MonthYear"), pre.post = TRUE)
+# With BBStorePresent, even with r=0, we are not able to run the function
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#              Children + Connection_Speed, data = amazon_mothsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 7, nboots = 1000, parallel = TRUE, seed = 1)
 
-# Error: treated units has too few pre-treatment periods when min.T0 <= 6
-out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
-                Children + Connection_Speed, data = amzon_mothsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
-              CV = FALSE, r = c(0, 5), se = TRUE, inference = "parametric", min.T0 = 7, nboots = 1000, parallel = TRUE)
+# With BBStorePresent, try matrix completion method: does not work because the matrix is too sparse
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                Children + Connection_Speed, data = amazon_monthsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, estimator = "mc", se = TRUE, inference = "nonparametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# Without BBStorePresent, but increase r (can only run with r={0,1}). MSPE increases as min.T0 increases
+out_amazon_monthsales_5mile <- gsynth(logTotalMonthlySales ~ Treatment + Household_Size + Hoh_Oldest_Age + Household_Income +
+                                        Children + Connection_Speed, data = amazon_monthsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+                                      CV = TRUE, r = c(0,1), se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+
+# insignificant result
+print(out_amazon_monthsales_5mile)
 
 
 
-################################# BestBuy Total month sales #####################################
+
+
+################################# BestBuy Total month sales 0 mile #####################################
 # Select all the observable variables that can be grouped
 # Group data by zip code and time
-bestbuy_mothsales_0mile <- sqldf("SELECT SUM(prod_totprice) AS TotalMonthlySales, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
+bestbuy_monthsales_0mile <- sqldf("SELECT SUM(prod_totprice) AS TotalMonthlySales, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
                                AVG(household_size) AS Household_Size, AVG(hoh_oldest_age) AS Hoh_Oldest_Age, AVG(household_income) AS Household_Income, 
                                AVG(children) AS Children, AVG(connection_speed) AS Connection_Speed, MonthYear, Zip_Code 
                                FROM concat_data1 WHERE domain_name='bestbuy.com' GROUP BY MonthYear, Zip_Code ORDER BY Zip_Code, MonthYear")
 # number of control group = 597
-num_control = length(unique(bestbuy_mothsales_0mile$Zip_Code)) - length(unique(bestbuy_mothsales_0mile[which(bestbuy_mothsales_0mile$Treatment == 1), ]$Zip_Code))
-# the last pre-treatment period = 16
-t0 = length(unique(bestbuy_mothsales_0mile$MonthYear)) - length(unique(bestbuy_mothsales_0mile[which(bestbuy_mothsales_0mile$Treatment == 1), ]$MonthYear))
+num_control = length(unique(bestbuy_monthsales_0mile$Zip_Code)) - length(unique(bestbuy_monthsales_0mile[which(bestbuy_monthsales_0mile$Treatment == 1), ]$Zip_Code))
+# the last pre-treatment period in the data = 16
+t0 = length(unique(bestbuy_monthsales_0mile$MonthYear)) - length(unique(bestbuy_monthsales_0mile[which(bestbuy_monthsales_0mile$Treatment == 1), ]$MonthYear))
 
-bestbuy_mothsales_0mile$logTotalMonthlySales = log(bestbuy_mothsales_0mile$TotalMonthlySales + 1)
-bestbuy_mothsales_0mile$endo = bestbuy_mothsales_0mile$Treatment * bestbuy_mothsales_0mile$BBStorePresent
+bestbuy_monthsales_0mile$logTotalMonthlySales = log(bestbuy_monthsales_0mile$TotalMonthlySales + 1)
+bestbuy_monthsales_0mile$endo = bestbuy_monthsales_0mile$Treatment * bestbuy_monthsales_0mile$BBStorePresent
 
-# Visualize the data structure and spot missing values
-panelView(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
-            Children + Connection_Speed, data = bestbuy_mothsales_0mile,  index = c("Zip_Code","MonthYear"), pre.post = TRUE)
+# only 12 treated units and we are missing values from most of the time
 
-# Error: Will remove all treated units
-out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
-                Children + Connection_Speed, data = bestbuy_mothsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
-              CV = FALSE, r = c(0, 5), estimator = "mc", lambda = 1, se = TRUE, inference = "nonparametric", min.T0 = 2, nboots = 1000, parallel = TRUE)
-              
+treated_zip = unique(bestbuy_monthsales_0mile[which(bestbuy_monthsales_0mile$Treatment == 1), ]$Zip_Code)
+length(treated_zip)
+panelView(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income + Children + Connection_Speed, 
+          data = bestbuy_monthsales_0mile, id = treated_zip, theme.bw = TRUE, index = c("Zip_Code","MonthYear"), 
+          xlab = "Time", axis.adjust = TRUE, pre.post = TRUE, main = "Panel View of a Subset of Amazon Sales Data for Missing values")
+
+
+# Because at all treated zip_code, the available data is no more than 3 months, we are not able to run gsc
+# With BBStorePresent, even with r=0, we are not able to run the function
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#              Children + Connection_Speed, data = bestbuy_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# With BBStorePresent, try matrix completion method: does not work because the matrix is too sparse
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                Children + Connection_Speed, data = bestbuy_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, estimator = "mc", se = TRUE, inference = "nonparametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# Without BBStorePresent, but increase r (can only run with r={0,1}). MSPE increases as min.T0 increases
+#out_bestbuy_monthsales_0mile <- gsynth(logTotalMonthlySales ~ Treatment + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                                        Children + Connection_Speed, data = bestbuy_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#                                      CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+
+
+################################# BestBuy Total month sales 5 mile #####################################
+# Select all the observable variables that can be grouped
+# Group data by zip code and time
+bestbuy_monthsales_5mile <- sqldf("SELECT SUM(prod_totprice) AS TotalMonthlySales, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
+                               AVG(household_size) AS Household_Size, AVG(hoh_oldest_age) AS Hoh_Oldest_Age, AVG(household_income) AS Household_Income, 
+                               AVG(children) AS Children, AVG(connection_speed) AS Connection_Speed, MonthYear, Zip_Code 
+                               FROM concat_data2 WHERE domain_name='bestbuy.com' GROUP BY MonthYear, Zip_Code ORDER BY Zip_Code, MonthYear")
+# number of control group = 619
+num_control = length(unique(bestbuy_monthsales_5mile$Zip_Code)) - length(unique(bestbuy_monthsales_5mile[which(bestbuy_monthsales_5mile$Treatment == 1), ]$Zip_Code))
+# the last pre-treatment period in the data = 11
+t0 = length(unique(bestbuy_monthsales_5mile$MonthYear)) - length(unique(bestbuy_monthsales_5mile[which(bestbuy_monthsales_5mile$Treatment == 1), ]$MonthYear))
+
+bestbuy_monthsales_5mile$logTotalMonthlySales = log(bestbuy_monthsales_5mile$TotalMonthlySales + 1)
+bestbuy_monthsales_5mile$endo = bestbuy_monthsales_5mile$Treatment * bestbuy_monthsales_5mile$BBStorePresent
+
+# 79 treated units and values are missing for pre-treated units
+treated_zip = unique(bestbuy_monthsales_5mile[which(bestbuy_monthsales_5mile$Treatment == 1), ]$Zip_Code)
+length(treated_zip)
+panelView(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income + Children + Connection_Speed, 
+          data = bestbuy_monthsales_5mile, id = treated_zip, theme.bw = TRUE, index = c("Zip_Code","MonthYear"), 
+          xlab = "Time", axis.adjust = TRUE, pre.post = TRUE, main = "Panel View of a Subset of Amazon Sales Data for Missing values")
+
+
+# Because at all treated zip_code, the available data is no more than 3 months, we are not able to run gsc
+# With BBStorePresent, even with r=0, we are not able to run the function
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#              Children + Connection_Speed, data = bestbuy_monthsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# With BBStorePresent, try matrix completion method: does not work because the matrix is too sparse
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                Children + Connection_Speed, data = bestbuy_monthsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, estimator = "mc", se = TRUE, inference = "nonparametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# Removed all treated units because none of the treated units has data in more than 3 months
+#out_bestbuy_monthsales_5mile <- gsynth(logTotalMonthlySales ~ Treatment + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                                        Children + Connection_Speed, data = bestbuy_monthsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#                                      CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+
+
+
+
+################################# Amazon Pages Per Dollar 0 mile #####################################
+# Select all the observable variables that can be grouped
+# Group data by zip code and time
+amazon_PagesPerDollar_0mile <- sqldf("SELECT PagesPerDollar, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
+                               AVG(household_size) AS Household_Size, AVG(hoh_oldest_age) AS Hoh_Oldest_Age, AVG(household_income) AS Household_Income, 
+                               AVG(children) AS Children, AVG(connection_speed) AS Connection_Speed, MonthYear, Zip_Code 
+                               FROM concat_data1 WHERE domain_name='amazon.com' GROUP BY MonthYear, Zip_Code ORDER BY Zip_Code, MonthYear")
+
+amazon_PagesPerDollar_0mile$logPagesPerDollar = log(amazon_PagesPerDollar_0mile$PagesPerDollar + 1)
+amazon_PagesPerDollar_0mile$endo = amazon_PagesPerDollar_0mile$Treatment * amazon_PagesPerDollar_0mile$BBStorePresent
+
+
+# With BBStorePresent, even with r=0, we are not able to run the function
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#              Children + Connection_Speed, data = amazon_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# With BBStorePresent, try matrix completion method: does not work because the matrix is too sparse
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                Children + Connection_Speed, data = amazon_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, estimator = "mc", se = TRUE, inference = "nonparametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# Without BBStorePresent, but increase r (can only run with r={0,1} and min.To = 3)
+out_amazon_PagesPerDollar_0mile <- gsynth(logPagesPerDollar ~ Treatment + Household_Size + Hoh_Oldest_Age + Household_Income +
+                                      Children + Connection_Speed, data = amazon_PagesPerDollar_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+                                      CV = TRUE, r = c(0,1), se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# insignificant result
+print(out_amazon_PagesPerDollar_0mile)
+
+# some figures
+plot(out_amazon_PagesPerDollar_0mile, type = "raw", theme.bw = TRUE, axis.adjust = TRUE)
+plot(out_amazon_PagesPerDollar_0mile, type = "counterfactual", raw = "all", theme.bw = TRUE, axis.adjust = TRUE)
+
+
+
+################################# Amazon Pages Per Dollar 5 mile #####################################
+
+amazon_PagesPerDollar_5mile <- sqldf("SELECT PagesPerDollar, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
+                               AVG(household_size) AS Household_Size, AVG(hoh_oldest_age) AS Hoh_Oldest_Age, AVG(household_income) AS Household_Income, 
+                               AVG(children) AS Children, AVG(connection_speed) AS Connection_Speed, MonthYear, Zip_Code 
+                               FROM concat_data2 WHERE domain_name='amazon.com' GROUP BY MonthYear, Zip_Code ORDER BY Zip_Code, MonthYear")
+# number of control group = 2855
+num_control = length(unique(amazon_PagesPerDollar_5mile$Zip_Code)) - length(unique(amazon_PagesPerDollar_5mile[which(amazon_PagesPerDollar_5mile$Treatment == 1), ]$Zip_Code))
+# the last pre-treatment period = 10
+t0 = length(unique(amazon_PagesPerDollar_5mile$MonthYear)) - length(unique(amazon_PagesPerDollar_5mile[which(amazon_PagesPerDollar_5mile$Treatment == 1), ]$MonthYear))
+
+amazon_PagesPerDollar_5mile$logPagesPerDollar = log(amazon_PagesPerDollar_5mile$PagesPerDollar + 1)
+amazon_PagesPerDollar_5mile$endo = amazon_PagesPerDollar_5mile$Treatment * amazon_PagesPerDollar_5mile$BBStorePresent
+
+# With BBStorePresent, even with r=0, we are not able to run the function
+#out <- gsynth(logPagesPerDollar ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#              Children + Connection_Speed, data = amazon_mothsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 7, nboots = 1000, parallel = TRUE, seed = 1)
+
+# With BBStorePresent, try matrix completion method: does not work because the matrix is too sparse
+#out <- gsynth(logPagesPerDollar ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                Children + Connection_Speed, data = amazon_PagesPerDollar_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, estimator = "mc", se = TRUE, inference = "nonparametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# Without BBStorePresent, but increase r (can only run with r={0,1}). MSPE increases as min.T0 increases
+out_amazon_PagesPerDollar_5mile <- gsynth(logPagesPerDollar ~ Treatment + Household_Size + Hoh_Oldest_Age + Household_Income +
+                                        Children + Connection_Speed, data = amazon_PagesPerDollar_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+                                      CV = TRUE, r = c(0,1), se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+
+# insignificant result
+print(out_amazon_PagesPerDollar_5mile)
+
+
+
+################################# Amazon Mins Per Dollar 0 mile #####################################
+
+amazon_MinsPerDollar_0mile <- sqldf("SELECT MinsPerDollar, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
+                               AVG(household_size) AS Household_Size, AVG(hoh_oldest_age) AS Hoh_Oldest_Age, AVG(household_income) AS Household_Income, 
+                               AVG(children) AS Children, AVG(connection_speed) AS Connection_Speed, MonthYear, Zip_Code 
+                               FROM concat_data1 WHERE domain_name='amazon.com' GROUP BY MonthYear, Zip_Code ORDER BY Zip_Code, MonthYear")
+
+amazon_MinsPerDollar_0mile$logMinsPerDollar = log(amazon_MinsPerDollar_0mile$MinsPerDollar + 1)
+amazon_MinsPerDollar_0mile$endo = amazon_MinsPerDollar_0mile$Treatment * amazon_MinsPerDollar_0mile$BBStorePresent
+
+# With BBStorePresent, even with r=0, we are not able to run the function
+#out <- gsynth(logMinsPerDollar ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#              Children + Connection_Speed, data = amazon_mothsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 7, nboots = 1000, parallel = TRUE, seed = 1)
+
+# With BBStorePresent, try matrix completion method: does not work because the matrix is too sparse
+#out <- gsynth(logMinsPerDollar ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                Children + Connection_Speed, data = amazon_MinsPerDollar_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, estimator = "mc", se = TRUE, inference = "nonparametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# Without BBStorePresent, but increase r (can only run with r={0,1}). MSPE increases as min.T0 increases
+out_amazon_MinsPerDollar_0mile <- gsynth(logMinsPerDollar ~ Treatment + Household_Size + Hoh_Oldest_Age + Household_Income +
+                                            Children + Connection_Speed, data = amazon_MinsPerDollar_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+                                          CV = TRUE, r = c(0,1), se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+
+# insignificant result
+print(out_amazon_MinsPerDollar_0mile)
+
+
+################################# Amazon Mins Per Dollar 5 mile #####################################
+
+amazon_MinsPerDollar_5mile <- sqldf("SELECT MinsPerDollar, AVG(treatment) AS Treatment, AVG(BBStorePresent) AS BBStorePresent,
+                               AVG(household_size) AS Household_Size, AVG(hoh_oldest_age) AS Hoh_Oldest_Age, AVG(household_income) AS Household_Income, 
+                               AVG(children) AS Children, AVG(connection_speed) AS Connection_Speed, MonthYear, Zip_Code 
+                               FROM concat_data1 WHERE domain_name='amazon.com' GROUP BY MonthYear, Zip_Code ORDER BY Zip_Code, MonthYear")
+
+amazon_MinsPerDollar_5mile$logMinsPerDollar = log(amazon_MinsPerDollar_0mile$MinsPerDollar + 1)
+amazon_MinsPerDollar_5mile$endo = amazon_mothsales_5mile$Treatment * amazon_MinsPerDollar_5mile$BBStorePresent
+
+# With BBStorePresent, even with r=0, we are not able to run the function
+#out <- gsynth(logMinsPerDollar ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#              Children + Connection_Speed, data = amazon_mothsales_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 7, nboots = 1000, parallel = TRUE, seed = 1)
+
+# With BBStorePresent, try matrix completion method: does not work because the matrix is too sparse
+#out <- gsynth(logMinsPerDollar ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                Children + Connection_Speed, data = amazon_MinsPerDollar_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, estimator = "mc", se = TRUE, inference = "nonparametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# Without BBStorePresent, but increase r (can only run with r={0,1}). MSPE increases as min.T0 increases
+out_amazon_MinsPerDollar_5mile <- gsynth(logMinsPerDollar ~ Treatment + Household_Size + Hoh_Oldest_Age + Household_Income +
+                                           Children + Connection_Speed, data = amazon_MinsPerDollar_5mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+                                         CV = TRUE, r = c(0,1), se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+
+# insignificant result
+print(out_amazon_MinsPerDollar_5mile)
+
+
+# Same as previous results in sales effect, we do not have enough data to run the equation for BestBuy
+
+################################# BestBuy Pages Per Dollar 0 mile #####################################
+
+################################# BestBuy Pages Per Dollar 5 mile #####################################
+
+################################# BestBuy Mins Per Dollar 0 mile #####################################
+
+################################# BestBuy Mins Per Dollar 5 mile #####################################
+
+
+
+
+
+##################### Data Imputation ########################
+dta_bal_imp <- function(unbalanced_data){
+  balanced_data <- NA
+  # For every Domain Name
+  for (domain_name in unique(unbalanced_data$domain_name)) {
+    # Unbalanced Panel Data Imputation
+    unbalanced_data_one <- unbalanced_data[unbalanced_data$domain_name == domain_name, ]
+    unbalanced_data_one$Time <- as.integer(as.factor(unbalanced_data_one$MonthYear))
+    
+    temp <- make.pbalanced(unbalanced_data_one,
+                           index = c("Zip_Code", "Time"))
+    # Impute Dependent Variables by Group Average 
+    temp <- temp %>%
+      group_by(Zip_Code) %>%
+      mutate(TotalMonthlySales = ifelse(is.na(TotalMonthlySales), mean(TotalMonthlySales, na.rm=TRUE), TotalMonthlySales))
+    # CCStorePresent
+    #for (zcode in unique(temp$Zip_Code)) {
+    #  CCStorePresent <- setdiff(unique(temp[temp$Zip_Code == zcode, ]$CCStorePresent)[1:2], c(NA))
+    #  temp[temp$Zip_Code == zcode, ]$CCStorePresent <- CCStorePresent
+    #}
+    temp <- temp %>%
+      group_by(Zip_Code) %>%
+      mutate(CCStorePresent = ifelse(is.na(CCStorePresent), mean(CCStorePresent, na.rm=TRUE), CCStorePresent))
+    # AfterStoreClosing
+    temp$AfterStoreClosing <- ifelse(temp$Time < 11, 0, 1)
+    # BBStorePresent
+    temp <- merge(temp, bb_zipcode, by.x ="Zip_Code", by.y = "Zip_Code", all.x = TRUE)
+    temp$BBStorePresent <- na.fill(temp$BB_Store_Status, 0)
+    # Fill Domain Name
+    temp$domain_name <- domain_name
+    # Add DID & THREE INTERACTION
+    temp$DID <- temp$CCStorePresent * temp$AfterStoreClosing
+    temp$THREEINTER <- temp$DID * temp$BBStorePresent
+    
+    # Merge Data
+    balanced_data <- rbind(balanced_data, temp)
+  }
+  return(balanced_data[-1, ])
+}
+
+
+## Let's try with BestBuy data
+bestbuy_monthsales_0mile <- sqldf("SELECT SUM(prod_totprice) AS TotalMonthlySales, CCStorePresent, AfterStoreClosing, AVG(BBStorePresent) AS BBStorePresent,
+                               AVG(household_size) AS Household_Size, AVG(hoh_oldest_age) AS Hoh_Oldest_Age, AVG(household_income) AS Household_Income, 
+                               AVG(children) AS Children, AVG(connection_speed) AS Connection_Speed, MonthYear, Zip_Code 
+                               FROM concat_data1 WHERE domain_name='bestbuy.com' GROUP BY MonthYear, Zip_Code ORDER BY Zip_Code, MonthYear")
+# number of control group = 597
+num_control = length(unique(bestbuy_monthsales_0mile$Zip_Code)) - length(unique(bestbuy_monthsales_0mile[which(bestbuy_monthsales_0mile$Treatment == 1), ]$Zip_Code))
+# the last pre-treatment period in the data = 16
+t0 = length(unique(bestbuy_monthsales_0mile$MonthYear)) - length(unique(bestbuy_monthsales_0mile[which(bestbuy_monthsales_0mile$Treatment == 1), ]$MonthYear))
+
+bestbuy_monthsales_0mile$logTotalMonthlySales = log(bestbuy_monthsales_0mile$TotalMonthlySales + 1)
+bestbuy_monthsales_0mile$endo = bestbuy_monthsales_0mile$Treatment * bestbuy_monthsales_0mile$BBStorePresent
+
+########## Did not work. Check later ###########
+bestbuy_monthsales_0mile_temp <- dta_bal_imp(bestbuy_monthsales_0mile)
+
+# Because at all treated zip_code, the available data is no more than 3 months, we are not able to run gsc
+# With BBStorePresent, even with r=0, we are not able to run the function
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#              Children + Connection_Speed, data = bestbuy_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# With BBStorePresent, try matrix completion method: does not work because the matrix is too sparse
+#out <- gsynth(logTotalMonthlySales ~ Treatment + endo + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                Children + Connection_Speed, data = bestbuy_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#              CV = TRUE, r = 0, estimator = "mc", se = TRUE, inference = "nonparametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+# Without BBStorePresent, but increase r (can only run with r={0,1}). MSPE increases as min.T0 increases
+#out_bestbuy_monthsales_0mile <- gsynth(logTotalMonthlySales ~ Treatment + Household_Size + Hoh_Oldest_Age + Household_Income +
+#                                        Children + Connection_Speed, data = bestbuy_monthsales_0mile, index = c("Zip_Code","MonthYear"), force = "two-way", 
+#                                      CV = TRUE, r = 0, se = TRUE, inference = "parametric", min.T0 = 3, nboots = 1000, parallel = TRUE, seed = 1)
+
+
+
+
+################# Try Microsynth for the case of two treatment variables ################
+## https://cran.r-project.org/web/packages/microsynth/vignettes/introduction.html
+
