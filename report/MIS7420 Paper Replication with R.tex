@@ -272,7 +272,7 @@ Codes for generating Table \ref{tab:table3} are listed below.
 
 \pagebreak
 \subsection{Table 4}
-In order to examine whether a competing online retailer benefits from the presence of a local showroom, we run the following regressionsfor Amazon.com and BestBuy.com:
+In order to examine whether a competing online retailer benefits from the presence of a local showroom, we run the following regressions for Amazon.com and BestBuy.com:
 \begin{equation}
 	\begin{aligned}
 		& \log\left( \texttt{TotalMonthlySales} + 1\right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
@@ -363,19 +363,11 @@ Codes for generating Table \ref{tab:table5} are listed below.
 
 \pagebreak
 \subsection{Table 6}
-To capture the expected change in the odds ratio of the impact of Circuit City store closures and
-the moderating effect of Best Buy stores as an alternative local showroom, we run the following regressions:
-\begin{equation}
-	\begin{aligned}
-		& \textrm{Logit}\left( \texttt{ReferringDomainIsSearchEngine}, \texttt{NoReferringDomain} \right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
-		\\ &+ \beta_1 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t 
-		\\ &+ \beta_2 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t \times \texttt{BBStorePresent}_i \\ & + \epsilon_{i,t}
-	\end{aligned}
-\end{equation}
+We then test whether the show-rooming effect upon online sales is stronger for experience goods, by grouping products into physical experience goods and search goods. Table \ref{tab:table6} presents the results for sales model on physical experience products and search products.
 \begin{table}[!h] \centering 
 	\caption{Results of the Sales Effect: Experience and Search Products} 
 	\label{tab:table6} 
-	\resizebox{\columnwidth}{!}{
+	\resizebox{0.9\columnwidth}{!}{
 	\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
@@ -406,7 +398,7 @@ Codes for generating Table \ref{tab:table6} are listed below.
 
 \pagebreak
 \subsection{Table 7}
-We then test whether the show-rooming effect is stronger for experience goods, by grouping products into physical experience goods and search goods. Table \ref{tab:table7} and \ref{tab:table8} presents the
+We then test whether the show-rooming effect upon online search behaviors is stronger for experience goods, by grouping products into physical experience goods and search goods. Table \ref{tab:table7} and \ref{tab:table8} presents the
 results for sales model on physical experience products and search products separately.
 \begin{table}[!h] \centering 
 	\caption{Results of the Online Search Effect: Experience Products} 
@@ -477,6 +469,15 @@ Codes for generating Table \ref{tab:table8} are listed below.
 
 \pagebreak
 \subsection{Table 9}
+To capture the expected change in the odds ratio of the impact of Circuit City store closures and
+the moderating effect of Best Buy stores as an alternative local showroom, we run the following regressions:
+\begin{equation}
+	\begin{aligned}
+		& \textrm{Logit}\left( \texttt{ReferringDomainIsSearchEngine}, \texttt{NoReferringDomain} \right)_{i,t} \\ &= \mu_{i} + \tau_{t} 
+		\\ &+ \beta_1 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t 
+		\\ &+ \beta_2 \ \texttt{CCStorePresent}_i \times \texttt{AfterStoreClosing}_t \times \texttt{BBStorePresent}_i \\ & + \epsilon_{i,t}
+	\end{aligned}
+\end{equation}
 Table \ref{tab:table9} presents the effect of store closure on referring domain.
 \begin{table}[!h] \centering 
 	\caption{Results of Logistic Regression for Referring Domain} 
