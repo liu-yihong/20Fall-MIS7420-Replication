@@ -98,8 +98,8 @@
 \newcommand{\hmwkClass}{MIS7420 Seminar in Management Information Systems}
 \newcommand{\hmwkClasstwo}{MIS7420 \\ Seminar in Management Information Systems}
 \newcommand{\hmwkClassInstructor}{Prof. Zhiqiang Zheng, Prof. Vijay Mookerjee }
-\newcommand{\hmwkAuthorName}{\textbf{Author: Yihong Liu, }}
-\newcommand{\hmwkID}{\textbf{NETID: YXL180111, }}
+\newcommand{\hmwkAuthorName}{\textbf{Author: Beyza Celik, Luoying Chen, Duc Vu, Yihong Liu }}
+\newcommand{\hmwkID}{\textbf{NETID: BXC190000, LXC190027, DDV110020, YXL180111 }}
 %
 % Title Page
 %
@@ -136,13 +136,13 @@
 
 % Make Table of Contents
 \tableofcontents
-\pagebreak
+%\pagebreak
 % Make List of Figures
 \listoffigures
-\pagebreak
+%\pagebreak
 % Make List of Tables
 \listoftables
-\pagebreak
+%\pagebreak
 % Make List of Codes
 \addcontentsline{toc}{section}{List of Codes}
 \lstlistoflistings 
@@ -154,7 +154,7 @@ Notice that the provided data only contain users' browsing transactions with pur
 ).\\
 % Focused Variables
 For \texttt{CCStorePresent}, its value is the same as \texttt{Store\_Close\_Status} in original data. And we set \texttt{AfterStoreClosing} to 0 if the time of user transaction is before November, 2008 and 1 otherwise. For \texttt{BBStorePresent}, we set it as 1 for user transactions if there's any Best Buy stores around user's location and 0 otherwise, using the \texttt{bestbuyzipcodes\_sample} dataset. \texttt{NoReferringDomain} is the variable we construct if the user directly came to the target website without any referring domain. And \texttt{ReferringDomainIsSearchEngine} is the variable we construct if the user was referred by search engine to the target website.\\
-Finally, two panel data are constructed by concatenating \texttt{sales\_allotherzipcode} with \texttt{sales\_ccity0mile} and \texttt{sales\_ccity5mile}. After the concatenation and aggregation, we found that the built panel data are unbalanced, in a sense that, for instance, \texttt{zip\_code} 75080 only has 2 records, instead of 24 (2 years). It happens because (a) the provided data are a small sample from the whole original one; (b) the original data might not cover the full 2 years period. Unbalanced panel data has been studied by many researchers \cite{baltagi2006unbalanced}, like unbalanced seemingly unrelated regression \cite{mcdowell2004help}. Here we adopt a naive solution: we impute the missing values for one \texttt{zip\_code} by averaging those non-missing values of this \texttt{zip\_code}.
+Finally, two panel data are constructed by concatenating \texttt{sales\_allotherzipcode} with \texttt{sales\_ccity0mile} and \texttt{sales\_ccity5mile}. After the concatenation and aggregation, we found that the built panel data are unbalanced, in a sense that, for instance, \texttt{zip\_code} 75080 only has 2 records, instead of 24 (2 years). It happens because (a) the provided data are a small sample from the whole original one; (b) the original data might not cover the full 2 years period. Unbalanced panel data has been studied by many researchers \cite{baltagi2006unbalanced}, like unbalanced seemingly unrelated regression \cite{mcdowell2004help}. Here we adopt a naive solution: we impute the missing values for one \texttt{zip\_code} and one target domain by averaging those non-missing values of this \texttt{zip\_code}.
 % imbalanced Panel Data
 \lstinputlisting[language=R, caption={Data Preprocess}, label={lst:dtaclean}, linerange={1-7, 10-63, 71-134, 138-143}]{../data_clean.R}
 
@@ -1138,14 +1138,232 @@ In this section, we present some advanced methods on the provided data.
 %\subsection{Synthetic Control Method}
 
 \subsection{Generalized Synthetic Control Method}
+In this dataset, the DID model is a good fit because 1) the treatment of all treated units begins at a same time t, which produces the parallel trend, and 2) no treatment heterogeneity exists. However, we still give a test to the GSC method. The GSC method merges the Interactive Fixed Effects (IFE) model and the Synthetic Control (SC) method. It accepts one treatment variable and observable control variables and handles unobserved factors in the model. R package \texttt{gsynth} is used in this section.\\
+Because the three-way interaction variable \texttt{CCStorePresent $\times$ AfterStoreClosing $\times$ BBStorePresent} in the original paper is one of the way used to address endogeneity concern and the GSC model is able to handle the omitted variables problem and only accepts one treatment variable, we decide to focus on the interaction variable \texttt{CCStorePresent $\times$ AfterStoreClosing}. Also, because we are lacking BestBuy data regarding the pre-treatment periods and the number of units, the GSC model is not able to fit into Bestbuy data after grouping, which leads us to focus on Amazon data only. \\
+\cite{xu2017generalized} suggests that data should have at least 10 pre-treatment periods and 40 control units to apply the model. Since our data begins in January 2018 and the treatment begins in November 2018, the condition for the number of pre-treatment periods is satisfied. On the other hand, after grouping the data based on zip code and month, we have 2796 control units in the 0-mile data and 2855 control units in the 5-mile data. Therefore, the condition for the number of control variables is also satisfied. \\
+R package \texttt{gsynth} allows us to feed in one outcome variable, one treatment variable and control variables and get the best value of r, the number of latent variables, directly after cross-validation. Besides, the model from the package drops the units which only have data records in less than n time periods, where n can be changes by users but should be at least 3. With larger n, the model involves less bias. However, because our data is imbalance and sparse, we are not able to use n larger than 3 because otherwise too many data will be dropped and the model cannot be applied. Also, we are restricted with r no greater than 1 because of the same reason. Figure \ref{fig:GSC1} shows the panel view of a subset of data as an example. We can observe how sparse the data is and see the limited number of available periods in each units. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.18]{pic/Panel_View.jpg}
+	\caption{Panel View of a Subset of Amazon Data after Grouping}
+	\label{fig:GSC1}
+\end{figure}
+
+With all restrictions stated above, we run the model on sales effect and search breadth and depth on both 0-mile data and 5-mile data, with outcome variable \texttt{AmazonTotalMonthlySales}, \texttt{AmazonPagesPerDollar} and \texttt{AmazonMinsPerDollar}, respectively. Table \ref{tab:table25} shows the chosen number of latent variables and the \textit{Average Treatment effect on the Treated unit} (ATT) in each of the models.
+
+\begin{table}[h] \centering 
+	\caption{Number of Latent Variables and the Averaage Treatment Effect for Amazon Data} 
+	\label{tab:table25} 
+	\resizebox{\columnwidth}{!}{
+		\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+			\\[-1ex]\hline 
+			\hline \\[-3ex] 
+			%& \multicolumn{8}{c}{\textit{Dependent variable:}} \\ 
+			%\cline{2-9} 
+			%\\[-1.8ex] 
+			& \multicolumn{2}{c}{AmazonTotalMonthlySales} & \multicolumn{2}{c}{AmazonPagesPerDollar} & 
+			\multicolumn{2}{c}{AmazonMinsPerDollar}\\ 
+			& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{Amazon-5 Miles} \\ 
+			\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}{(6)} \\ 
+			\hline \\[-3ex] 
+			ATT & -0.863 & -0.248 & -0.210 & 0.024 & -0.293 &  -0.293\\ 
+			& (1.316) & (0.229) & (18.580) & (0.211) & (1.038) & (1.067) \\ 
+			\hline \\[-3ex] 
+			r$^{*}$ & \multicolumn{1}{c}{0} & \multicolumn{1}{c}{0} & \multicolumn{1}{c}{1} & \multicolumn{1}{c}{0} & \multicolumn{1}{c}{0} & \multicolumn{1}{c}{0}  \\ 
+			MSPE of r & \multicolumn{1}{c}{1.294} & \multicolumn{1}{c}{1.312} & \multicolumn{1}{c}{0.015} & \multicolumn{1}{c}{1.375} & \multicolumn{1}{c}{0.342} & \multicolumn{1}{c}{0.342} \\
+			\hline
+			\hline 
+	\end{tabular} }
+\end{table}
+
+Codes for each of the models are listed below.
+\lstinputlisting[language=R, caption={Codes for GSC model}, label={codeGSC}, linerange={119-151, 156-177, 182-203, 207-224, 229-245, 250-266}]{../GSC_part.R}
 
 %\subsection{Heckit Approach}
+\pagebreak
+\subsection{PSM}
+For robustness, we use nearest propensity score matching to match each zipcode from treatment group with an equivalent control group, using zip code level demographics. After matching, we have left with 89 matched zip codes. Below are the propensity score before and after matching.
 
-\subsection{PSM and LA-PSM}
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{pic/b4matching.png}
+		\caption{Scores Before Matching}
+		\label{fig:b4matching}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{pic/Aftermatching.png}
+		\caption{Scores After Matching}
+		\label{fig:aftermatching}
+	\end{minipage}
+\end{figure}
+
+\begin{table}[!htbp] \centering 
+	\caption{Results of the Online Sales and Search Effect After Nearest Propensity Score Matching: TotalMonthlySales, PagesPerDollar, and MinsPerDollar (All Product Categories)} 
+	\label{tab:tablepsm} 
+	\resizebox{\columnwidth}{!}{
+		\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+			\\[-1.8ex]\hline 
+			\hline \\[-1.8ex] 
+			% & \multicolumn{6}{c}{\textit{Dependent variable:}} \\ 
+			%\cline{2-7} 
+			%\\[-1.8ex]
+			& \multicolumn{2}{c}{log(TotalMonthlySales + 1)} & \multicolumn{2}{c}{log(PagesPerDollar + 1)} & \multicolumn{2}{c}{log(MinsPerDollar + 1)} \\ 
+			& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BesyBuy-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BesyBuy-0 Mile} &                             \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BesyBuy-0 Mile} \\ 
+			\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}               {(6)}\\ 
+			\hline \\[-1.8ex] 
+			$beta_1$ & 0.029 & 0.0002 & 0.00004 & 0.0001 & 0.002 & 0.00000 \\ 
+			& (0.024) & (0.031) & (0.020) & (0.009) & (0.019) & (0.005) \\ 
+			$beta_2$ & -0.033 & 0.009 & -0.068^{***} & 0.003 & -0.057^{***} & 0.0004 \\ 
+			& (0.028) & (0.031) & (0.023) & (0.009) & (0.022) & (0.005) \\ 
+			\hline \\[-1.8ex] 
+			Observations & \multicolumn{1}{c}{3,000} & \multicolumn{1}{c}{768} & \multicolumn{1}{c}{3,000} & \multicolumn{1}{c}{768} & \multicolumn{1}{c}{3,000} &                           \multicolumn{1}{c}{768} \\ 
+			R$^{2}$ & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.004} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.003} &                           \multicolumn{1}{c}{0.00004} \\ 
+			Adjusted R$^{2}$ & \multicolumn{1}{c}{-0.052} & \multicolumn{1}{c}{-0.078} & \multicolumn{1}{c}{-0.048} & \multicolumn{1}{c}{-0.078} & \multicolumn{1}{c}{-0.049}               & \multicolumn{1}{c}{-0.079} \\ 
+			F Statistic & \multicolumn{1}{c}{0.935 (df = 2; 2850)} & \multicolumn{1}{c}{0.192 (df = 2; 711)} & \multicolumn{1}{c}{6.219$^{***}$ (df = 2; 2850)} &                           \multicolumn{1}{c}{0.185 (df = 2; 711)} & \multicolumn{1}{c}{4.693$^{***}$ (df = 2; 2850)} & \multicolumn{1}{c}{0.014 (df = 2; 711)} \\ 
+			\hline 
+			\hline \\[-1.8ex] 
+			\textit{Note:}  & \multicolumn{6}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular}}
+\end{table}
+
+For this paper, look-ahead propensity score matching (LA-PSM) is not a viable method. The main assumption of LA-PSM is to match observations in treatment group with observations in control group that will convert to treatment group later. For example, if Circuit City would have closed 100 stores during November 2008 and another 100 store during November 2009, then we can be able to implement LA-PSM. However, in this case, all Circuit City stores were closed during at the same time, making LA-PSM impossible to implement.
+
+The code for generating Table \ref{tab:tablepsm} are listed as below.
+\lstinputlisting[language=R, caption={Table PSM Generation}, label={lst:tablepsm}, linerange={138-172, 216-237}]{../psm.R}
 
 %\subsection{Measurement Error Bias Correction}
-
+\pagebreak
 \subsection{Causal Forest}
+In this section we focus on transaction level data and our treated group is determined by using a variable called \texttt{treatment} which takes value of 1 if \texttt{CCStorePresent} and \texttt{AfterStoreClosing} are 1 and takes value of 0 otherwise. We have 2 different datasets: one  including transactions from zip code areas where a Circuit City store was closed and the other one including the transactions from zip code areas where a Circuit city store was in five-mile radius before its closure which we call zero-mile and five-mile datasets, respectively. There are some duplicate observations in these datasets therefore we decide to remove them from our analysis. We also create a third data set combining these two and dropping the duplicate observations because there are some observations in zero-mile dataset we fail to observe in the five-mile dataset. \\
+Codes for constructing treatment variable are listed below.
+\lstinputlisting[language=R, caption={Constructing  Treatment Variable}, label={lst:treatment_var}, linerange={134-153}]{../celik_beyza_causal_forest.R}
+We first investigate the treatment effects on Amazon sales using the transactions within the zip code where a Circuit City store was closed. For each transaction $i=1, \cdots, n$, we observe a binary treatment indicator \texttt{treatment} ($W_i$), a real valued outcome \texttt{prod\_totprice} ($Y_i$), as well as 10 categorical covariates which are \texttt{hoh\_most\_education}, \texttt{census\_region}, \texttt{household\_size}, \texttt{hoh\_oldest\_age}, \texttt{children}, \texttt{racial\_background}, \texttt{connection\_speed}, \texttt{country\_of\_origin}, \texttt{prod\_category\_type} and \texttt{BBStorePresent}; and 4 real-valued covariates which are \texttt{pages\_viewed}, \texttt{duration}, \texttt{prod\_qty}, \texttt{household\_income}. We expanded out categorical random variables via one-hot encoding, thus resulting in covariates $X_i \in \mathbb{R}^p$  with $p = 38$. \\
+We define causal effects via the potential outcomes model \cite{imbens2015causal}: For each sample $i$, the potential outcomes denoted by $Y_i(0)$ and $Y_i(1)$ corresponding to the outcome we would have observed  if the $i$-th sample was in control or treatment group, and assume that we observe $Y_i =Y_i(Wi)$.
+The average treatment effect is then defined as 
+$\tau = \mathbb{E} [Y_i(1)-Y_i(0)]$, and the conditional average
+treatment effect function is 
+$\tau(x)=\mathbb{E}[ Y_i(1)-Y_i(0)\mid X_i] =x$ .\\
+Codes for estimating treatment effects  on Amazon sales within the zip code where a Circuit City store was closed are listed below.
+\lstinputlisting[language=R, caption={Estimating Treatment Effects on Amazon Sales (Zero Mile) with Causal Forests}, label={lst:ama_cf_d1}, linerange={223-257}]{../celik_beyza_causal_forest.R}
+We use the package \texttt{grf} \cite{tibshirani2018package} to apply causal forest on our data and also to estimate the average treatment effect. The confidence interval for the average treatment effect is presented in Table \ref{tab:ama_cf1_ate}. \\
+Since the 90\% confidence interval do not include zero we can say that the average treatment effect is negative and statistically significant at the 0.1 level. We also perform the same analysis when the radius is increased by five miles. Our findings are not significant therefore we do not report our results for the larger dataset.
+\begin{table}[h]
+	\caption{90\% CI for the ATE on Amazon Sales (Zero Mile Data)} 
+	\label{tab:ama_cf1_ate}
+	\vspace{1em}
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		5\%  & Estimate & 95\% \\ 
+		\hline
+		-21.35 & -11.57 & -1.78 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{pic/tauhat1_ama_hist.pdf}\caption{Histogram of out-of-bag estimates of CATE  on Amazon Sales (Zero-Mile Data)}\label{fig:tauhat1_ama_hist}
+\end{figure}
+
+As seen in Figure \ref{fig:tauhat1_ama_hist}, the causal forest CATE estimates exhibit variation; but this does not automatically imply that $\tau^{-i} (X_i)$ is a better estimate of $\tau(X_i)$ than the overall average treatment effect estimate $\hat{\tau}$ that we obtain using the doubly robust approach (Table \ref{tab:ama_cf1_ate}). We try a test for heterogeneity, motivated by the "best linear predictor" method of \cite{chernozhukov2018generic}, that seeks to fit the CATE as a linear function of the the out-of-bag causal forest estimates $\hat{\tau}^{-i}(X_i)$. The results of this test is presented in Table \ref{tab:avg_treat_hetero_cf1}. Since differential forest prediction is not significant we cannot say anything about heterogeneity.
+\begin{table}[h] \centering 
+	\caption{Best linear fit using forest predictions for CATE on Amazon Sales (Zero-mile dataset)} 
+	\label{tab:avg_treat_hetero_cf1} 
+	\begin{tabular}{@{\extracolsep{5pt}}lc} 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		& \multicolumn{1}{c}{CATE} \\ 
+		\hline \\[-1.8ex] 
+		mean.forest.prediction & 2.375$^{***}$ \\ 
+		& (0.725) \\ 
+		& \\ 
+		differential.forest.prediction & $-$53.205 \\ 
+		& (24.006) \\ 
+		& \\ 
+		\hline \\[-1.8ex] 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table}
+
+Next, we consider the effect of store closure on customers' online shopping behaviors. We run two different causal forest using dependent variables \texttt{PagesPerDollar} which captures the number of pages viewed for every dollar worth of products either on amazon.com or bestbuy.com and \texttt{MinsPerDollar} which captures the minutes spent at the website for every purchase dollar. \\
+We first investigate the treatment effect on\texttt{PagesPerDollar} using the amazon.com transactions within the zip code where a Circuit City store was closed. The average treatment effect  and the 99\% confidence interval is presented in Table (\ref{tab:ama_cf3_ate}) Since the 99\% confidence interval do not include zero we can say that the average treatment effect is negative and statistically significant at the 0.01 level. We also perform the same analysis when the radius is increased by five miles. Our findings for five miles dataset are not significant therefore we do not report our results for the larger dataset.
+\begin{table}[h]
+	\caption{99\% CI for the ATE on \texttt{PagesPerDollar} (Zero Mile Data)} 
+	\label{tab:ama_cf3_ate}
+	\vspace{1em}
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		0.5\%  & Estimate & 99.5\% \\ 
+		\hline
+		-44.48 & -25.43 & -6.38 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+Codes for estimating treatment effect on \texttt{PagesPerDollar} using the transactions within the zip code where a Circuit City store was closed are listed below.
+\lstinputlisting[language=R, caption={Estimating Treatment Effects on \texttt{PagesPerDollar} (Zero Mile) with Causal Forests}, label={lst:ama_cf_d1}, linerange={345-391}]{../celik_beyza_causal_forest.R}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{pic/tauhat3_ama_hist.pdf}\caption{Histogram of out-of-bag estimates of CATE  on \texttt{PagesPerDollar} (Zero-Mile Data)}\label{fig:tauhat3_ama_hist}
+\end{figure}
+
+We can see in Figure \ref{fig:tauhat3_ama_hist}, the causal forest CATE  estimates on \texttt{PagesPerDollar} exhibit variation. We test for heterogeneity and report its the results in Table \ref{tab:avg_treat_hetero_cf3}. Since differential forest prediction is not significant we cannot say anything about heterogeneity.
+
+\begin{table}[h] \centering 
+	\caption{Best linear fit using forest predictions for CATE on \texttt{AmazonPagesPerDollar} (Zero-mile data)} 
+	\label{tab:avg_treat_hetero_cf3} 
+	\begin{tabular}{@{\extracolsep{5pt}}lc} 
+		\\[-1.8ex]\hline 
+		\hline \\[-1.8ex] 
+		& \multicolumn{1}{c}{CATE} \\ 
+		
+		\hline \\[-1.8ex] 
+		mean.forest.prediction & $-$4.286 \\ 
+		& (3.912) \\ 
+		& \\ 
+		differential.forest.prediction & $-$175.484 \\ 
+		& (64.470) \\ 
+		& \\ 
+		\hline \\[-1.8ex] 
+		\hline 
+		\hline \\[-1.8ex] 
+		\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+	\end{tabular} 
+\end{table} 
+
+Again to investigate the treatment effect on online search behaviors we use \texttt{MinsPerDollar} using the amazon.com transactions within the zip code where a Circuit City store was closed. The average treatment effect  and the 99\% confidence interval is presented in Table (\ref{tab:ama_cf5_ate}) Since the 99\% confidence interval do not include zero we can say that the average treatment effect is negative and statistically significant at the 0.01 level. We also perform the same analysis when the radius is increased by five miles. Our findings for five miles dataset are not significant therefore we do not report our results for the larger dataset.
+
+\begin{table}[h]
+	\caption{99\% CI for the ATE on \texttt{MinsPerDollar} (Zero Mile Data)} 
+	\label{tab:ama_cf5_ate}
+	\vspace{1em}
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		0.5\%  & Estimate & 99.5\% \\ 
+		\hline
+		-43.03 & -25.38 & -7.74 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{pic/tauhat5_ama_hist.pdf}\caption{Histogram of out-of-bag estimates of CATE  on \texttt{MinsPerDollar} (Zero-Mile Data)}\label{fig:tauhat5_ama_hist}
+\end{figure}
+
+Codes for estimating treatment effect on \texttt{MinsPerDollar} using the transactions within the zip code where a Circuit City store was closed are listed below.
+\lstinputlisting[language=R, caption={Estimating Treatment Effects on \texttt{PagesPerDollar} (Zero Mile) with Causal Forests}, label={lst:ama_cf_d1}, linerange={532-585}]{../celik_beyza_causal_forest.R}
 
 \pagebreak
 % \section{Reference}
