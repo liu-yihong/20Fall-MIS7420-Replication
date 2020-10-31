@@ -658,6 +658,10 @@
 		\end{itemize}
 		\item Large online only retailers such as Amazon should differentiate between customers from H/L showroom concentration
 		\item Online retailers should evaluate their product reviews and descriptions for showroom experience customers
+		\item My Questions
+		\begin{itemize}
+			\item Newly Opening Physical Showroom
+		\end{itemize}
 	\end{enumerate}
 \end{frame}
 
@@ -671,6 +675,311 @@
 %%		\item Internet access?
 %%	\end{enumerate}
 %%\end{frame}
+\subsection{Propensity Score Matching}
+\begin{frame}{Propensity Score Matching}
+	\begin{itemize}
+		\item Nearest propensity score matching is used to match each zipcode from treatment group with an equivalent control group, using zip code level demographics. 
+		\begin{itemize}
+			\item Household size
+			\item Household oldest age
+			\item Household income
+			\item Number of children
+			\item Internet speed
+		\end{itemize}
+		\item After matching, we have left with 89 matched zip codes. Below are the propensity score before and after matching.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Propensity Score Matching}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{pic/b4matching.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Propensity Score Matching}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{pic/Aftermatching.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Propensity Score Matching}
+	\begin{table}[!htbp] \centering 
+		\caption{Results of the Online Sales and Search Effect After Nearest Propensity Score Matching: TotalMonthlySales, PagesPerDollar, and MinsPerDollar (All Product Categories)} 
+		\label{tab:tablepsm} 
+		\resizebox{\columnwidth}{!}{
+			\begin{tabular}{@{\extracolsep{1pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+				\\[-1.8ex]\hline 
+				\hline \\[-1.8ex] 
+				% & \multicolumn{6}{c}{\textit{Dependent variable:}} \\ 
+				%\cline{2-7} 
+				%\\[-1.8ex]
+				& \multicolumn{2}{c}{log(TotalMonthlySales + 1)} & \multicolumn{2}{c}{log(PagesPerDollar + 1)} & \multicolumn{2}{c}{log(MinsPerDollar + 1)} \\ 
+				& \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BesyBuy-0 Mile} & \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BesyBuy-0 Mile} &                             \multicolumn{1}{c}{Amazon-0 Mile} & \multicolumn{1}{c}{BesyBuy-0 Mile} \\ 
+				\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)} & \multicolumn{1}{c}               {(6)}\\ 
+				\hline \\[-1.8ex] 
+				$\beta_1$ & 0.029 & 0.0002 & 0.00004 & 0.0001 & 0.002 & 0.00000 \\ 
+				& (0.024) & (0.031) & (0.020) & (0.009) & (0.019) & (0.005) \\ 
+				$\beta_2$ & -0.033 & 0.009 & -0.068^{***} & 0.003 & -0.057^{***} & 0.0004 \\ 
+				& (0.028) & (0.031) & (0.023) & (0.009) & (0.022) & (0.005) \\ 
+				\hline \\[-1.8ex] 
+				Observations & \multicolumn{1}{c}{3,000} & \multicolumn{1}{c}{768} & \multicolumn{1}{c}{3,000} & \multicolumn{1}{c}{768} & \multicolumn{1}{c}{3,000} &                           \multicolumn{1}{c}{768} \\ 
+				R$^{2}$ & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.004} & \multicolumn{1}{c}{0.001} & \multicolumn{1}{c}{0.003} &                           \multicolumn{1}{c}{0.00004} \\ 
+				Adjusted R$^{2}$ & \multicolumn{1}{c}{-0.052} & \multicolumn{1}{c}{-0.078} & \multicolumn{1}{c}{-0.048} & \multicolumn{1}{c}{-0.078} & \multicolumn{1}{c}{-0.049}               & \multicolumn{1}{c}{-0.079} \\ 
+				F Statistic & \multicolumn{1}{c}{0.935 (df = 2; 2850)} & \multicolumn{1}{c}{0.192 (df = 2; 711)} & \multicolumn{1}{c}{6.219$^{***}$ (df = 2; 2850)} &                           \multicolumn{1}{c}{0.185 (df = 2; 711)} & \multicolumn{1}{c}{4.693$^{***}$ (df = 2; 2850)} & \multicolumn{1}{c}{0.014 (df = 2; 711)} \\ 
+				\hline 
+				\hline \\[-1.8ex] 
+				\textit{Note:}  & \multicolumn{6}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+		\end{tabular}}
+	\end{table}
+\end{frame}
+
+\begin{frame}{Look-Ahead Propensity Score Matching}
+	\begin{itemize}
+		\item LA-PSM requires some treated observations occur over different periods $t$ and $t+k$.
+		\item Basic idea in LA-PSM is to match treated observations in period $t$ with observations which were in control group in period $t$ but in treatment group in period $t+k$.
+		\item In this paper, Circuit City closed all their stores at the same time: November 2008.
+		\item Therefore, LA-PSM method is not applicable.
+	\end{itemize}
+\end{frame}
+
+\subsection{Causal Forest}
+\begin{frame}{Data Preparation for the Application}
+	\begin{itemize}
+		\item Our analysis is based on data individual transactions. 
+		\item For each transaction $i=1,\dots,n$,
+		\begin{itemize}
+			\item $W_i=\texttt{CCStorePresent}_i\times\texttt{AfterStoreClosing}_i$
+			\item $Y_i=\log\left(\texttt{prod\_totprice},\;\texttt{PagesPerDollar},\;\texttt{MinsPerDollar}\right)$ \footnote{right-skewed}
+			\item  \textbf{10 categorical}: \texttt{hoh\_most\_education}, \texttt{census\_region}, \texttt{household\_size}, \texttt{hoh\_oldest\_age}, \texttt{children}, \texttt{racial\_background}, \texttt{connection\_speed}, \texttt{country\_of\_origin}, \texttt{prod\_category\_type} and \texttt{BBStorePresent}
+			\item \textbf{4 real-valued covariates}: \texttt{pages\_viewed}\footnote{not \texttt{PagesPerDollar} is dependent variable}, \texttt{duration}\footnote{not \texttt{MinsPerDollar} is dependent variable}, \texttt{prod\_qty}, \texttt{household\_income}
+			\item We expanded out categorical random variables via one-hot encoding, thus resulting in covariates $X_i \in \mathbb{R}^p$  with $p = 38$ or $p = 37$ .
+		\end{itemize}
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}[allowframebreaks]{The potential outcomes framework}
+	For a set of i.i.d. subjects $i = 1, ..., n$, we observe a tuple $(X_i , Y_i , W_i )$, comprised of
+	\begin{itemize}
+		\item A \textbf{feature vector} $X_i \in \mathbb{R}^p,$
+		\item A \textbf{response} $Y_i \in \mathbb{R}$, and 
+		\item A \textbf{treatment assignment} $W_i \in \{0,1\}$\\~
+	\end{itemize}
+	
+	Following the \textbf{potential outcomes} framework \citep{imbens2015causal} , we posit the existence of quantities $Y_i(0)$ and $Y_i(1)$ 
+	
+	\begin{itemize}
+		\item These correspond to the response we would have measured given that the $i$-th subject received treatment ($W_i = 1$) or no treatment ($W_i = 0$).
+	\end{itemize}
+	\framebreak
+	Goal is to estimate the \textbf{conditional average treatment effect}
+	\begin{equation*}
+		\tau(x)=\mathbb{E}\left[Y(1)-Y(0)\mid X=x\right]
+	\end{equation*}
+	However in experiments we only get to see $Y_i=Y_i(W_i)$
+	
+	\framebreak
+	
+	If we make no further assumptions, estimating $\tau(x)$ is not possible. 
+	\begin{itemize}
+		\item Literature often assumes \textbf{unconfoundedness} \citep{rosenbaum1983central}
+		\begin{equation*}
+			\{Y_i(0), Y_i(1)\}\perp \!\!\! \perp W_i \mid X_i.
+		\end{equation*}
+		\item When this assumption holds, methods based on matching or propensity score estimation are usually consistent. 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Causal Forests for Observational Studies}
+	All analyses are carried out using the R package \textbf{grf}, version 1.2.0 \citep{tibshirani2018package}.
+	\begin{itemize}
+		\item $e(x) = \mathbb{P}[W_i\mid X_i = x]$ for the propensity score 
+		\item $m(x) = \mathbb{E}[Y_i\mid X_i = x]$ for the expected outcome marginalizing over treatment
+		\item An application of causal forests using \textbf{grf} \citep{athey2019estimating}: 
+		\begin{enumerate}
+			\item fitting two separate regression forests to estimate $m(\cdot)$ and $e(\cdot)$ (\texttt{Y.forest} and \texttt{W.forest})
+			\item It then makes out-of-bag predictions using these two first-stage forests, and uses them to grow a causal forest
+			\item training a pilot random forest on all the features, and then train a second forest on only those features that saw a reasonable number of splits in the first step.
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Average Treatment Effect of Circuit City Stores Closure on amazon.com Sales}
+	% The first question asks about the overall effectiveness of the intervention. 
+	The package \textbf{grf} has a built-in function for average treatment effect estimation called \texttt{average\_treatment\_effect}. Using this function we obtain:
+	\vspace{-1em}
+	\begin{columns}
+		\begin{column}{.6\textwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[scale=0.3]{pic/tauhat1_ama_hist.pdf}
+				\caption{ Histogram of out-of-bag CATE estimates from a causal forest}
+				\label{fig:tauhat1_ama_hist}
+			\end{figure}
+		\end{column}
+		
+		\begin{column}{.39\textwidth}
+			\begin{table}[h]
+				\label{}
+				\caption{90\% CI for the ATT}
+				\centering
+				\begin{tabular}{rrr}
+					\hline
+					5\%  & $\hat{\tau_t}$ & 95\% \\ 
+					\hline
+					-0.42 & -0.22 & -0.03 \\ 
+					\hline
+				\end{tabular}
+			\end{table}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Average Treatment Effect of Circuit City Stores Closure on bestbuy.com Sales}
+	% The first question asks about the overall effectiveness of the intervention. 
+	\vspace{-1em}
+	\begin{columns}
+		\begin{column}{.6\textwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[scale=0.3]{pic/tauhat1_bb_hist.pdf}
+				\caption{ Histogram of out-of-bag CATE estimates from a causal forest}
+				\label{fig:tauhat1_bb_hist}
+			\end{figure}
+		\end{column}
+		
+		\begin{column}{.39\textwidth}
+			\begin{table}[h]
+				\caption{90\% CI for the ATT} 
+				\centering
+				\begin{tabular}{rrr}
+					\hline
+					5\%  & $\hat{\tau_t}$ & 95\% \\ 
+					\hline
+					-0.39 & 0.08 & 0.55 \\ 
+					\hline
+				\end{tabular}
+			\end{table}
+		\end{column}
+	\end{columns}
+\end{frame}
+\begin{frame}{Average Treatment Effect of Circuit City Stores Closure on amazon.com Pages Per Dollar of Sales}
+	% The first question asks about the overall effectiveness of the intervention. 
+	\vspace{-1em}
+	\begin{columns}
+		\begin{column}{.6\textwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[scale=0.3]{pic/tauhat3_ama_hist.pdf}
+				\caption{ Histogram of out-of-bag CATE estimates from a causal forest}
+				\label{fig:tauhat3_ama_hist}
+			\end{figure}
+		\end{column}
+		
+		\begin{column}{.39\textwidth}
+			\begin{table}[h]
+				\caption{95\% CI for the ATT} 
+				\centering
+				\begin{tabular}{rrr}
+					\hline
+					2.5\%  & $\hat{\tau_t}$ & 97.5\% \\ 
+					\hline
+					0.02 & 0.27 & 0.52 \\ 
+					\hline
+				\end{tabular}
+			\end{table}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Average Treatment Effect of Circuit City Stores Closure on bestbuy.com Pages Per Dollar of Sales}
+	% The first question asks about the overall effectiveness of the intervention. 
+	\vspace{-1em}
+	\begin{columns}
+		\begin{column}{.6\textwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[scale=0.3]{pic/tauhat3_bb_hist.pdf}
+				\caption{ Histogram of out-of-bag CATE estimates from a causal forest}
+				\label{fig:tauhat3_bb_hist}
+			\end{figure}
+		\end{column}
+		
+		\begin{column}{.39\textwidth}
+			\begin{table}[h]
+				\caption{90\% CI for the ATT} 
+				\centering
+				\begin{tabular}{rrr}
+					\hline
+					5\%  & $\hat{\tau_t}$ & 95\% \\ 
+					\hline
+					-0.47 & 0.09 & 0.65 \\ 
+					\hline
+				\end{tabular}
+			\end{table}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Average Treatment Effect of Circuit City Stores Closure on amazon.com Minutes Per Dollar of Sales}
+	% The first question asks about the overall effectiveness of the intervention. 
+	\vspace{-1em}
+	\begin{columns}
+		\begin{column}{.6\textwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[scale=0.3]{pic/tauhat5_ama_hist.pdf}
+				\caption{ Histogram of out-of-bag CATE estimates from a causal forest}
+				\label{fig:tauhat5_ama_hist}
+			\end{figure}
+		\end{column}
+		
+		\begin{column}{.39\textwidth}
+			\begin{table}[h]
+				\caption{90\% CI for the ATT} 
+				\centering
+				\begin{tabular}{rrr}
+					\hline
+					5\%  & $\hat{\tau_t}$ & 95\% \\ 
+					\hline
+					-110.76 & -24.32 & 62.13 \\ 
+					\hline
+				\end{tabular}
+			\end{table}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Average Treatment Effect of Circuit City Stores Closure on bestbuy.com Minutes Per Dollar of Sales}
+	% The first question asks about the overall effectiveness of the intervention. 
+	\vspace{-1em}
+	\begin{columns}
+		\begin{column}{.6\textwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[scale=0.3]{pic/tauhat5_bb_hist.pdf}
+				\caption{ Histogram of out-of-bag CATE estimates from a causal forest}
+				\label{fig:tauhat5_bb_hist}
+			\end{figure}
+		\end{column}
+		
+		\begin{column}{.39\textwidth}
+			\begin{table}[h]
+				\caption{90\% CI for the ATT}
+				\centering
+				\begin{tabular}{rrr}
+					\hline
+					5\%  & $\hat{\tau_t}$ & 95\% \\ 
+					\hline
+					-0.63 & -0.29 & 0.05 \\ 
+					\hline
+				\end{tabular}
+			\end{table}
+		\end{column}
+	\end{columns}
+\end{frame}
 
 \begin{frame}[allowframebreaks]{Reference}
 	\bibliography{bobo}

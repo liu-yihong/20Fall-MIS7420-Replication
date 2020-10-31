@@ -1239,52 +1239,54 @@ The code for generating Table \ref{tab:tablepsm} are listed as below.
 %\subsection{Measurement Error Bias Correction}
 \pagebreak
 \subsection{Causal Forest}
-In this section we focus on transaction level data and our treated group is determined by using a variable called \texttt{treatment} which takes value of 1 if \texttt{CCStorePresent} and \texttt{AfterStoreClosing} are 1 and takes value of 0 otherwise. We have 2 different datasets: one  including transactions from zip code areas where a Circuit City store was closed and the other one including the transactions from zip code areas where a Circuit city store was in five-mile radius before its closure which we call zero-mile and five-mile datasets, respectively. There are some duplicate observations in these datasets therefore we decide to remove them from our analysis. We also create a third data set combining these two and dropping the duplicate observations because there are some observations in zero-mile dataset we fail to observe in the five-mile dataset. \\
+In this section we focus on transaction level data and our treated group is determined by using a variable called \texttt{treatment} which takes value of 1 if \texttt{CCStorePresent} and \texttt{AfterStoreClosing} are 1 and takes value of 0 otherwise. We
+use the dataset called zero-mile data which only includes transactions from zip code areas where a Circuit City store was closed for our causal forest models.
+% There are some duplicate observations in these datasets therefore we decide to remove them from our analysis. We also create a third dataset combining these two and dropping the duplicate observations because there are some observations in zero-mile dataset we fail to observe in the five-mile dataset. \\
 Codes for constructing treatment variable are listed below.
 \lstinputlisting[language=R, caption={Constructing  Treatment Variable}, label={lst:treatment_var}, linerange={134-153}]{../celik_beyza_causal_forest.R}
-We first investigate the treatment effects on Amazon sales using the transactions within the zip code where a Circuit City store was closed. For each transaction $i=1, \cdots, n$, we observe a binary treatment indicator \texttt{treatment} ($W_i$), a real valued outcome \texttt{prod\_totprice} ($Y_i$), as well as 10 categorical covariates which are \texttt{hoh\_most\_education}, \texttt{census\_region}, \texttt{household\_size}, \texttt{hoh\_oldest\_age}, \texttt{children}, \texttt{racial\_background}, \texttt{connection\_speed}, \texttt{country\_of\_origin}, \texttt{prod\_category\_type} and \texttt{BBStorePresent}; and 4 real-valued covariates which are \texttt{pages\_viewed}, \texttt{duration}, \texttt{prod\_qty}, \texttt{household\_income}. We expanded out categorical random variables via one-hot encoding, thus resulting in covariates $X_i \in \mathbb{R}^p$  with $p = 38$. \\
-We define causal effects via the potential outcomes model \cite{imbens2015causal}: For each sample $i$, the potential outcomes denoted by $Y_i(0)$ and $Y_i(1)$ corresponding to the outcome we would have observed  if the $i$-th sample was in control or treatment group, and assume that we observe $Y_i =Y_i(Wi)$.
+We first investigate the treatment effects on Amazon sales using the transactions within the zip code where a Circuit City store was closed. For each transaction $i=1, \cdots, n$, we observe a binary treatment indicator \texttt{treatment} ($W_i$), a real valued outcome $\mathrm{\log}(\texttt{prod\_totprice})$ ($Y_i$), as well as 10 categorical covariates which are \texttt{hoh\_most\_education}, \texttt{census\_region}, \texttt{household\_size}, \texttt{hoh\_oldest\_age}, \texttt{children}, \texttt{racial\_background}, \texttt{connection\_speed}, \texttt{country\_of\_origin}, \texttt{prod\_category\_type} and \texttt{BBStorePresent}; and 4 real-valued covariates which are \texttt{pages\_viewed}, \texttt{duration}, \texttt{prod\_qty}, \texttt{household\_income}. We expanded out categorical random variables via one-hot encoding, thus resulting in covariates $X_i \in \mathbb{R}^p$  with $p = 38$ or $p = 37$ depending on the response variable.
+We define causal effects via the potential outcomes model \citep{imbens2015causal}: For each sample $i$, the potential outcomes denoted by $Y_i(0)$ and $Y_i(1)$ corresponding to the outcome we would have observed  if the $i$-th sample was in control or treatment group, and assume that we observe $Y_i =Y_i(Wi)$.
 The average treatment effect is then defined as 
 $\tau = \mathbb{E} [Y_i(1)-Y_i(0)]$, and the conditional average
 treatment effect function is 
-$\tau(x)=\mathbb{E}[ Y_i(1)-Y_i(0)\mid X_i] =x$ .\\
-Codes for estimating treatment effects  on Amazon sales within the zip code where a Circuit City store was closed are listed below.
-\lstinputlisting[language=R, caption={Estimating Treatment Effects on Amazon Sales (Zero Mile) with Causal Forests}, label={lst:ama_cf_d1}, linerange={223-257}]{../celik_beyza_causal_forest.R}
-We use the package \texttt{grf} \cite{tibshirani2018package} to apply causal forest on our data and also to estimate the average treatment effect. The confidence interval for the average treatment effect is presented in Table \ref{tab:ama_cf1_ate}. \\
-Since the 90\% confidence interval do not include zero we can say that the average treatment effect is negative and statistically significant at the 0.1 level. We also perform the same analysis when the radius is increased by five miles. Our findings are not significant therefore we do not report our results for the larger dataset.
+$\tau(x)=\mathbb{E}[ Y_i(1)-Y_i(0)\mid X_i] =x$.\\
+Codes for estimating treatment effects on the logarithm of Amazon sales within the zip code where a Circuit City store was closed are listed below.
+\lstinputlisting[language=R, caption={Estimating Treatment Effects on the Logarithm of Amazon Sales (Zero Mile) with Causal Forests}, label={lst:ama_cf_d1}, linerange={223-257}]{../celik_beyza_causal_forest.R}
+We use the package \texttt{grf} \citep{tibshirani2018package} to apply causal forest on our data and also to estimate the average treatment effect on treated (ATT). The confidence interval for the average treatment effect is presented in Table \ref{tab:ama_cf1_att}.  Since the 90\% confidence interval do not include zero, we can say that the average treatment effect on treated is negative and statistically significant at the 0.1 level. Since the average treatment effect on treated is negative and significant we can say that the closure of a a close by Circuit City store might have caused a decrease on Amazon sales. 
+% We also perform the same analysis when the radius is increased by five miles. Our findings are not significant therefore we do not report our results for the larger dataset.
 \begin{table}[h]
-	\caption{90\% CI for the ATE on Amazon Sales (Zero Mile Data)} 
-	\label{tab:ama_cf1_ate}
+	\caption{90\% CI for the ATT on $\mathrm{\log}$(\texttt{prod\_totprice}) for amazon.com (Zero Mile Data)}
 	\vspace{1em}
+	\label{tab:ama_cf1_att}
 	\centering
 	\begin{tabular}{rrr}
 		\hline
-		5\%  & Estimate & 95\% \\ 
+		5\%  & $\hat{\tau_t}$ & 95\% \\ 
 		\hline
-		-21.35 & -11.57 & -1.78 \\ 
+		-0.42 & -0.22 & -0.03 \\ 
 		\hline
 	\end{tabular}
 \end{table}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{pic/tauhat1_ama_hist.pdf}\caption{Histogram of out-of-bag estimates of CATE  on Amazon Sales (Zero-Mile Data)}\label{fig:tauhat1_ama_hist}
+	\includegraphics[width=0.5\linewidth]{pic/tauhat1_ama_hist.pdf}\caption{Histogram of out-of-bag estimates of CATE  on logarithm of xAmazon Sales (Zero-Mile Data)}
+	\label{fig:tauhat1_ama_hist}
 \end{figure}
-
-As seen in Figure \ref{fig:tauhat1_ama_hist}, the causal forest CATE estimates exhibit variation; but this does not automatically imply that $\tau^{-i} (X_i)$ is a better estimate of $\tau(X_i)$ than the overall average treatment effect estimate $\hat{\tau}$ that we obtain using the doubly robust approach (Table \ref{tab:ama_cf1_ate}). We try a test for heterogeneity, motivated by the "best linear predictor" method of \cite{chernozhukov2018generic}, that seeks to fit the CATE as a linear function of the the out-of-bag causal forest estimates $\hat{\tau}^{-i}(X_i)$. The results of this test is presented in Table \ref{tab:avg_treat_hetero_cf1}. Since differential forest prediction is not significant we cannot say anything about heterogeneity.
+As seen in Figure \ref{fig:tauhat1_ama_hist}, the causal forest CATE estimates exhibit variation; but this does not necessarily imply that $\tau^{-i} (X_i)$ (The $^{(-i)}$ superscripts denote "out-of-bag" predictions) is a better estimate of $\tau(X_i)$ than the overall average treatment effect estimate $\hat{\tau}$ that we obtain using the doubly robust approach (The package \textbf{grf} uses this approach) \citep{athey2019estimating}. We try a test for heterogeneity, motivated by the "best linear predictor" method of \cite{chernozhukov2018generic}, that fits the CATE as a linear function of the the out-of-bag causal forest estimates $\hat{\tau}^{-i}(X_i)$. The results of this test is presented in Table \ref{tab:avg_treat_hetero_cf1}. Since the differential forest prediction coefficient is significant and positive, we can say that the causal forest succeeded in finding heterogeneity.
 \begin{table}[h] \centering 
-	\caption{Best linear fit using forest predictions for CATE on Amazon Sales (Zero-mile dataset)} 
+	\caption{Best linear fit using forest predictions for CATE on logarithm of Amazon Sales (Zero-mile dataset)} 
 	\label{tab:avg_treat_hetero_cf1} 
 	\begin{tabular}{@{\extracolsep{5pt}}lc} 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
-		& \multicolumn{1}{c}{CATE} \\ 
+		& \multicolumn{1}{c}{CATE} \\
 		\hline \\[-1.8ex] 
-		mean.forest.prediction & 2.375$^{***}$ \\ 
-		& (0.725) \\ 
+		mean.forest.prediction & 4.950 \\ 
+		& (4.259) \\ 
 		& \\ 
-		differential.forest.prediction & $-$53.205 \\ 
-		& (24.006) \\ 
+		differential.forest.prediction & 1.651$^{***}$ \\ 
+		& (0.506) \\ 
 		& \\ 
 		\hline \\[-1.8ex] 
 		\hline 
@@ -1292,32 +1294,33 @@ As seen in Figure \ref{fig:tauhat1_ama_hist}, the causal forest CATE estimates e
 		\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
 	\end{tabular} 
 \end{table}
-
-Next, we consider the effect of store closure on customers' online shopping behaviors. We run two different causal forest using dependent variables \texttt{PagesPerDollar} which captures the number of pages viewed for every dollar worth of products either on amazon.com or bestbuy.com and \texttt{MinsPerDollar} which captures the minutes spent at the website for every purchase dollar. \\
-We first investigate the treatment effect on\texttt{PagesPerDollar} using the amazon.com transactions within the zip code where a Circuit City store was closed. The average treatment effect  and the 99\% confidence interval is presented in Table (\ref{tab:ama_cf3_ate}) Since the 99\% confidence interval do not include zero we can say that the average treatment effect is negative and statistically significant at the 0.01 level. We also perform the same analysis when the radius is increased by five miles. Our findings for five miles dataset are not significant therefore we do not report our results for the larger dataset.
+Next, we consider the effect of store closure on customers' online shopping behaviors. We run two different causal forest using dependent variables $\mathrm{\log}$(\texttt{PagesPerDollar}) which is the logarithm of the number of pages viewed for every dollar worth of products either on amazon.com or bestbuy.com and $\mathrm{\log}(\texttt{MinsPerDollar})$ which is the logarithm of the minutes spent at the website for every purchase dollar.
+We first investigate the treatment effect on $\mathrm{log}$(\texttt{PagesPerDollar}) using the amazon.com transactions within the zip code where a Circuit City store was closed. The average treatment effect on treated and the 95\% confidence interval is presented in Table (\ref{tab:ama_cf3_ate}) Since the 95\% confidence interval do not include zero we can say that the average treatment effect on treated ($\hat{\tau}_t$) is positive and statistically significant at the 0.05 level. Looking at this result we can say that the closure of Circuit City stores seems to cause an increase on the number of pages that amazon customers observe per a dollar worth of purchase. This result is consistent with the findings of \cite{samuel2020value}.
+% We also perform the same analysis when the radius is increased by five miles. Our findings for five miles dataset are not significant therefore we do not report our results for the larger dataset.\\
 \begin{table}[h]
-	\caption{99\% CI for the ATE on \texttt{PagesPerDollar} (Zero Mile Data)} 
-	\label{tab:ama_cf3_ate}
+	\caption{95\% CI for the ATT on $\mathrm{log}$(\texttt{PagesPerDollar}) for amazon.com (Zero Mile Data)}
 	\vspace{1em}
+	\label{tab:ama_cf3_ate}
 	\centering
 	\begin{tabular}{rrr}
 		\hline
-		0.5\%  & Estimate & 99.5\% \\ 
+		2.5\%  & $\hat{\tau_t}$ & 97.5\% \\ 
 		\hline
-		-44.48 & -25.43 & -6.38 \\ 
+		0.02 & 0.27 & 0.52 \\ 
 		\hline
 	\end{tabular}
 \end{table}
-
-Codes for estimating treatment effect on \texttt{PagesPerDollar} using the transactions within the zip code where a Circuit City store was closed are listed below.
-\lstinputlisting[language=R, caption={Estimating Treatment Effects on \texttt{PagesPerDollar} (Zero Mile) with Causal Forests}, label={lst:ama_cf_d1}, linerange={345-391}]{../celik_beyza_causal_forest.R}
+Codes for estimating treatment effect on $\mathrm{log}$(\texttt{PagesPerDollar}) using the transactions within the zip code where a Circuit City store was closed are listed below.
+\lstinputlisting[language=R, caption={Estimating Treatment Effects on $\mathrm{log}$(\texttt{PagesPerDollar}) for amazon.com (Zero Mile) with Causal Forests}, label={lst:ama_cf_d1}, linerange={345-393}]{../celik_beyza_causal_forest.R}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{pic/tauhat3_ama_hist.pdf}\caption{Histogram of out-of-bag estimates of CATE  on \texttt{PagesPerDollar} (Zero-Mile Data)}\label{fig:tauhat3_ama_hist}
+	\includegraphics[width=0.45\linewidth]{pic/tauhat3_ama_hist.pdf}
+	\caption{Histogram of out-of-bag estimates of CATE  on $\mathrm{log}$(\texttt{PagesPerDollar}) for amazon.com (Zero-Mile Data)}
+	\label{fig:tauhat3_ama_hist}
 \end{figure}
 
-We can see in Figure \ref{fig:tauhat3_ama_hist}, the causal forest CATE  estimates on \texttt{PagesPerDollar} exhibit variation. We test for heterogeneity and report its the results in Table \ref{tab:avg_treat_hetero_cf3}. Since differential forest prediction is not significant we cannot say anything about heterogeneity.
+We can see in Figure \ref{fig:tauhat3_ama_hist}, the causal forest CATE estimates on $\mathrm{log}$(\texttt{PagesPerDollar}) exhibit variation. We test for heterogeneity and report its the results in Table \ref{tab:avg_treat_hetero_cf3}. We can say there is an evidence for heterogeneity because the differential forest prediction coefficient is significant and positive.
 
 \begin{table}[h] \centering 
 	\caption{Best linear fit using forest predictions for CATE on \texttt{AmazonPagesPerDollar} (Zero-mile data)} 
@@ -1326,13 +1329,12 @@ We can see in Figure \ref{fig:tauhat3_ama_hist}, the causal forest CATE  estimat
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
 		& \multicolumn{1}{c}{CATE} \\ 
-		
 		\hline \\[-1.8ex] 
-		mean.forest.prediction & $-$4.286 \\ 
-		& (3.912) \\ 
+		mean.forest.prediction & 2.804 \\ 
+		& (3.577) \\ 
 		& \\ 
-		differential.forest.prediction & $-$175.484 \\ 
-		& (64.470) \\ 
+		differential.forest.prediction & 1.288$^{***}$ \\ 
+		& (0.308) \\ 
 		& \\ 
 		\hline \\[-1.8ex] 
 		\hline 
@@ -1341,29 +1343,96 @@ We can see in Figure \ref{fig:tauhat3_ama_hist}, the causal forest CATE  estimat
 	\end{tabular} 
 \end{table} 
 
-Again to investigate the treatment effect on online search behaviors we use \texttt{MinsPerDollar} using the amazon.com transactions within the zip code where a Circuit City store was closed. The average treatment effect  and the 99\% confidence interval is presented in Table (\ref{tab:ama_cf5_ate}) Since the 99\% confidence interval do not include zero we can say that the average treatment effect is negative and statistically significant at the 0.01 level. We also perform the same analysis when the radius is increased by five miles. Our findings for five miles dataset are not significant therefore we do not report our results for the larger dataset.
+Again to investigate the treatment effect on online search behaviors we use $\mathrm{log}$(\texttt{MinsPerDollar}) using the amazon.com transactions within the zip code where a Circuit City store was closed. The average treatment effect on treated and the 90\% confidence interval is presented in Table (\ref{tab:ama_cf5_ate}) Since the 90\% confidence interval includes zero we fail to find an evidence for the significance of the average treatment effect. This result is different from what is shown in \cite{samuel2020value}. We believe this comes from the fact that our dataset is actually a random subset of the original data that is used in the paper so our sample might not a good representation of that dataset. Since our estimate for the average treatment effect on treated is not significant we do not test the heterogeneity here but you can observe some heterogeneity in the estimated conditional average treatment effects from the Figure \ref{fig:tauhat3_ama_hist}.
+% We also perform the same analysis when the radius is increased by five miles. Our findings for five miles dataset are not significant therefore we do not report our results for the larger dataset.\\
 
 \begin{table}[h]
-	\caption{99\% CI for the ATE on \texttt{MinsPerDollar} (Zero Mile Data)} 
+	\caption{90\% CI for the ATT on $\mathrm{log}$(\texttt{MinsPerDollar}) for amazon.com (Zero Mile Data)} 
 	\label{tab:ama_cf5_ate}
 	\vspace{1em}
 	\centering
 	\begin{tabular}{rrr}
 		\hline
-		0.5\%  & Estimate & 99.5\% \\ 
+		5\%  & $\hat{\tau_t}$ & 95\% \\ 
 		\hline
-		-43.03 & -25.38 & -7.74 \\ 
+		-110.76 & -24.32 & 62.13 \\ 
 		\hline
 	\end{tabular}
 \end{table}
 
+Codes for estimating treatment effect on $\mathrm{log}$(\texttt{MinsPerDollar}) using the transactions within the zip code where a Circuit City store was closed are listed below
+\lstinputlisting[language=R, caption={Estimating Treatment Effects on $\mathrm{\log}$(\texttt{PagesPerDollar}) for amazon.com (Zero Mile) with Causal Forests}, label={lst:ama_cf_d1}, linerange={475-520}]{../celik_beyza_causal_forest.R}
+
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\linewidth]{pic/tauhat5_ama_hist.pdf}\caption{Histogram of out-of-bag estimates of CATE  on \texttt{MinsPerDollar} (Zero-Mile Data)}\label{fig:tauhat5_ama_hist}
+	\includegraphics[width=0.4\linewidth]{pic/tauhat5_ama_hist.pdf}
+	\caption{Histogram of out-of-bag estimates of CATE  on $\mathrm{log}$(\texttt{MinsPerDollar}) for amazon.com (Zero-Mile Data)}
+	\label{fig:tauhat5_ama_hist}
 \end{figure}
 
-Codes for estimating treatment effect on \texttt{MinsPerDollar} using the transactions within the zip code where a Circuit City store was closed are listed below.
-\lstinputlisting[language=R, caption={Estimating Treatment Effects on \texttt{PagesPerDollar} (Zero Mile) with Causal Forests}, label={lst:ama_cf_d1}, linerange={532-585}]{../celik_beyza_causal_forest.R}
+We do the same analyses using the Best Buy online transactions data but none of our casual forests estimations yields a significant results. We believe that since Best Buy owns physical stores, it didn't get affected by the closure of Circuit City stores as much as Amazon did. Our results for the transaction data from bestbuy.com is presented below. 
+
+\begin{table}[H]
+	\caption{90\% CI for the ATT on $\mathrm{\log}$(\texttt{prod\_totprice}) for bestbuy.com (Zero Mile Data)} 
+	\vspace{1em}
+	\label{tab:bb_cf1_att}
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		5\%  & $\hat{\tau_t}$ & 95\% \\ 
+		\hline
+		-0.39 & 0.08 & 0.55 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\linewidth]{pic/tauhat1_bb_hist.pdf}\caption{Histogram of out-of-bag estimates of CATE  on logarithm of Best Buy Online Sales (Zero-Mile Data)}
+	\label{fig:tauhat1_bb_hist}
+\end{figure}
+
+\begin{table}[H]
+	\caption{90\% CI for the ATT  on $\mathrm{log}$(\texttt{PagesPerDollar}) for bestbuy.com (Zero Mile Data)} 
+	\vspace{1em}
+	\label{tab:bb_cf3_att}
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		5\%  & $\hat{\tau_t}$ & 95\% \\ 
+		\hline
+		-0.47 & 0.09 & 0.65 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\linewidth]{pic/tauhat3_bb_hist.pdf}
+	\caption{Histogram of out-of-bag estimates of CATE  on $\mathrm{log}$(\texttt{PagesPerDollar}) for bestbuy.com (Zero-Mile Data)}
+	\label{fig:tauhat3_bb_hist}
+\end{figure}
+
+\begin{table}[H]
+	\caption{90\% CI for the ATT  on $\mathrm{log}$(\texttt{MinsPerDollar}) for bestbuy.com (Zero Mile Data)} 
+	\vspace{1em}
+	\label{tab:bb_cf5_att}
+	\centering
+	\begin{tabular}{rrr}
+		\hline
+		5\%  & $\hat{\tau_t}$ & 95\% \\ 
+		\hline
+		-0.63 & -0.29 & 0.05 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\linewidth]{pic/tauhat5_bb_hist.pdf}
+	\caption{Histogram of out-of-bag estimates of CATE  on $\mathrm{log}$(\texttt{MinsPerDollar}) for bestbuy.com (Zero-Mile Data)}
+	\label{fig:tauhat5_bb_hist}
+\end{figure}
 
 \pagebreak
 % \section{Reference}
